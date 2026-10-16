@@ -1,0 +1,1 @@
+"""APARICHIT Test Suite."""
