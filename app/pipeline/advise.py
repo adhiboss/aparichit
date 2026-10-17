@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import re
 from typing import Any, Dict, Iterator, List, Optional, Set
+from app.community.matcher import SimilarProblemMatcher, get_similar_matcher
+
 from app.config import Settings, get_settings
 from app.llm.base import LLMProvider
 from app.memory import SessionMemory, get_session_memory
@@ -15,7 +17,8 @@ from app.pipeline.classify import (
 from app.pipeline.rewrite import QueryRewriter
 from app.pipeline.verify import CitationVerifier
 from app.rag.retriever import PassageRetriever, RetrievedPassage
-from app.schemas import ChatRequest, ChatResponse, Citation, ResponseMode
+from app.schemas import ChatRequest, ChatResponse, Citation, ResponseMode, SimilarProblem
+
 
 PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
 
@@ -171,6 +174,7 @@ class AdvicePipeline:
         citation_verifier: Optional[CitationVerifier] = None,
         memory: Optional[SessionMemory] = None,
         rewriter: Optional[QueryRewriter] = None,
+        matcher: Optional[SimilarProblemMatcher] = None,
         settings: Optional[Settings] = None,
     ) -> None:
         self.provider = provider
@@ -180,6 +184,8 @@ class AdvicePipeline:
         self.citation_verifier = citation_verifier or CitationVerifier()
         self.memory = memory or get_session_memory()
         self.rewriter = rewriter or QueryRewriter(provider=self.provider)
+        self.matcher = matcher or get_similar_matcher()
+
 
     def retrieve_passages(
         self,
@@ -296,9 +302,26 @@ class AdvicePipeline:
         if mode == "grounded" and not verified_citations:
             mode = "inspired"
 
-        source_labels = ["scripture", "ai_suggestion"] if verified_citations else ["ai_suggestion"]
+        source_labels = ["ai_suggestion"]
+        if verified_citations:
+            source_labels.insert(0, "scripture")
 
-        # 9. Update conversational session memory
+        # 9. Find similar community problems (strictly excluded if crisis/harmful)
+        similar_cards: List[SimilarProblem] = []
+        if classification.flag not in ("crisis", "harmful"):
+            similar_cards = self.matcher.find_similar(
+                query_text=request.message,
+                top_k=3,
+                threshold=self.settings.SIMILARITY_THRESHOLD,
+            )
+
+        if similar_cards:
+            if "scripture" in source_labels:
+                source_labels.insert(1, "community_experience")
+            else:
+                source_labels.insert(0, "community_experience")
+
+        # 10. Update conversational session memory
         self.memory.add_message(request.session_id, "user", request.message)
         self.memory.add_message(request.session_id, "assistant", verified_answer)
 
@@ -307,9 +330,10 @@ class AdvicePipeline:
             mode=mode,
             citations=verified_citations,
             source_labels=source_labels,
-            similar=[],
+            similar=similar_cards,
             safety_flag=classification.flag,
         )
+
 
     def generate_advice_stream(self, request: ChatRequest) -> Iterator[str]:
         """Stream an advice response as Server-Sent Events (SSE).
@@ -383,7 +407,24 @@ class AdvicePipeline:
         if mode == "grounded" and not verified_citations:
             mode = "inspired"
 
-        source_labels = ["scripture", "ai_suggestion"] if verified_citations else ["ai_suggestion"]
+        source_labels = ["ai_suggestion"]
+        if verified_citations:
+            source_labels.insert(0, "scripture")
+
+        # Find similar community problems (strictly excluded if crisis/harmful)
+        similar_cards: List[SimilarProblem] = []
+        if classification.flag not in ("crisis", "harmful"):
+            similar_cards = self.matcher.find_similar(
+                query_text=request.message,
+                top_k=3,
+                threshold=self.settings.SIMILARITY_THRESHOLD,
+            )
+
+        if similar_cards:
+            if "scripture" in source_labels:
+                source_labels.insert(1, "community_experience")
+            else:
+                source_labels.insert(0, "community_experience")
 
         self.memory.add_message(request.session_id, "user", request.message)
         self.memory.add_message(request.session_id, "assistant", verified_answer)
@@ -394,6 +435,8 @@ class AdvicePipeline:
             "mode": mode,
             "citations": [c.model_dump() for c in verified_citations],
             "source_labels": source_labels,
+            "similar": [s.model_dump() for s in similar_cards],
             "safety_flag": classification.flag,
         }
         yield f"data: {json.dumps(final_meta)}\n\n"
+
