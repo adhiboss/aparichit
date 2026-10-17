@@ -1,10 +1,10 @@
-"""Tests for /chat endpoint and request validation."""
+"""Tests for /chat endpoint, RAG retrieval, mode selection, and citations."""
 
 from starlette.testclient import TestClient
 
 
 def test_chat_basic_success(client: TestClient) -> None:
-    """Verify /chat returns structured answer adhering to API schema."""
+    """Verify /chat returns structured answer adhering to API schema when faith_on=False."""
     payload = {
         "session_id": "test_session_123",
         "message": "I feel immense guilt because I hid my exam failure from my parents.",
@@ -19,27 +19,26 @@ def test_chat_basic_success(client: TestClient) -> None:
     assert isinstance(data["answer"], str)
     assert len(data["answer"]) > 0
 
-    # In Milestone 1, no passages exist, so mode is 'inspired'
-    assert data["mode"] in ("grounded", "inspired", "playful")
+    # When faith_on is False, mode must be inspired (practical advice)
     assert data["mode"] == "inspired"
 
-    # Hard rule: citations must strictly be empty when no passages retrieved
+    # Hard rule: citations must strictly be empty when faith_on is False
     assert data["citations"] == []
 
     # Source labels must contain ai_suggestion
-    assert "ai_suggestion" in data["source_labels"]
+    assert data["source_labels"] == ["ai_suggestion"]
 
-    # Similar list empty for Milestone 1
+    # Similar list empty for Milestone 3
     assert data["similar"] == []
     assert data["safety_flag"] is None
 
 
 def test_chat_playful_query(client: TestClient) -> None:
-    """Verify casual/joke queries trigger playful mode."""
+    """Verify casual/joke queries trigger playful mode with empty citations."""
     payload = {
         "session_id": "test_session_456",
         "message": "Can you tell me a funny joke about pizza?",
-        "faith_on": False,
+        "faith_on": True,
         "tradition": "garuda_purana",
     }
     response = client.post("/chat", json=payload)
@@ -49,19 +48,65 @@ def test_chat_playful_query(client: TestClient) -> None:
     assert data["citations"] == []
 
 
-def test_chat_faith_toggle_enabled(client: TestClient) -> None:
-    """Verify faith_on=True returns a valid response."""
+def test_chat_grounded_mode_with_faith_on(client: TestClient) -> None:
+    """Verify faith_on=True with strong passage match returns grounded mode with structured citations."""
     payload = {
         "session_id": "test_session_789",
-        "message": "What is the consequence of deceiving someone who trusted you?",
+        "message": "What does the text say about betrayal of a friend and breaking trust?",
         "faith_on": True,
         "tradition": "garuda_purana",
     }
     response = client.post("/chat", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert data["mode"] in ("inspired", "playful")
+
+    assert data["mode"] == "grounded"
+    assert len(data["citations"]) > 0
+
+    first_citation = data["citations"][0]
+    assert first_citation["source"] == "Garuda Purana"
+    assert first_citation["translation"] == "Wood & Subrahmanyam 1911"
+    assert "chapter" in first_citation and len(first_citation["chapter"]) > 0
+    assert "verse" in first_citation and len(first_citation["verse"]) > 0
+    assert "excerpt" in first_citation and len(first_citation["excerpt"]) > 0
+
+    # Source labels must include scripture and ai_suggestion
+    assert "scripture" in data["source_labels"]
+    assert "ai_suggestion" in data["source_labels"]
+
+
+def test_chat_inspired_mode_when_no_passages_meet_threshold(client: TestClient) -> None:
+    """Verify faith_on=True with an unrelated query returns inspired mode without citations."""
+    payload = {
+        "session_id": "test_session_101",
+        "message": "I am deeply conflicted about whether to purchase a laptop with an OLED or LCD screen.",
+        "faith_on": True,
+        "tradition": "garuda_purana",
+    }
+    response = client.post("/chat", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["mode"] == "inspired"
     assert data["citations"] == []
+    assert data["source_labels"] == ["ai_suggestion"]
+
+
+def test_chat_faith_toggle_disabled_never_cites_scripture(client: TestClient) -> None:
+    """Verify that when faith_on=False, scripture is never cited even if query mentions scripture themes."""
+    payload = {
+        "session_id": "test_session_102",
+        "message": "I betrayed my friend and broke their trust.",
+        "faith_on": False,
+        "tradition": "garuda_purana",
+    }
+    response = client.post("/chat", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["mode"] == "inspired"
+    assert data["citations"] == []
+    assert data["source_labels"] == ["ai_suggestion"]
 
 
 def test_chat_missing_required_fields(client: TestClient) -> None:
