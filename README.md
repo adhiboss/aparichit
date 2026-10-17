@@ -136,6 +136,9 @@ Add a supportive reply to an existing public post.
 ### `POST /reports`
 Submit a moderation report against a post or reply.
 
+### `GET /similar`
+Search for semantically similar community problems using cosine similarity on ChromaDB dense vector embeddings. Supports `?post_id=` (matches problems related to a specific post while excluding itself) or `?query=` (matches problems related to a natural language description).
+
 ---
 
 ## 5. Implementation Milestones
@@ -147,9 +150,10 @@ Submit a moderation report against a post or reply.
 - [x] **Milestone 5: Chat experience.** Session memory, query rewriting, streaming SSE endpoint, faith toggle.
 - [x] **Milestone 6: Evaluation.** 50+ evaluation scenarios and automated scoring framework.
 - [x] **Milestone 7: Anonymous accounts & community.** Anonymous auth, posts, replies, reports, anonymizer.
-- [ ] **Milestone 8: Similar-problem matching.** Vector embedding of shared posts, nearest-neighbor matching.
+- [x] **Milestone 8: Similar-problem matching.** Vector embedding of shared posts, nearest-neighbor matching.
 - [ ] **Milestone 9: Moderation.** Crisis flagging on posts/replies, report queue, moderation view.
 - [ ] **Milestone 10: Other traditions (optional).** Separate collections behind faith toggle.
 - [ ] **Milestone 11: Local-model comparison (optional).** Local evaluation with Ollama.
 - [ ] **Milestone 12: Frontend integration.** Connect frontend to API.
+
 
