@@ -139,6 +139,18 @@ Submit a moderation report against a post or reply.
 ### `GET /similar`
 Search for semantically similar community problems using cosine similarity on ChromaDB dense vector embeddings. Supports `?post_id=` (matches problems related to a specific post while excluding itself) or `?query=` (matches problems related to a natural language description).
 
+### `GET /admin/reports`
+View filed user reports with attached content preview (requires `X-Admin-Token` or Bearer token).
+
+### `POST /admin/reports/{id}/action`
+Take resolution action on a reported item (`remove`, `dismiss`, or `restore`). Removing content automatically purges it from the ChromaDB vector index; restoring re-indexes it.
+
+### `GET /admin/crisis`
+List all posts and replies currently held in moderation review for crisis safety.
+
+### `POST /admin/crisis/{target_type}/{id}/action`
+Approve (publish and index) or escalate a crisis item.
+
 ---
 
 ## 5. Implementation Milestones
@@ -151,9 +163,10 @@ Search for semantically similar community problems using cosine similarity on Ch
 - [x] **Milestone 6: Evaluation.** 50+ evaluation scenarios and automated scoring framework.
 - [x] **Milestone 7: Anonymous accounts & community.** Anonymous auth, posts, replies, reports, anonymizer.
 - [x] **Milestone 8: Similar-problem matching.** Vector embedding of shared posts, nearest-neighbor matching.
-- [ ] **Milestone 9: Moderation.** Crisis flagging on posts/replies, report queue, moderation view.
+- [x] **Milestone 9: Moderation.** Crisis flagging on posts/replies, report queue, moderation view.
 - [ ] **Milestone 10: Other traditions (optional).** Separate collections behind faith toggle.
 - [ ] **Milestone 11: Local-model comparison (optional).** Local evaluation with Ollama.
 - [ ] **Milestone 12: Frontend integration.** Connect frontend to API.
+
 
 
