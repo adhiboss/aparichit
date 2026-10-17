@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0c0f17;
-  --card-bg: #171c28;
-  --card-hover: #1e2536;
+  --background: #0d111a;
+  --card-bg: #151b26;
+  --card-hover: #1c2333;
   --card-border: #232c3f;
   --card-border-subtle: #1c2436;
   --gold-primary: #e6af2e;
   --gold-secondary: #d4af37;
-  --gold-glow: rgba(230, 175, 46, 0.15);
+  --gold-glow: rgba(230, 175, 46, 0.18);
   --text-main: #f0f2f5;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
@@ -33,12 +33,12 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0c0f17;
+  background: #0d111a;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #232c3f;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -48,4 +48,29 @@ body {
 /* Scripture quote styling font helper */
 .font-scripture {
   font-family: var(--font-serif), "Lora", "Cinzel", Georgia, serif;
+}
+
+/* Antique Gold Gradient Helpers */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fce28b 0%, #e6af2e 50%, #b88616 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #f5d061 0%, #e6af2e 60%, #c9931b 100%);
+}
+
+.border-gold-subtle {
+  border-color: rgba(230, 175, 46, 0.3);
+}
+
+.shadow-gold-glow {
+  box-shadow: 0 4px 24px -2px rgba(230, 175, 46, 0.15);
+}
+
+/* Scripture Quote Box */
+.scripture-box {
+  background: linear-gradient(180deg, rgba(230, 175, 46, 0.08) 0%, rgba(20, 26, 38, 0.6) 100%);
+  border: 1px solid rgba(230, 175, 46, 0.25);
 }
