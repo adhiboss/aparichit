@@ -123,7 +123,7 @@ Generates advice for a user query.
 ## 5. Implementation Milestones
 
 - [x] **Milestone 1: Skeleton.** FastAPI + `/chat` returning an LLM answer with persona prompt (no retrieval).
-- [ ] **Milestone 2: Knowledge base.** Ingest public domain Garuda Purana: chunk, embed, store.
+- [x] **Milestone 2: Knowledge base.** Ingest public domain Garuda Purana: chunk, embed, store. Test retrieval from a script.
 - [ ] **Milestone 3: RAG.** Retrieval-augmented generation, mode selection, structured citations.
 - [ ] **Milestone 4: Safety & verification.** Safety classifier, crisis path, citation checker.
 - [ ] **Milestone 5: Chat experience.** Session memory, query rewriting, streaming SSE endpoint, faith toggle.
