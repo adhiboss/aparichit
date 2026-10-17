@@ -1,10 +1,13 @@
 """FastAPI application entry point for APARICHIT backend service."""
 
+from typing import Any, Dict
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from app.config import Settings, get_settings
 from app.llm import get_llm_provider
 from app.llm.base import LLMProvider
+from app.memory import SessionMemory, get_session_memory
 from app.pipeline.advise import AdvicePipeline
 from app.rag.retriever import PassageRetriever
 from app.schemas import ChatRequest, ChatResponse, HealthResponse
@@ -83,3 +86,57 @@ def chat_endpoint(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while processing the advice request.",
         ) from e
+
+
+@app.post(
+    "/chat/stream",
+    summary="Generate streaming advice response (SSE)",
+    tags=["Chat"],
+)
+def chat_stream_endpoint(
+    request: ChatRequest,
+    pipeline: AdvicePipeline = Depends(get_pipeline),
+) -> StreamingResponse:
+    """Generate advice streamed as Server-Sent Events (SSE)."""
+    try:
+        return StreamingResponse(
+            pipeline.generate_advice_stream(request),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Streaming error: {e}",
+        ) from e
+
+
+@app.get(
+    "/sessions/{session_id}",
+    summary="Get session chat history",
+    tags=["Sessions"],
+)
+def get_session(
+    session_id: str,
+    memory: SessionMemory = Depends(get_session_memory),
+) -> Dict[str, Any]:
+    """Retrieve conversation history for a specific session."""
+    return memory.get_session_details(session_id)
+
+
+@app.delete(
+    "/sessions/{session_id}",
+    summary="Clear session chat history",
+    tags=["Sessions"],
+)
+def clear_session(
+    session_id: str,
+    memory: SessionMemory = Depends(get_session_memory),
+) -> Dict[str, Any]:
+    """Clear all stored messages for a specific session."""
+    cleared = memory.clear_session(session_id)
+    return {"session_id": session_id, "cleared": cleared}

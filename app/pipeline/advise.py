@@ -1,15 +1,18 @@
-"""Advice generation pipeline orchestrator with RAG, safety classifier, and citation verifier."""
+"""Advice generation pipeline orchestrator with RAG, safety classifier, memory, and streaming."""
 
+import json
 from pathlib import Path
 import re
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, Iterator, List, Optional, Set
 from app.config import Settings, get_settings
 from app.llm.base import LLMProvider
+from app.memory import SessionMemory, get_session_memory
 from app.pipeline.classify import (
     CRISIS_FALLBACK_RESPONSE,
     HARMFUL_REFUSAL_RESPONSE,
     SafetyClassifier,
 )
+from app.pipeline.rewrite import QueryRewriter
 from app.pipeline.verify import CitationVerifier
 from app.rag.retriever import PassageRetriever, RetrievedPassage
 from app.schemas import ChatRequest, ChatResponse, Citation, ResponseMode
@@ -158,7 +161,7 @@ def build_system_prompt(
 
 
 class AdvicePipeline:
-    """Pipeline for processing chat requests and producing APARICHIT advice responses."""
+    """Pipeline for processing chat requests with memory, RAG, safety, and streaming."""
 
     def __init__(
         self,
@@ -166,6 +169,8 @@ class AdvicePipeline:
         retriever: Optional[PassageRetriever] = None,
         safety_classifier: Optional[SafetyClassifier] = None,
         citation_verifier: Optional[CitationVerifier] = None,
+        memory: Optional[SessionMemory] = None,
+        rewriter: Optional[QueryRewriter] = None,
         settings: Optional[Settings] = None,
     ) -> None:
         self.provider = provider
@@ -173,24 +178,33 @@ class AdvicePipeline:
         self.retriever = retriever
         self.safety_classifier = safety_classifier or SafetyClassifier()
         self.citation_verifier = citation_verifier or CitationVerifier()
+        self.memory = memory or get_session_memory()
+        self.rewriter = rewriter or QueryRewriter(provider=self.provider)
 
-    def retrieve_passages(self, query: str) -> List[RetrievedPassage]:
-        """Perform two-pass retrieval (direct query first, then content-keywords fallback)."""
+    def retrieve_passages(
+        self,
+        message: str,
+        history: Optional[List[Dict[str, str]]] = None,
+    ) -> List[RetrievedPassage]:
+        """Perform contextual query-rewritten search with keyword fallback."""
         if not self.retriever:
             return []
 
-        # First pass: direct query
+        # 1. Formulate standalone search query taking prior conversation turns into account
+        search_query = self.rewriter.rewrite(message, history) if history else message
+
+        # 2. First pass: search using standalone query
         passages = self.retriever.retrieve(
-            query=query,
+            query=search_query,
             top_k=3,
             min_similarity=self.settings.RETRIEVAL_THRESHOLD,
         )
         if passages:
             return passages
 
-        # Second pass: keyword fallback
-        kw_query = extract_keywords_query(query)
-        if kw_query and kw_query != query:
+        # 3. Second pass: content keyword fallback
+        kw_query = extract_keywords_query(search_query)
+        if kw_query and kw_query != search_query:
             passages = self.retriever.retrieve(
                 query=kw_query,
                 top_k=3,
@@ -200,14 +214,17 @@ class AdvicePipeline:
         return passages
 
     def generate_advice(self, request: ChatRequest) -> ChatResponse:
-        """Process a user chat request with safety classification, RAG, and citation verification."""
+        """Process a user chat request with memory context, safety, RAG, and citation verification."""
         # 1. Safety Classification
         classification = self.safety_classifier.classify(request.message)
 
-        # 1.1 Crisis Path: Instant bypass with helpline resources, dropping all persona & scripture
+        # 1.1 Crisis Path: Instant bypass with helpline resources
         if classification.flag == "crisis":
+            answer = classification.crisis_response or CRISIS_FALLBACK_RESPONSE
+            self.memory.add_message(request.session_id, "user", request.message)
+            self.memory.add_message(request.session_id, "assistant", answer)
             return ChatResponse(
-                answer=classification.crisis_response or CRISIS_FALLBACK_RESPONSE,
+                answer=answer,
                 mode="inspired",
                 citations=[],
                 source_labels=["crisis_support"],
@@ -217,8 +234,11 @@ class AdvicePipeline:
 
         # 1.2 Harmful Path: Immediate peaceful refusal
         if classification.flag == "harmful":
+            answer = classification.crisis_response or HARMFUL_REFUSAL_RESPONSE
+            self.memory.add_message(request.session_id, "user", request.message)
+            self.memory.add_message(request.session_id, "assistant", answer)
             return ChatResponse(
-                answer=classification.crisis_response or HARMFUL_REFUSAL_RESPONSE,
+                answer=answer,
                 mode="inspired",
                 citations=[],
                 source_labels=["ai_suggestion"],
@@ -226,24 +246,27 @@ class AdvicePipeline:
                 safety_flag="harmful",
             )
 
-        # 2. Retrieve scripture if faith_on is enabled
+        # 2. Load recent conversational memory turns
+        history = self.memory.get_history(request.session_id, max_messages=6)
+
+        # 3. Retrieve scripture if faith_on is enabled
         passages: List[RetrievedPassage] = []
         if request.faith_on:
-            passages = self.retrieve_passages(request.message)
+            passages = self.retrieve_passages(request.message, history)
 
-        # 3. Determine response mode
+        # 4. Determine response mode
         mode = classify_mode(
             message=request.message,
             faith_on=request.faith_on,
             passages=passages,
         )
 
-        # 4. Preliminary citations and source labels
+        # 5. Preliminary citations
         citations: List[Citation] = []
         if mode == "grounded" and passages:
             citations = [p.to_citation() for p in passages]
 
-        # 5. Construct system prompt
+        # 6. Construct prompt
         system_content = build_system_prompt(
             faith_on=request.faith_on,
             tradition=request.tradition,
@@ -254,25 +277,30 @@ class AdvicePipeline:
 
         messages: List[Dict[str, str]] = [
             {"role": "system", "content": system_content},
-            {"role": "user", "content": request.message},
         ]
+        # Include previous conversation turns for multi-turn context
+        messages.extend(history)
+        messages.append({"role": "user", "content": request.message})
 
-        # 6. Generate LLM response
+        # 7. Generate LLM response
         raw_response = self.provider.generate(messages, stream=False)
         answer_text = str(raw_response).strip()
 
-        # 7. Citation Verification & Anti-Hallucination Filtering
+        # 8. Citation Verification
         verified_answer, verified_citations = self.citation_verifier.verify(
             answer=answer_text,
             retrieved_passages=passages,
             citations=citations,
         )
 
-        # If citation verification dropped all citations, fallback mode to inspired
         if mode == "grounded" and not verified_citations:
             mode = "inspired"
 
         source_labels = ["scripture", "ai_suggestion"] if verified_citations else ["ai_suggestion"]
+
+        # 9. Update conversational session memory
+        self.memory.add_message(request.session_id, "user", request.message)
+        self.memory.add_message(request.session_id, "assistant", verified_answer)
 
         return ChatResponse(
             answer=verified_answer,
@@ -282,3 +310,90 @@ class AdvicePipeline:
             similar=[],
             safety_flag=classification.flag,
         )
+
+    def generate_advice_stream(self, request: ChatRequest) -> Iterator[str]:
+        """Stream an advice response as Server-Sent Events (SSE).
+
+        Yields lines formatted as `data: {...}\n\n`.
+        """
+        # 1. Safety check
+        classification = self.safety_classifier.classify(request.message)
+
+        if classification.flag == "crisis":
+            answer = classification.crisis_response or CRISIS_FALLBACK_RESPONSE
+            self.memory.add_message(request.session_id, "user", request.message)
+            self.memory.add_message(request.session_id, "assistant", answer)
+            yield f"data: {json.dumps({'token': answer})}\n\n"
+            yield f"data: {json.dumps({'done': True, 'mode': 'inspired', 'citations': [], 'source_labels': ['crisis_support'], 'safety_flag': 'crisis'})}\n\n"
+            return
+
+        if classification.flag == "harmful":
+            answer = classification.crisis_response or HARMFUL_REFUSAL_RESPONSE
+            self.memory.add_message(request.session_id, "user", request.message)
+            self.memory.add_message(request.session_id, "assistant", answer)
+            yield f"data: {json.dumps({'token': answer})}\n\n"
+            yield f"data: {json.dumps({'done': True, 'mode': 'inspired', 'citations': [], 'source_labels': ['ai_suggestion'], 'safety_flag': 'harmful'})}\n\n"
+            return
+
+        # 2. History & Retrieval
+        history = self.memory.get_history(request.session_id, max_messages=6)
+        passages: List[RetrievedPassage] = []
+        if request.faith_on:
+            passages = self.retrieve_passages(request.message, history)
+
+        mode = classify_mode(
+            message=request.message,
+            faith_on=request.faith_on,
+            passages=passages,
+        )
+
+        citations = [p.to_citation() for p in passages] if (mode == "grounded" and passages) else []
+
+        system_content = build_system_prompt(
+            faith_on=request.faith_on,
+            tradition=request.tradition,
+            mode=mode,
+            passages=passages if mode == "grounded" else [],
+            safety_flag=classification.flag,
+        )
+
+        messages: List[Dict[str, str]] = [
+            {"role": "system", "content": system_content},
+        ]
+        messages.extend(history)
+        messages.append({"role": "user", "content": request.message})
+
+        # 3. Stream from LLM provider
+        token_stream = self.provider.generate(messages, stream=True)
+        accumulated_text: List[str] = []
+
+        for token in token_stream:
+            accumulated_text.append(token)
+            yield f"data: {json.dumps({'token': token})}\n\n"
+
+        full_answer = "".join(accumulated_text).strip()
+
+        # 4. Verification & memory update
+        verified_answer, verified_citations = self.citation_verifier.verify(
+            answer=full_answer,
+            retrieved_passages=passages,
+            citations=citations,
+        )
+
+        if mode == "grounded" and not verified_citations:
+            mode = "inspired"
+
+        source_labels = ["scripture", "ai_suggestion"] if verified_citations else ["ai_suggestion"]
+
+        self.memory.add_message(request.session_id, "user", request.message)
+        self.memory.add_message(request.session_id, "assistant", verified_answer)
+
+        # 5. Final metadata event
+        final_meta = {
+            "done": True,
+            "mode": mode,
+            "citations": [c.model_dump() for c in verified_citations],
+            "source_labels": source_labels,
+            "safety_flag": classification.flag,
+        }
+        yield f"data: {json.dumps(final_meta)}\n\n"
