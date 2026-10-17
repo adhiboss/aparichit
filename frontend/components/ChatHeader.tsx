@@ -6,13 +6,11 @@ import { usePathname } from "next/navigation";
 import { AnonymousAccount } from "@/lib/types";
 import { getOrInitAccount, createAnonymousAccount } from "@/lib/auth";
 import {
-  Compass,
   Search,
-  Moon,
-  Sun,
   RefreshCw,
-  Sparkles,
   ChevronDown,
+  Sparkles,
+  ShieldCheck,
   User,
 } from "lucide-react";
 
@@ -61,13 +59,13 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#232c3f] bg-[#0d111a]/95 backdrop-blur-md">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Left: Brand Logo & Lotus Emblem */}
+    <header className="sticky top-0 z-50 w-full bg-[#10131b]/90 backdrop-blur-xl border-b border-[#232b3e] shadow-[0_1px_8px_rgba(0,0,0,0.45)]">
+      <div className="h-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between gap-4">
+        {/* Left: Brand Logo & Title from Stitch */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            {/* Golden Lotus Icon */}
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#e6af2e]/20 to-[#e6af2e]/5 border border-[#e6af2e]/40 flex items-center justify-center text-[#e6af2e] shadow-sm">
+          <Link href="/" className="flex items-center gap-3.5 group">
+            {/* Lotus Emblem */}
+            <div className="w-9 h-9 rounded-lg bg-[#f2ca50]/10 border border-[#f2ca50]/30 flex items-center justify-center text-[#f2ca50] shadow-[0_0_12px_rgba(212,175,55,0.15)] group-hover:scale-105 transition-all">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -85,14 +83,22 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
               </svg>
             </div>
             <div className="flex flex-col">
-              <span className="font-serif tracking-widest font-bold text-base text-[#f0f2f5] group-hover:text-[#e6af2e] transition-colors">
-                APARICHIT
+              <div className="flex items-center gap-1.5">
+                <span className="font-headline text-lg sm:text-xl font-medium tracking-wider text-[#f2ca50]">
+                  APARICHIT
+                </span>
+                <span className="font-headline text-base sm:text-lg text-[#d0c5af] font-light">
+                  (अपारिचित)
+                </span>
+              </div>
+              <span className="font-label text-[10px] uppercase tracking-widest text-[#99907c]">
+                Ancient Wisdom & Sanctuary
               </span>
             </div>
           </Link>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
+          {/* Navigation with Stitch Underline Indicator */}
+          <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((item) => {
               const active =
                 item.href === "/"
@@ -103,10 +109,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`px-3.5 py-1.5 rounded-lg transition-colors ${
+                  className={`font-label text-sm tracking-wide transition-colors relative py-1 ${
                     active
-                      ? "text-[#e6af2e] bg-[#1a2130] font-semibold"
-                      : "text-[#94a3b8] hover:text-[#f0f2f5] hover:bg-[#151b26]"
+                      ? "text-[#f2ca50] font-semibold after:absolute after:bottom-[-6px] after:left-0 after:w-full after:h-[2px] after:bg-[#f2ca50]"
+                      : "text-[#d0c5af] hover:text-[#e0e2ee]"
                   }`}
                 >
                   {item.label}
@@ -116,57 +122,57 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
           </nav>
         </div>
 
-        {/* Center: Search Bar */}
-        <div className="hidden lg:flex flex-1 max-w-md mx-6">
-          <div className="relative w-full">
-            <Search className="w-4 h-4 text-[#64748b] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                if (onSearch) onSearch(e.target.value);
-              }}
-              placeholder="Search questions, topics or people..."
-              className="w-full pl-9 pr-4 py-1.5 rounded-full bg-[#151b26] border border-[#232c3f] text-xs text-[#f0f2f5] placeholder-[#64748b] focus:outline-none focus:border-[#e6af2e]/60 transition-colors"
-            />
+        {/* Center/Search (optional) */}
+        {onSearch && (
+          <div className="hidden lg:flex flex-1 max-w-xs mx-4">
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-[#99907c] absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  onSearch(e.target.value);
+                }}
+                placeholder="Search sanctuary discourses..."
+                className="w-full pl-9 pr-4 py-1.5 rounded-full bg-[#181b24] border border-[#232b3e] text-xs text-[#e0e2ee] placeholder-[#99907c] focus:outline-none focus:border-[#d4af37]"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Right: Theme Toggle & Anonymous User Profile Pill */}
+        {/* Right: Incognito Seeker Pill & Identity Menu */}
         <div className="flex items-center gap-3">
-          {/* Subtle Night/Day Theme indicator */}
-          <div className="p-2 text-[#94a3b8] hover:text-[#f0f2f5] rounded-full hover:bg-[#1a2130] transition-colors cursor-pointer">
-            <Moon className="w-4 h-4" />
-          </div>
-
-          {/* Anonymous User Pill */}
           <div className="relative">
             <button
               onClick={() => setShowAccountMenu(!showAccountMenu)}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-[#151b26] border border-[#232c3f] hover:border-[#e6af2e]/50 transition-all text-xs"
+              className="flex items-center gap-3 py-1.5 px-3 sm:px-4 rounded-full bg-[#181b24] border border-[#232b3e] hover:border-[#d4af37]/50 shadow-[0_1px_4px_rgba(0,0,0,0.3)] transition-all"
             >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#e6af2e] to-amber-700 flex items-center justify-center text-[#0d111a] font-bold text-[10px] shrink-0">
-                {account?.display_name ? account.display_name.charAt(0) : "A"}
+              <span className="w-2 h-2 rounded-full bg-[#f2ca50] animate-pulse shrink-0" />
+              <div className="flex flex-col text-right">
+                <span className="font-label text-xs sm:text-sm text-[#e0e2ee] font-medium max-w-[130px] truncate">
+                  {account?.display_name || "Seeker #4812"}
+                </span>
+                <span className="font-label text-[10px] text-[#99907c] leading-tight">
+                  Incognito Session
+                </span>
               </div>
-              <span className="font-medium text-[#f0f2f5] max-w-[110px] truncate">
-                {account?.display_name || "Quiet River"}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-[#94a3b8]" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#d0c5af] ml-1" />
             </button>
 
             {/* Dropdown Menu */}
             {showAccountMenu && (
-              <div className="absolute right-0 mt-2 w-56 rounded-xl bg-[#171c28] border border-[#232c3f] shadow-2xl p-2 z-50 text-xs space-y-1 animate-in fade-in zoom-in-95 duration-100">
-                <div className="px-3 py-2 border-b border-[#232c3f]/80">
-                  <div className="text-[10px] uppercase text-[#64748b] font-semibold">
-                    Anonymous Pseudonym
+              <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#1d1f28] border border-[#232b3e] shadow-[0_20px_48px_-12px_rgba(0,0,0,0.7)] p-3 z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100">
+                <div className="px-2 py-1 border-b border-[#232b3e] pb-2">
+                  <div className="font-label text-[10px] uppercase text-[#99907c] tracking-widest font-semibold flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#f2ca50]" />
+                    Zero-Knowledge Seeker
                   </div>
-                  <div className="text-sm font-bold text-[#e6af2e]">
-                    {account?.display_name || "Quiet River"}
+                  <div className="text-sm font-semibold text-[#f2ca50] mt-1">
+                    {account?.display_name || "Seeker #4812"}
                   </div>
-                  <div className="text-[10px] text-[#94a3b8] mt-0.5">
-                    100% Private • No Email Required
+                  <div className="text-[11px] text-[#94a3b8] mt-0.5">
+                    100% Anonymous • Ephemeral identity
                   </div>
                 </div>
 
@@ -176,12 +182,12 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
                     setShowAccountMenu(false);
                   }}
                   disabled={isRotating}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#94a3b8] hover:text-[#f0f2f5] hover:bg-[#202738] transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[#d0c5af] hover:text-[#e0e2ee] hover:bg-[#272a33] transition-colors text-left"
                 >
                   <RefreshCw
-                    className={`w-3.5 h-3.5 text-[#e6af2e] ${isRotating ? "animate-spin" : ""}`}
+                    className={`w-3.5 h-3.5 text-[#f2ca50] ${isRotating ? "animate-spin" : ""}`}
                   />
-                  <span>Generate New Pseudonym</span>
+                  <span className="font-label">Rotate Seeker Identity</span>
                 </button>
               </div>
             )}

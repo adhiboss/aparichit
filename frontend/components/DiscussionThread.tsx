@@ -10,13 +10,14 @@ import {
   Heart,
   MessageSquare,
   Flag,
-  User,
-  Clock,
-  MoreHorizontal,
-  HeartHandshake,
+  Lock,
+  Sparkles,
+  ChevronUp,
+  ChevronDown,
+  BookOpen,
   Loader2,
-  AlertCircle,
-  PhoneCall,
+  ShieldCheck,
+  Share2,
 } from "lucide-react";
 
 interface DiscussionThreadProps {
@@ -30,9 +31,9 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
 }) => {
   const [post, setPost] = useState<CommunityPost | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(42);
+  const [isSynthesisOpen, setIsSynthesisOpen] = useState(true);
 
   // Reporting modal state
   const [reportTarget, setReportTarget] = useState<{
@@ -47,33 +48,33 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
         const data = await fetchPostDetail(postId);
         setPost(data);
       } catch (err: unknown) {
-        // Fallback to sample data for display
+        // Fallback to rich sample data for preview
         setPost({
           id: postId,
-          user_id: "anon_quiet",
-          display_name: "Quiet River",
+          user_id: "anon_4092",
+          display_name: "Anonymous Seeker #4092",
           content:
-            "Feeling guilty for moving abroad: I want to move abroad for better career opportunities but I feel guilty leaving my parents behind. Am I being selfish? Any advice or similar experiences from those who have faced this dilemma?",
-          reply_count: 3,
+            "For nearly three decades, my parents surrendered virtually every personal aspiration to establish a safe harbor for me. They view my current role in corporate actuarial consulting not just as a job, but as the sanctified culmination of their generational prayers.\n\nYet inside, the quiet dissonance has grown deafening. I have spent the last three seasons secretly recording oral histories, preserving forgotten folk languages and indigenous architectural rituals along the lower valleys. It feeds something profound in my soul—a quiet calling to document that which is vanishing.\n\nIf I pivot away toward cultural ethnography, my father will interpret it as an active rejection of their sacrifice, an act of ungrateful self-indulgence. How do I weigh the debt of filial gratitude against the silent erosion of my own spirit? Does honoring lineage require the voluntary sacrifice of who one truly is?",
+          reply_count: 2,
           created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
           replies: [
             {
               id: "rep_1",
               post_id: postId,
-              user_id: "anon_golden",
-              display_name: "Golden Leaf",
+              user_id: "anon_elder",
+              display_name: "Anonymous Pilgrim #108",
               content:
-                "I went through the exact same feeling 4 years ago. Your parents want your growth. Call them regularly, involve them in your plans, and make them feel cherished. You are expanding, not abandoning.",
+                "Filial reverence does not demand spiritual self-extinction. Ancient traditions taught that parents are revered because they give birth to your journey, but they cannot live your dharma for you. Speak gently to them of your calling; over time, authenticity radiates more honor than bitter obedience.",
               created_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
             },
             {
               id: "rep_2",
               post_id: postId,
-              user_id: "anon_silent",
-              display_name: "Silent Peak",
+              user_id: "anon_scholar",
+              display_name: "Anonymous Seeker #77",
               content:
-                "The Garuda Purana reminds us that duty (dharma) includes fulfilling one's potential honestly while maintaining reverence for one's roots. Honest conversation removes the shadow of unsaid guilt.",
-              created_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+                "Consider a measured transition instead of an abrupt fracture. Can you continue your documentation on weekends and sabbaticals until your path is stable? Prudence (Viveka) is as much a virtue as courage.",
+              created_at: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
             },
           ],
         });
@@ -99,178 +100,221 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
     setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
   };
 
-  if (loading) {
+  if (loading || !post) {
     return (
-      <div className="py-20 flex flex-col items-center justify-center space-y-3 text-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#e6af2e]" />
-        <p className="text-xs text-[#94a3b8]">Loading discussion...</p>
+      <div className="flex justify-center items-center py-20 text-[#f2ca50]">
+        <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     );
   }
 
-  if (!post) return null;
-
-  const hasColon = post.content.includes(":");
-  const title = hasColon
-    ? post.content.split(":")[0]
-    : "Community Discussion";
-  const body = hasColon
-    ? post.content.slice(post.content.indexOf(":") + 1).trim()
-    : post.content;
-
   return (
-    <div className="rounded-2xl bg-[#151b26] border border-[#232c3f] p-5 shadow-2xl space-y-5 animate-in fade-in duration-150">
-      {/* Top Header: Back button & Discussion title */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#232c3f]/70">
+    <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 animate-in fade-in duration-300">
+      {/* Back Navigation & Meta State from Google Stitch */}
+      <div className="flex items-center justify-between pb-2">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 text-xs text-[#94a3b8] hover:text-[#e6af2e] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 text-[#d0c5af] hover:text-[#f2ca50] transition-colors group font-label text-sm font-medium cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back</span>
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to Sanctuary Discourses</span>
         </button>
 
-        <h3 className="text-xs font-bold uppercase tracking-wider text-[#d4af37]">
-          Discussion
-        </h3>
-
-        <button className="text-[#64748b] hover:text-white transition-colors">
-          <MoreHorizontal className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* Main Post Header & Body */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 to-rose-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
-              {post.display_name.charAt(0)}
-            </div>
-            <div>
-              <div className="text-xs font-bold text-[#f0f2f5]">
-                {post.display_name}
-              </div>
-              <div className="text-[10px] text-[#64748b]">2 hours ago</div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setReportTarget({ type: "post", id: post.id })}
-            className="inline-flex items-center gap-1 text-[11px] text-[#64748b] hover:text-red-400 transition-colors"
-          >
-            <Flag className="w-3.5 h-3.5" />
-            <span>Report</span>
-          </button>
-        </div>
-
-        {/* Title */}
-        <h2 className="text-sm font-bold text-[#f0f2f5]">{title}</h2>
-
-        {/* Post Text */}
-        <p className="text-xs text-[#cbd5e1] leading-relaxed whitespace-pre-wrap">
-          {body}
-        </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {["Family", "Life Decisions", "Career"].map((tag, i) => (
-            <span
-              key={i}
-              className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#0d111a] text-[#94a3b8] border border-[#232c3f]"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* Likes and stats */}
-        <div className="pt-3 border-t border-[#232c3f]/50 flex items-center gap-4 text-xs text-[#94a3b8]">
-          <button
-            onClick={handleLike}
-            className={`inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
-              liked ? "text-rose-400" : "hover:text-rose-400"
-            }`}
-          >
-            <Heart className={`w-3.5 h-3.5 ${liked ? "fill-rose-500 text-rose-500" : ""}`} />
-            <span>{likesCount}</span>
-          </button>
-
-          <span className="inline-flex items-center gap-1.5">
-            <MessageSquare className="w-3.5 h-3.5 text-[#e6af2e]" />
-            <span>{post.reply_count} replies</span>
+        <div className="flex items-center gap-2 text-[#99907c] text-xs">
+          <Lock className="w-3.5 h-3.5 text-[#f2ca50]" />
+          <span className="font-label uppercase tracking-widest text-[11px]">
+            End-to-End Ephemeral Ledger
           </span>
         </div>
       </div>
 
-      {/* Community Replies List */}
-      <div className="space-y-3 pt-2">
-        <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8]">
-          Supportive Replies ({post.replies?.length || 0})
-        </h4>
+      {/* Main Discourse Card from Stitch discussion_detail_aparichit */}
+      <article className="bg-[#181b24] rounded-xl p-6 sm:p-10 border border-[#232b3e] shadow-xl relative overflow-hidden">
+        {/* Left Gold Gradient Hairline */}
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#f2ca50] via-[#d4af37]/40 to-transparent" />
+
+        {/* Header Info */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#232b3e]/60">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#272a33] border border-[#32353e] flex items-center justify-center text-[#f2ca50]">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="font-body text-sm font-medium text-[#e0e2ee]">
+                  {post.display_name}
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#f2ca50]/10 text-[#f2ca50] font-label text-[10px] border border-[#f2ca50]/20">
+                  Verified Pseudonym
+                </span>
+              </div>
+              <span className="font-label text-xs text-[#99907c] mt-0.5">
+                Offered 2 hours ago • Contemplative Inquiry
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-[#272a33] text-[#d0c5af] font-label text-xs">
+              Duty & Family
+            </span>
+            <span className="px-3 py-1 rounded-full bg-[#f2ca50]/10 text-[#f2ca50] font-label text-xs font-semibold border border-[#f2ca50]/20">
+              Bhagavad Gita
+            </span>
+          </div>
+        </div>
+
+        {/* Discourse Narrative */}
+        <div className="py-6 flex flex-col gap-4 text-[#d0c5af] font-body text-base leading-relaxed whitespace-pre-wrap">
+          {post.content}
+        </div>
+
+        {/* AI Synthesis Collapsible Panel from Stitch */}
+        <div className="mt-4 rounded-xl bg-[#1d1f28] border border-[#232b3e] p-5 transition-all">
+          <button
+            onClick={() => setIsSynthesisOpen(!isSynthesisOpen)}
+            className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
+          >
+            <div className="flex items-center gap-2.5">
+              <Sparkles className="w-5 h-5 text-[#f2ca50]" />
+              <span className="font-headline text-base text-[#e0e2ee] tracking-wide">
+                Sanctuary AI Hermeneutic Synthesis
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[#99907c] group-hover:text-[#f2ca50] transition-colors">
+              <span className="font-label text-xs uppercase tracking-wider">
+                {isSynthesisOpen ? "Collapse" : "Expand"}
+              </span>
+              {isSynthesisOpen ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </div>
+          </button>
+
+          {isSynthesisOpen && (
+            <div className="mt-4 pt-4 border-t border-[#232b3e] flex flex-col gap-3.5">
+              <div className="p-4 rounded-lg bg-[#10131b]/80 border border-[#232b3e]">
+                <p className="font-headline text-sm sm:text-base text-[#f2ca50] italic leading-relaxed">
+                  “Better is one’s own natural duty, though imperfectly performed, than another’s duty performed to perfection. Conforming to another’s path brings fear and distortion.”
+                </p>
+                <div className="mt-3 flex items-center justify-between flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#f2ca50]/10 text-[#f2ca50] font-label text-xs tracking-widest uppercase border border-[#f2ca50]/20 font-semibold">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    Bhagavad Gita 3.35 • Swadharma vs. Paradharma
+                  </span>
+                  <span className="font-body text-xs text-[#99907c]">
+                    Ethical Resolution Vector
+                  </span>
+                </div>
+              </div>
+              <p className="font-body text-sm text-[#d0c5af] leading-relaxed">
+                <strong className="text-[#e0e2ee]">Philosophical Commentary:</strong> Ancient Vedic ethics draws a sacred distinction between loving reverence (<span className="text-[#f2ca50]">Pitri Rna</span> / ancestral gratitude) and the subversion of one’s sacred innate nature (<span className="text-[#f2ca50]">Swabhava</span>). Filial respect is sustained through integrity, not spiritual martyrdom. When the seed attempts to grow into a stone out of gratitude to the soil, both soil and seed are diminished.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Post Action Bar */}
+        <div className="mt-6 pt-5 border-t border-[#232b3e] flex flex-wrap items-center justify-between gap-4 text-xs text-[#99907c]">
+          <div className="flex items-center gap-6">
+            <button
+              onClick={handleLike}
+              className={`inline-flex items-center gap-2 font-label transition-colors cursor-pointer ${
+                liked ? "text-rose-400 font-semibold" : "hover:text-[#e0e2ee]"
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
+              <span>{likesCount} Held Space</span>
+            </button>
+
+            <div className="inline-flex items-center gap-2 font-label text-[#d0c5af]">
+              <MessageSquare className="w-4 h-4 text-[#f2ca50]" />
+              <span>{post.reply_count} Contemplative Responses</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(window.location.href);
+                }
+              }}
+              className="hover:text-[#f2ca50] transition-colors flex items-center gap-1.5 cursor-pointer font-label"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Share Discreetly</span>
+            </button>
+
+            <button
+              onClick={() => setReportTarget({ type: "post", id: post.id })}
+              className="hover:text-rose-400 transition-colors flex items-center gap-1.5 cursor-pointer font-label"
+            >
+              <Flag className="w-3.5 h-3.5" />
+              <span>Report Anonymously</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      {/* Contemplative Responses List */}
+      <section className="mt-4 space-y-4">
+        <h3 className="font-headline text-lg sm:text-xl text-[#e0e2ee] tracking-wide">
+          Fellow Seeker Contemplations ({post.replies?.length || 0})
+        </h3>
 
         {post.replies && post.replies.length > 0 ? (
-          <div className="space-y-2.5">
+          <div className="space-y-3.5">
             {post.replies.map((reply) => (
               <div
                 key={reply.id}
-                className="p-3.5 rounded-xl bg-[#0d111a] border border-[#232c3f] space-y-1.5"
+                className="p-5 rounded-xl bg-[#181b24] border border-[#232b3e] shadow-sm space-y-2"
               >
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center justify-between text-xs text-[#99907c]">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-[#f0f2f5]">
+                    <div className="w-6 h-6 rounded-full bg-[#272a33] text-[#f2ca50] flex items-center justify-center text-[10px]">
+                      ॐ
+                    </div>
+                    <span className="font-label font-medium text-[#e0e2ee]">
                       {reply.display_name}
                     </span>
-                    <span className="text-[10px] text-[#64748b]">• 1 hour ago</span>
                   </div>
-
                   <button
                     onClick={() =>
                       setReportTarget({ type: "reply", id: reply.id })
                     }
-                    className="text-[#64748b] hover:text-red-400 text-[10px] transition-colors"
+                    className="hover:text-rose-400 transition-colors text-[11px] font-label"
                   >
                     Report
                   </button>
                 </div>
-                <p className="text-xs text-[#cbd5e1] leading-relaxed">
+                <p className="font-body text-sm text-[#d0c5af] leading-relaxed whitespace-pre-wrap">
                   {reply.content}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-xs text-[#64748b] py-2">
-            No replies yet. Be the first to share compassionate insight.
-          </p>
+          <div className="text-center py-8 rounded-xl bg-[#181b24] border border-[#232b3e] text-[#99907c] text-xs">
+            No reflections yet. Be the first kindred pilgrim to offer solace.
+          </div>
         )}
-      </div>
 
-      {/* Inline Reply Composer */}
-      <div className="p-3.5 rounded-xl bg-[#0d111a] border border-[#232c3f]">
-        <ReplyComposer postId={post.id} onReplyAdded={handleReplyAdded} />
-      </div>
-
-      {/* Crisis Safety Banner at Bottom of Discussion (Matching Image 1) */}
-      <div className="p-3.5 rounded-xl bg-red-950/25 border border-red-500/30 flex items-start gap-3 text-xs text-red-200">
-        <HeartHandshake className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-        <div className="space-y-1">
-          <div className="font-semibold text-red-200">Need Immediate Help?</div>
-          <p className="text-[11px] text-red-300/90 leading-relaxed">
-            If you&apos;re feeling overwhelmed or having thoughts of self-harm, please reach out to someone you trust or contact{" "}
-            <a href="tel:14416" className="font-semibold text-white underline hover:text-red-200">
-              Tele-MANAS 14416 (24/7 Toll-Free)
-            </a>.
-          </p>
+        {/* Reply Composer */}
+        <div className="mt-4">
+          <ReplyComposer postId={post.id} onReplyAdded={handleReplyAdded} />
         </div>
-      </div>
+      </section>
 
-      {/* Report Modal */}
+      {/* Anonymous Report Dialog */}
       {reportTarget && (
         <ReportDialog
-          isOpen={true}
-          onClose={() => setReportTarget(null)}
           targetType={reportTarget.type}
           targetId={reportTarget.id}
+          isOpen={true}
+          onClose={() => setReportTarget(null)}
         />
       )}
     </div>

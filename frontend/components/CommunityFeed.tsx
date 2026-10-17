@@ -8,14 +8,16 @@ import { ShareStoryModal } from "./ShareStoryModal";
 import {
   Users,
   Search,
-  Filter,
   Plus,
   Heart,
   MessageSquare,
   Clock,
   Loader2,
-  AlertCircle,
-  MoreHorizontal,
+  BookOpen,
+  Sparkles,
+  Shield,
+  ArrowRight,
+  Flame,
 } from "lucide-react";
 
 interface CommunityFeedProps {
@@ -26,46 +28,51 @@ const SAMPLE_COMMUNITY_POSTS: CommunityPost[] = [
   {
     id: "post_sample_1",
     user_id: "anon_1",
-    display_name: "Quiet River",
+    display_name: "Anonymous Seeker #4092",
     content:
-      "Feeling guilty for moving abroad: I want to move abroad for better career opportunities, but I feel guilty leaving my aging parents. Am I being selfish? Any advice or similar experiences?",
+      "Struggling to reconcile inner calling with parental sacrifice: For nearly three decades, my parents worked exhausting shifts so I could become a consultant. Yet the quiet dissonance has grown deafening. I feel called to document disappearing cultural oral histories. How do I weigh the debt of filial gratitude against the silent erosion of my spirit?",
     reply_count: 18,
-    created_at: "2026-10-17T20:00:00.000Z",
+    created_at: "2026-10-18T18:00:00.000Z",
   },
   {
     id: "post_sample_2",
     user_id: "anon_2",
-    display_name: "Golden Leaf",
+    display_name: "Anonymous Seeker #2819",
     content:
-      "How to forgive someone? Someone close to me hurt me deeply. I still feel angry even though I want to let go. How do I genuinely forgive and move on without resentment?",
-    reply_count: 12,
-    created_at: "2026-10-17T17:00:00.000Z",
+      "Learning to forgive after profound betrayal: Someone in my inner circle breached trust severely. Mentally I want to let go, but visceral resentment bubbles up whenever I think of them. How do ancient Stoic and Buddhist texts recommend dissolving this poison without being naive?",
+    reply_count: 14,
+    created_at: "2026-10-18T15:30:00.000Z",
   },
   {
     id: "post_sample_3",
     user_id: "anon_3",
-    display_name: "Silent Peak",
+    display_name: "Anonymous Seeker #1104",
     content:
-      "Dealing with loneliness: I feel lonely even when I'm surrounded by friends and family. How do I find peace within myself instead of constantly seeking validation outside?",
+      "Chronic loneliness in a hyperconnected world: I am surrounded by colleagues and family, yet an anchorless solitude persists. How do traditions view voluntary solitude (Kaivalya / Solitude) versus agonizing loneliness?",
     reply_count: 29,
-    created_at: "2026-10-16T18:00:00.000Z",
-  },
-  {
-    id: "post_sample_4",
-    user_id: "anon_4",
-    display_name: "Moon Child",
-    content:
-      "Funny question: Do pets have karma? Just a lighthearted question. Do animals have karma too? What does ancient wisdom say about our companion dogs and cats?",
-    reply_count: 26,
-    created_at: "2026-10-15T18:00:00.000Z",
+    created_at: "2026-10-17T18:00:00.000Z",
   },
 ];
 
-const TOPIC_TAGS: Record<string, string[]> = {
-  post_sample_1: ["Family", "Life Decisions", "Career"],
-  post_sample_2: ["Relationships", "Forgiveness"],
-  post_sample_3: ["Mental Health", "Inner Peace"],
-  post_sample_4: ["Funny", "Spiritual", "Animals"],
+const SCRIPTURE_CALLOUTS: Record<string, { quote: string; source: string; tag: string; tradition: string }> = {
+  post_sample_1: {
+    quote: "Better is one’s own duty, though devoid of merit, than the duty of another well performed.",
+    source: "Bhagavad Gita 3.35",
+    tag: "Duty & Family",
+    tradition: "Bhagavad Gita",
+  },
+  post_sample_2: {
+    quote: "Hatred does not cease by hatred, but only by love; this is the eternal rule.",
+    source: "Dhammapada 1.5",
+    tag: "Forgiveness",
+    tradition: "Dhammapada",
+  },
+  post_sample_3: {
+    quote: "The soul is never alone when it discovers communion with the eternal witness within.",
+    source: "Garuda Purana 2.14",
+    tag: "Solitude & Purpose",
+    tradition: "Garuda Purana",
+  },
 };
 
 export const CommunityFeed: React.FC<CommunityFeedProps> = ({
@@ -77,7 +84,8 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
     initialPostId || null
   );
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState("All Topics");
+  const [selectedTradition, setSelectedTradition] = useState("all");
+  const [sortOption, setSortOption] = useState<"latest" | "replies" | "reflections">("latest");
   const [searchFilter, setSearchFilter] = useState("");
 
   useEffect(() => {
@@ -86,7 +94,6 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
         setLoading(true);
         const backendPosts = await fetchCommunityPosts(30, 0);
         if (backendPosts && backendPosts.length > 0) {
-          // Merge backend posts with sample posts if needed
           setPosts(backendPosts);
         }
       } catch (err) {
@@ -98,15 +105,6 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
     loadBackendPosts();
   }, []);
 
-  const formatDate = (dateStr: string) => {
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    } catch {
-      return "Recent";
-    }
-  };
-
   if (selectedPostId) {
     return (
       <DiscussionThread
@@ -116,168 +114,261 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
     );
   }
 
-  const filteredPosts = posts.filter((p) => {
-    if (!searchFilter) return true;
-    return (
-      p.content.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      p.display_name.toLowerCase().includes(searchFilter.toLowerCase())
-    );
+  // Filter & Search
+  const filteredPosts = posts.filter((post) => {
+    const textMatch =
+      post.content.toLowerCase().includes(searchFilter.toLowerCase()) ||
+      post.display_name.toLowerCase().includes(searchFilter.toLowerCase());
+
+    if (!textMatch) return false;
+
+    if (selectedTradition === "all") return true;
+    const callout = SCRIPTURE_CALLOUTS[post.id];
+    if (callout) {
+      return callout.tradition.toLowerCase().includes(selectedTradition.toLowerCase());
+    }
+    return true;
   });
 
   return (
-    <section className="rounded-2xl bg-[#151b26] border border-[#232c3f] p-5 shadow-xl space-y-4">
-      {/* Header Row */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[#232c3f]/60">
-        <div className="flex items-start gap-3">
-          <div className="w-6 h-6 rounded-full bg-[#1e2536] border border-[#e6af2e]/50 flex items-center justify-center text-[#e6af2e] font-bold text-xs shrink-0 mt-0.5">
-            3
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-[#f0f2f5]">
-              Anonymous Community
-            </h3>
-            <p className="text-xs text-[#94a3b8]">
-              Real people, real stories. Share your own, read others and support each other.
+    <div className="w-full flex flex-col gap-8 animate-in fade-in duration-300">
+      {/* Stitch Editorial Header Section */}
+      <header className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-[#232b3e]/60">
+          <div className="flex flex-col gap-2 max-w-2xl">
+            <div className="flex items-center gap-2 text-[#99907c] text-xs">
+              <span className="w-2 h-2 rounded-full bg-[#f2ca50] animate-ping" />
+              <span className="font-label uppercase tracking-widest text-[#f2ca50] font-semibold">
+                Confidential Collective Stream
+              </span>
+              <span>•</span>
+              <span className="font-label uppercase tracking-wider text-[#99907c]">
+                284 Seekers Present
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-baseline gap-2">
+              <h1 className="font-headline text-2xl sm:text-4xl text-[#e0e2ee] tracking-tight">
+                Anonymous Sanctuary Feed
+              </h1>
+              <span className="font-headline text-lg sm:text-xl text-[#d0c5af] font-light opacity-60">
+                (अपारिचित संवाद)
+              </span>
+            </div>
+
+            <p className="font-body text-sm text-[#d0c5af] max-w-xl leading-relaxed">
+              A confidential haven to read, share, and reflect upon real dilemmas with peers and philosophical mentors under the cloak of complete anonymity.
             </p>
           </div>
-        </div>
-
-        {/* Search, Filter, Sort and New Post Button (Matching Image 1) */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          {/* Search box */}
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-[#64748b] absolute left-2.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Search posts..."
-              className="pl-8 pr-3 py-1.5 rounded-xl bg-[#0d111a] border border-[#232c3f] text-xs text-[#f0f2f5] placeholder-[#64748b] focus:outline-none focus:border-[#e6af2e]/50 w-36 sm:w-44"
-            />
-          </div>
-
-          {/* Topic Filter */}
-          <select
-            value={selectedTopic}
-            onChange={(e) => setSelectedTopic(e.target.value)}
-            className="px-2.5 py-1.5 rounded-xl bg-[#0d111a] border border-[#232c3f] text-xs text-[#cbd5e1] focus:outline-none cursor-pointer"
-          >
-            <option value="All Topics">Filter: All Topics</option>
-            <option value="Family">Family & Relationships</option>
-            <option value="Career">Career & Purpose</option>
-            <option value="Mental Health">Mental Peace & Anxiety</option>
-            <option value="Spiritual">Spiritual & Ethics</option>
-          </select>
-
-          {/* Sort */}
-          <select className="px-2.5 py-1.5 rounded-xl bg-[#0d111a] border border-[#232c3f] text-xs text-[#cbd5e1] focus:outline-none cursor-pointer">
-            <option>Latest</option>
-            <option>Most Replied</option>
-            <option>Most Liked</option>
-          </select>
 
           {/* + New Post Button */}
           <button
             onClick={() => setIsShareModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1e2536] hover:bg-[#283247] border border-[#e6af2e]/40 text-[#e6af2e] text-xs font-semibold transition-all cursor-pointer shadow-sm"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#d4af37] text-[#0b0e16] font-label text-sm font-semibold hover:bg-[#f2ca50] transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.22)] hover:shadow-[0_4px_28px_rgba(212,175,55,0.35)] shrink-0 cursor-pointer active:scale-[0.98]"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>New Post</span>
+            <Plus className="w-4 h-4" />
+            <span>+ New Post</span>
           </button>
         </div>
-      </div>
 
-      {/* Posts Cards Grid (Matching Image 1) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {filteredPosts.map((post, idx) => {
-          const tags = TOPIC_TAGS[post.id] || ["Life Decisions", "Reflection"];
-          const likes = [42, 31, 67, 98][idx % 4] || 25;
+        {/* Controls & Filter Toolbar */}
+        <div className="flex flex-col gap-4 p-4 rounded-xl bg-[#181b24] border border-[#232b3e] shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
+          {/* Row 1: Search & Sorting */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#99907c]" />
+              <input
+                type="text"
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                placeholder="Search topics, traditions, or keywords..."
+                className="w-full pl-10 pr-4 py-2.5 bg-[#272a33] border border-[#32353e] rounded-lg text-sm text-[#e0e2ee] placeholder:text-[#99907c] focus:outline-none focus:border-[#d4af37] transition-all"
+              />
+              {searchFilter && (
+                <button
+                  onClick={() => setSearchFilter("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#99907c] hover:text-[#e0e2ee]"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
 
-          // Split title and body if starts with title:
-          const hasColon = post.content.includes(":");
-          const title = hasColon
-            ? post.content.split(":")[0]
-            : post.content.slice(0, 40) + "...";
-          const snippet = hasColon
-            ? post.content.slice(post.content.indexOf(":") + 1).trim()
-            : post.content;
+            {/* Sorting Tab Group */}
+            <div className="flex items-center gap-1 p-1 bg-[#272a33] rounded-lg border border-[#32353e] shrink-0 self-start lg:self-center">
+              <button
+                onClick={() => setSortOption("latest")}
+                className={`px-3 py-1.5 rounded-md font-label text-xs font-medium transition-all ${
+                  sortOption === "latest"
+                    ? "bg-[#d4af37] text-[#0b0e16] shadow-sm font-semibold"
+                    : "text-[#d0c5af] hover:text-[#e0e2ee]"
+                }`}
+              >
+                Latest
+              </button>
+              <button
+                onClick={() => setSortOption("replies")}
+                className={`px-3 py-1.5 rounded-md font-label text-xs font-medium transition-all ${
+                  sortOption === "replies"
+                    ? "bg-[#d4af37] text-[#0b0e16] shadow-sm font-semibold"
+                    : "text-[#d0c5af] hover:text-[#e0e2ee]"
+                }`}
+              >
+                Most Replies
+              </button>
+              <button
+                onClick={() => setSortOption("reflections")}
+                className={`px-3 py-1.5 rounded-md font-label text-xs font-medium transition-all ${
+                  sortOption === "reflections"
+                    ? "bg-[#d4af37] text-[#0b0e16] shadow-sm font-semibold"
+                    : "text-[#d0c5af] hover:text-[#e0e2ee]"
+                }`}
+              >
+                Deep Reflections
+              </button>
+            </div>
+          </div>
 
-          return (
-            <div
-              key={post.id}
-              onClick={() => setSelectedPostId(post.id)}
-              className="p-4 rounded-xl bg-[#0d111a] border border-[#232c3f] hover:border-[#e6af2e]/50 hover:bg-[#131924] transition-all cursor-pointer flex flex-col justify-between group shadow-sm space-y-3"
-            >
-              <div className="space-y-2">
-                {/* Author Row */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-600 to-rose-600 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
-                      {post.display_name.charAt(0)}
+          {/* Row 2: Tradition Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <span className="font-label text-xs uppercase tracking-wider text-[#99907c] mr-1 shrink-0 flex items-center gap-1">
+              Tradition:
+            </span>
+            {[
+              { id: "all", label: "All Traditions" },
+              { id: "gita", label: "Bhagavad Gita" },
+              { id: "stoicism", label: "Stoicism" },
+              { id: "dhammapada", label: "Dhammapada" },
+              { id: "garuda", label: "Garuda Purana" },
+            ].map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelectedTradition(t.id)}
+                className={`px-3.5 py-1 rounded-full text-xs font-label whitespace-nowrap transition-all ${
+                  selectedTradition === t.id
+                    ? "bg-[#d4af37]/20 border border-[#d4af37] text-[#f2ca50] font-semibold"
+                    : "bg-[#272a33] hover:bg-[#32353e] text-[#d0c5af] hover:text-[#e0e2ee] border border-[#32353e]"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Feed Stream */}
+      {loading ? (
+        <div className="flex justify-center items-center py-20 text-[#f2ca50]">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </div>
+      ) : filteredPosts.length === 0 ? (
+        <div className="text-center py-16 text-[#99907c] bg-[#181b24] rounded-xl border border-[#232b3e]">
+          <p className="font-headline text-lg text-[#e0e2ee]">No discourses found matching this inquiry.</p>
+          <p className="font-body text-xs mt-1">Try relaxing filters or share the first reflection.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5">
+          {filteredPosts.map((post) => {
+            const callout = SCRIPTURE_CALLOUTS[post.id];
+
+            return (
+              <article
+                key={post.id}
+                onClick={() => setSelectedPostId(post.id)}
+                className="group relative flex flex-col rounded-xl bg-[#181b24] hover:bg-[#1d1f28] border border-[#232b3e] hover:border-[#d4af37]/40 transition-all duration-300 p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.5)] overflow-hidden cursor-pointer"
+              >
+                {/* Subtle Left Accent Hairline from Stitch */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#f2ca50] via-[#f2ca50]/30 to-transparent" />
+
+                {/* Card Meta Row */}
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-4 text-[#99907c]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-[#272a33] border border-[#32353e] flex items-center justify-center text-[#f2ca50] text-xs">
+                      <Shield className="w-3.5 h-3.5" />
                     </div>
-                    <div>
-                      <div className="text-xs font-bold text-[#f0f2f5] group-hover:text-[#e6af2e] transition-colors">
-                        {post.display_name}
-                      </div>
-                      <div className="text-[10px] text-[#64748b]">
-                        {formatDate(post.created_at)}
-                      </div>
-                    </div>
+                    <span className="font-label text-xs sm:text-sm font-medium text-[#e0e2ee]">
+                      {post.display_name}
+                    </span>
+                    <span>•</span>
+                    <span className="font-body text-xs text-[#99907c]">
+                      {new Date(post.created_at).toLocaleDateString([], {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
                   </div>
 
-                  <MoreHorizontal className="w-3.5 h-3.5 text-[#64748b] group-hover:text-[#94a3b8]" />
+                  {callout && (
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-label tracking-wider bg-[#272a33] text-[#d0c5af]">
+                        {callout.tag}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-label tracking-wider bg-[#f2ca50]/10 text-[#f2ca50] font-semibold border border-[#f2ca50]/20">
+                        {callout.tradition}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Title */}
-                <h4 className="text-xs font-semibold text-[#f0f2f5] line-clamp-1 group-hover:text-[#e6af2e] transition-colors">
-                  {title}
-                </h4>
+                {/* Post Content */}
+                <div className="flex flex-col gap-2 mb-4">
+                  <p className="font-body text-sm sm:text-base text-[#d0c5af] group-hover:text-[#e0e2ee] transition-colors leading-relaxed line-clamp-3">
+                    {post.content}
+                  </p>
+                </div>
 
-                {/* Content */}
-                <p className="text-[11px] text-[#94a3b8] line-clamp-3 leading-relaxed">
-                  {snippet}
-                </p>
+                {/* Scripture Insight Callout Accent */}
+                {callout && (
+                  <div className="mb-4 p-3.5 rounded-lg bg-[#10131b]/90 border border-[#232b3e] flex items-start gap-3">
+                    <BookOpen className="w-4 h-4 text-[#f2ca50] shrink-0 mt-0.5" />
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-headline text-xs italic text-[#e0e2ee]">
+                        “{callout.quote}”
+                      </span>
+                      <span className="font-label text-[10px] text-[#f2ca50] uppercase tracking-wider font-medium">
+                        — {callout.source}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 pt-1">
-                  {tags.map((tag, tIdx) => (
-                    <span
-                      key={tIdx}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-[#171c28] text-[#94a3b8] border border-[#232c3f]"
-                    >
-                      {tag}
+                {/* Bottom Action Row */}
+                <div className="pt-2 flex items-center justify-between text-xs text-[#99907c]">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1.5 text-[#d0c5af]">
+                      <MessageSquare className="w-3.5 h-3.5 text-[#f2ca50]" />
+                      <span>{post.reply_count || 0} Contemplations</span>
                     </span>
-                  ))}
-                </div>
-              </div>
+                    <span className="flex items-center gap-1.5 text-[#99907c]">
+                      <Heart className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Held Space</span>
+                    </span>
+                  </div>
 
-              {/* Footer: Likes & Replies */}
-              <div className="pt-2.5 border-t border-[#232c3f]/50 flex items-center justify-between text-[11px] text-[#94a3b8]">
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 hover:text-rose-400 transition-colors">
-                    <Heart className="w-3 h-3 text-rose-500/80" />
-                    <span>{likes}</span>
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MessageSquare className="w-3 h-3 text-[#e6af2e]/80" />
-                    <span>{post.reply_count}</span>
+                  <span className="inline-flex items-center gap-1 text-[#f2ca50] font-label font-semibold group-hover:translate-x-0.5 transition-transform">
+                    <span>Read Replies</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
-                <span className="text-[10px] text-[#e6af2e] group-hover:underline">
-                  Read →
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
 
+      {/* Share Story Modal */}
       <ShareStoryModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        initialContent=""
-        onPostCreated={(newId) => setSelectedPostId(newId)}
+        onPostCreated={async (newPostId: string) => {
+          setIsShareModalOpen(false);
+          try {
+            const updated = await fetchCommunityPosts(30, 0);
+            if (updated && updated.length > 0) setPosts(updated);
+          } catch {}
+        }}
       />
-    </section>
+    </div>
   );
 };

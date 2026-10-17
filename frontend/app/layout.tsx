@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Lora } from "next/font/google";
+import { Plus_Jakarta_Sans, Noto_Serif, Outfit } from "next/font/google";
 import "./globals.css";
 
 const sansFont = Plus_Jakarta_Sans({
@@ -8,17 +8,23 @@ const sansFont = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const serifFont = Lora({
+const serifFont = Noto_Serif({
   subsets: ["latin"],
   variable: "--font-serif",
   display: "swap",
   style: ["normal", "italic"],
 });
 
+const outfitFont = Outfit({
+  subsets: ["latin"],
+  variable: "--font-label",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "APARICHIT (अपारिचित) — Ancient Wisdom for Modern Dilemmas",
+  title: "APARICHIT (अपारिचित) — Ancient Wisdom & Sanctuary",
   description:
-    "An anonymous AI-guided advice platform rooted in classical philosophical and scriptural traditions with an empathetic peer community.",
+    "An anonymous AI-guided sanctuary and peer support platform rooted in classical philosophical canons.",
 };
 
 export default function RootLayout({
@@ -29,10 +35,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sansFont.variable} ${serifFont.variable} dark`}
+      className={`${sansFont.variable} ${serifFont.variable} ${outfitFont.variable} dark`}
       style={{ colorScheme: "dark" }}
     >
-      <body className="min-h-screen bg-[#0c0f17] text-[#f0f2f5] antialiased selection:bg-[#e6af2e]/30 selection:text-[#f0f2f5]">
+      <body className="min-h-screen bg-[#10131b] text-[#e0e2ee] antialiased selection:bg-[#d4af37]/30 selection:text-[#f0f2f5]">
         {children}
       </body>
     </html>

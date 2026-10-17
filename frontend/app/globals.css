@@ -1,43 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0d111a;
-  --card-bg: #151b26;
-  --card-hover: #1c2333;
-  --card-border: #232c3f;
-  --card-border-subtle: #1c2436;
-  --gold-primary: #e6af2e;
-  --gold-secondary: #d4af37;
-  --gold-glow: rgba(230, 175, 46, 0.18);
-  --text-main: #f0f2f5;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
-  --crisis-red: #ef4444;
-  --crisis-bg: rgba(239, 68, 68, 0.12);
-  --crisis-border: rgba(239, 68, 68, 0.35);
+  --background: #10131b;
+  --surface: #10131b;
+  --surface-container-lowest: #0b0e16;
+  --surface-container-low: #181b24;
+  --surface-container: #1d1f28;
+  --surface-container-high: #272a33;
+  --surface-container-highest: #32353e;
+  --on-surface: #e0e2ee;
+  --on-surface-variant: #d0c5af;
+  --outline: #99907c;
+  --outline-variant: #4d4635;
+  --primary: #f2ca50;
+  --primary-container: #d4af37;
+  --on-primary: #3c2f00;
+  --secondary: #f6be3d;
+  --gold-primary: #d4af37;
+  --gold-warm: #f2ca50;
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --crisis-red: #ffb4ab;
+  --crisis-bg: rgba(147, 0, 10, 0.25);
+  --crisis-border: rgba(255, 180, 171, 0.4);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--text-main);
-  font-family: var(--font-sans), "Outfit", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-sans), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   letter-spacing: -0.01em;
 }
 
-/* Custom scrollbars */
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0d111a;
+  background: #0b0e16;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #232c3f;
+  background: #272a33;
   border-radius: 4px;
 }
 
@@ -45,32 +52,60 @@ body {
   background: #d4af37;
 }
 
-/* Scripture quote styling font helper */
-.font-scripture {
-  font-family: var(--font-serif), "Lora", "Cinzel", Georgia, serif;
+/* Typography Utility Classes */
+.font-headline {
+  font-family: var(--font-serif), "Noto Serif", Georgia, serif;
 }
 
-/* Antique Gold Gradient Helpers */
+.font-scripture {
+  font-family: var(--font-serif), "Noto Serif", Georgia, serif;
+}
+
+.font-label {
+  font-family: var(--font-label), "Outfit", sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+}
+
+/* Gold Gradient & Sanctuary Accents */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #fce28b 0%, #e6af2e 50%, #b88616 100%);
+  background: linear-gradient(135deg, #ffe088 0%, #f2ca50 50%, #d4af37 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .bg-gold-gradient {
-  background: linear-gradient(135deg, #f5d061 0%, #e6af2e 60%, #c9931b 100%);
+  background: linear-gradient(135deg, #f2ca50 0%, #d4af37 100%);
 }
 
 .border-gold-subtle {
-  border-color: rgba(230, 175, 46, 0.3);
+  border-color: rgba(212, 175, 55, 0.16);
+}
+
+.border-gold-bright {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 .shadow-gold-glow {
-  box-shadow: 0 4px 24px -2px rgba(230, 175, 46, 0.15);
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
 }
 
-/* Scripture Quote Box */
+.shadow-gold-bloom {
+  box-shadow: 0 0 32px rgba(212, 175, 55, 0.35);
+}
+
+.shadow-sanctuary-card {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.shadow-sanctuary-elevated {
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Scripture Callout Box */
 .scripture-box {
-  background: linear-gradient(180deg, rgba(230, 175, 46, 0.08) 0%, rgba(20, 26, 38, 0.6) 100%);
-  border: 1px solid rgba(230, 175, 46, 0.25);
+  background: linear-gradient(180deg, rgba(23, 28, 40, 0.95) 0%, rgba(12, 15, 23, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.18);
 }

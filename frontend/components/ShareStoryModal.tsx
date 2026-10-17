@@ -8,14 +8,14 @@ import { getSavedAccount } from "@/lib/storage";
 interface ShareStoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialContent: string;
+  initialContent?: string;
   onPostCreated?: (postId: string) => void;
 }
 
 export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
   isOpen,
   onClose,
-  initialContent,
+  initialContent = "",
   onPostCreated,
 }) => {
   const [content, setContent] = useState(initialContent);
