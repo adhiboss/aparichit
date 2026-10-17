@@ -6,6 +6,7 @@ import uuid
 from app.auth.anon_accounts import AuthManager, get_auth_manager
 from app.community.anonymise import anonymise_text
 from app.community.db import Database, get_db
+from app.community.matcher import SimilarProblemMatcher, get_similar_matcher
 from app.pipeline.classify import SafetyClassifier
 
 
@@ -17,10 +18,13 @@ class PostManager:
         db: Optional[Database] = None,
         auth: Optional[AuthManager] = None,
         safety_classifier: Optional[SafetyClassifier] = None,
+        matcher: Optional[SimilarProblemMatcher] = None,
     ) -> None:
         self.db = db or get_db()
         self.auth = auth or get_auth_manager()
         self.safety = safety_classifier or SafetyClassifier()
+        self.matcher = matcher or get_similar_matcher()
+
 
     def create_post(self, user_id: str, content: str) -> Dict[str, Any]:
         """Create and publish an anonymised community post.
@@ -56,6 +60,16 @@ class PostManager:
                 (post_id, user_id, account.display_name, clean_content, anonymised, is_crisis, status, created_at),
             )
             conn.commit()
+
+        # 3. Vector Embedding & Indexing (Strict exclusion of crisis posts)
+        if not is_crisis:
+            self.matcher.index_post(
+                post_id=post_id,
+                content=anonymised,
+                display_name=account.display_name,
+                reply_count=0,
+            )
+
 
         return {
             "id": post_id,
@@ -172,7 +186,12 @@ class PostManager:
                 "UPDATE posts SET reply_count = reply_count + 1 WHERE id = ?",
                 (post_id,),
             )
+            cursor.execute("SELECT reply_count FROM posts WHERE id = ?", (post_id,))
+            updated_count = cursor.fetchone()["reply_count"]
             conn.commit()
+
+        # Update reply count in similarity index
+        self.matcher.update_reply_count(post_id=post_id, reply_count=updated_count)
 
         return {
             "id": reply_id,
@@ -182,6 +201,7 @@ class PostManager:
             "content": anonymised,
             "created_at": created_at,
         }
+
 
     def create_report(
         self,
