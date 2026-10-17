@@ -139,6 +139,9 @@ Submit a moderation report against a post or reply.
 ### `GET /similar`
 Search for semantically similar community problems using cosine similarity on ChromaDB dense vector embeddings. Supports `?post_id=` (matches problems related to a specific post while excluding itself) or `?query=` (matches problems related to a natural language description).
 
+### `GET /traditions`
+Returns all supported philosophical and spiritual traditions available for selection behind the faith toggle (`garuda_purana`, `bhagavad_gita`, `dhammapada`, `stoicism`), including publication metadata, translator attribution, and tradition descriptions.
+
 ### `GET /admin/reports`
 View filed user reports with attached content preview (requires `X-Admin-Token` or Bearer token).
 
@@ -164,7 +167,7 @@ Approve (publish and index) or escalate a crisis item.
 - [x] **Milestone 7: Anonymous accounts & community.** Anonymous auth, posts, replies, reports, anonymizer.
 - [x] **Milestone 8: Similar-problem matching.** Vector embedding of shared posts, nearest-neighbor matching.
 - [x] **Milestone 9: Moderation.** Crisis flagging on posts/replies, report queue, moderation view.
-- [ ] **Milestone 10: Other traditions (optional).** Separate collections behind faith toggle.
+- [x] **Milestone 10: Other traditions (optional).** Separate collections behind faith toggle.
 - [ ] **Milestone 11: Local-model comparison (optional).** Local evaluation with Ollama.
 - [ ] **Milestone 12: Frontend integration.** Connect frontend to API.
 
