@@ -6,6 +6,7 @@ from app.config import Settings, get_settings
 from app.llm import get_llm_provider
 from app.llm.base import LLMProvider
 from app.pipeline.advise import AdvicePipeline
+from app.rag.retriever import PassageRetriever
 from app.schemas import ChatRequest, ChatResponse, HealthResponse
 
 app = FastAPI(
@@ -28,9 +29,14 @@ app.add_middleware(
 def get_pipeline(
     current_settings: Settings = Depends(get_settings),
 ) -> AdvicePipeline:
-    """Dependency injector for AdvicePipeline with configured LLM provider."""
+    """Dependency injector for AdvicePipeline with configured LLM provider and retriever."""
     provider: LLMProvider = get_llm_provider(current_settings)
-    return AdvicePipeline(provider=provider, settings=current_settings)
+    retriever: PassageRetriever = PassageRetriever(settings=current_settings)
+    return AdvicePipeline(
+        provider=provider,
+        retriever=retriever,
+        settings=current_settings,
+    )
 
 
 @app.get(
