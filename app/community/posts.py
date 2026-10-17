@@ -97,16 +97,17 @@ class PostManager:
             if not post_row:
                 return None
 
-            # Fetch replies
+            # Fetch published, non-crisis replies
             cursor.execute(
                 """
                 SELECT id, post_id, user_id, display_name, content, created_at
-                FROM replies WHERE post_id = ?
+                FROM replies WHERE post_id = ? AND is_crisis = 0 AND status = 'published'
                 ORDER BY created_at ASC
                 """,
                 (post_id,),
             )
             reply_rows = cursor.fetchall()
+
             replies = [dict(r) for r in reply_rows]
 
             return {
@@ -169,29 +170,37 @@ class PostManager:
             if post["is_crisis"] or post["status"] != "published":
                 raise ValueError("Cannot reply to a post that is under safety review")
 
+            # Safety check on reply content
+            classification = self.safety.classify(clean_content)
+            is_crisis = 1 if classification.flag == "crisis" else 0
+            status = "pending_review" if is_crisis else "published"
+
             reply_id = f"reply_{uuid.uuid4().hex[:12]}"
             created_at = datetime.now(timezone.utc).isoformat()
             anonymised = anonymise_text(clean_content)
 
             cursor.execute(
                 """
-                INSERT INTO replies (id, post_id, user_id, display_name, content, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO replies (id, post_id, user_id, display_name, content, is_crisis, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (reply_id, post_id, user_id, account.display_name, anonymised, created_at),
+                (reply_id, post_id, user_id, account.display_name, anonymised, is_crisis, status, created_at),
             )
 
-            # Increment post reply count
-            cursor.execute(
-                "UPDATE posts SET reply_count = reply_count + 1 WHERE id = ?",
-                (post_id,),
-            )
-            cursor.execute("SELECT reply_count FROM posts WHERE id = ?", (post_id,))
-            updated_count = cursor.fetchone()["reply_count"]
-            conn.commit()
+            # Only increment public reply count and update vector index if reply is not crisis
+            if not is_crisis:
+                cursor.execute(
+                    "UPDATE posts SET reply_count = reply_count + 1 WHERE id = ?",
+                    (post_id,),
+                )
+                cursor.execute("SELECT reply_count FROM posts WHERE id = ?", (post_id,))
+                updated_count = cursor.fetchone()["reply_count"]
+                conn.commit()
 
-        # Update reply count in similarity index
-        self.matcher.update_reply_count(post_id=post_id, reply_count=updated_count)
+                # Update reply count in similarity index
+                self.matcher.update_reply_count(post_id=post_id, reply_count=updated_count)
+            else:
+                conn.commit()
 
         return {
             "id": reply_id,
@@ -199,8 +208,11 @@ class PostManager:
             "user_id": user_id,
             "display_name": account.display_name,
             "content": anonymised,
+            "is_crisis": bool(is_crisis),
+            "status": status,
             "created_at": created_at,
         }
+
 
 
     def create_report(
