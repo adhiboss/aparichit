@@ -154,6 +154,15 @@ List all posts and replies currently held in moderation review for crisis safety
 ### `POST /admin/crisis/{target_type}/{id}/action`
 Approve (publish and index) or escalate a crisis item.
 
+### Running the Frontend (Next.js)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 ---
 
 ## 5. Implementation Milestones
@@ -169,7 +178,8 @@ Approve (publish and index) or escalate a crisis item.
 - [x] **Milestone 9: Moderation.** Crisis flagging on posts/replies, report queue, moderation view.
 - [x] **Milestone 10: Other traditions (optional).** Separate collections behind faith toggle.
 - [ ] **Milestone 11: Local-model comparison (optional).** Local evaluation with Ollama.
-- [ ] **Milestone 12: Frontend integration.** Connect frontend to API.
+- [x] **Milestone 12: Frontend integration.** Connect frontend to API.
+
 
 
 
