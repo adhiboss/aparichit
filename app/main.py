@@ -1,16 +1,29 @@
 """FastAPI application entry point for APARICHIT backend service."""
 
-from typing import Any, Dict
-from fastapi import Depends, FastAPI, HTTPException, status
+from typing import Any, Dict, List, Optional
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from app.auth.anon_accounts import AnonymousAccount, AuthManager, get_auth_manager
+from app.community.posts import PostManager, get_post_manager
 from app.config import Settings, get_settings
 from app.llm import get_llm_provider
 from app.llm.base import LLMProvider
 from app.memory import SessionMemory, get_session_memory
 from app.pipeline.advise import AdvicePipeline
 from app.rag.retriever import PassageRetriever
-from app.schemas import ChatRequest, ChatResponse, HealthResponse
+from app.schemas import (
+    AnonymousAuthResponse,
+    ChatRequest,
+    ChatResponse,
+    CreatePostRequest,
+    CreateReplyRequest,
+    CreateReportRequest,
+    HealthResponse,
+    PostReplyResponse,
+    PostResponse,
+    ReportResponse,
+)
 
 app = FastAPI(
     title="APARICHIT Backend API",
@@ -140,3 +153,178 @@ def clear_session(
     """Clear all stored messages for a specific session."""
     cleared = memory.clear_session(session_id)
     return {"session_id": session_id, "cleared": cleared}
+
+
+# Community and Anonymous Authentication Endpoints
+
+
+def get_current_user_optional(
+    authorization: Optional[str] = Header(None),
+    x_session_token: Optional[str] = Header(None),
+    auth_manager: AuthManager = Depends(get_auth_manager),
+) -> Optional[AnonymousAccount]:
+    """Extract account from Bearer Authorization or X-Session-Token header."""
+    token = None
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+    elif x_session_token:
+        token = x_session_token.strip()
+
+    if not token:
+        return None
+    return auth_manager.get_account_by_token(token)
+
+
+@app.post(
+    "/auth/anonymous",
+    response_model=AnonymousAuthResponse,
+    summary="Create anonymous account",
+    tags=["Community"],
+)
+def create_anonymous_account(
+    auth_manager: AuthManager = Depends(get_auth_manager),
+) -> AnonymousAuthResponse:
+    """Generate a poetic anonymous name and session token without requiring emails or passwords."""
+    account = auth_manager.create_anonymous_account()
+    return AnonymousAuthResponse(
+        user_id=account.user_id,
+        display_name=account.display_name,
+        session_token=account.session_token,
+        created_at=account.created_at,
+    )
+
+
+@app.post(
+    "/posts",
+    response_model=PostResponse,
+    summary="Create a community post",
+    tags=["Community"],
+)
+def create_post(
+    request: CreatePostRequest,
+    current_user: Optional[AnonymousAccount] = Depends(get_current_user_optional),
+    auth_manager: AuthManager = Depends(get_auth_manager),
+    post_manager: PostManager = Depends(get_post_manager),
+) -> PostResponse:
+    """Share an anonymised dilemma or problem to the community."""
+    account = current_user
+    if not account and request.session_token:
+        account = auth_manager.get_account_by_token(request.session_token.strip())
+
+    if not account:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required. Provide a valid session token via Bearer header or session_token field.",
+        )
+
+    try:
+        post_data = post_manager.create_post(
+            user_id=account.user_id,
+            content=request.content,
+        )
+        return PostResponse(**post_data)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
+
+@app.get(
+    "/posts",
+    response_model=List[PostResponse],
+    summary="List community posts",
+    tags=["Community"],
+)
+def list_posts(
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    post_manager: PostManager = Depends(get_post_manager),
+) -> List[PostResponse]:
+    """Retrieve public feed of published, non-crisis community posts."""
+    posts = post_manager.list_public_posts(limit=limit, offset=offset)
+    return [PostResponse(**p) for p in posts]
+
+
+@app.get(
+    "/posts/{post_id}",
+    response_model=PostResponse,
+    summary="Get community post with replies",
+    tags=["Community"],
+)
+def get_post(
+    post_id: str,
+    post_manager: PostManager = Depends(get_post_manager),
+) -> PostResponse:
+    """Retrieve an anonymised community post and its replies."""
+    post = post_manager.get_post(post_id)
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post '{post_id}' not found",
+        )
+    return PostResponse(**post)
+
+
+@app.post(
+    "/posts/{post_id}/replies",
+    response_model=PostReplyResponse,
+    summary="Add reply to a community post",
+    tags=["Community"],
+)
+def add_reply(
+    post_id: str,
+    request: CreateReplyRequest,
+    current_user: Optional[AnonymousAccount] = Depends(get_current_user_optional),
+    auth_manager: AuthManager = Depends(get_auth_manager),
+    post_manager: PostManager = Depends(get_post_manager),
+) -> PostReplyResponse:
+    """Add a supportive reply to a community post."""
+    account = current_user
+    if not account and request.session_token:
+        account = auth_manager.get_account_by_token(request.session_token.strip())
+
+    if not account:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required. Provide a valid session token via Bearer header or session_token field.",
+        )
+
+    try:
+        reply_data = post_manager.add_reply(
+            post_id=post_id,
+            user_id=account.user_id,
+            content=request.content,
+        )
+        return PostReplyResponse(**reply_data)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
+
+@app.post(
+    "/reports",
+    response_model=ReportResponse,
+    summary="Report a post or reply",
+    tags=["Community"],
+)
+def create_report(
+    request: CreateReportRequest,
+    current_user: Optional[AnonymousAccount] = Depends(get_current_user_optional),
+    auth_manager: AuthManager = Depends(get_auth_manager),
+    post_manager: PostManager = Depends(get_post_manager),
+) -> ReportResponse:
+    """Flag abusive or harmful community content for moderator review."""
+    account = current_user
+    if not account and request.session_token:
+        account = auth_manager.get_account_by_token(request.session_token.strip())
+
+    reporter_id = account.user_id if account else "anon_guest"
+
+    try:
+        report_data = post_manager.create_report(
+            target_type=request.target_type,
+            target_id=request.target_id,
+            reason=request.reason,
+            reporter_id=reporter_id,
+        )
+        return ReportResponse(**report_data)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
