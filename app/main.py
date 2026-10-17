@@ -260,6 +260,10 @@ def create_post(
         return PostResponse(**post_data)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Post creation error: {type(e).__name__}: {str(e)}") from e
 
 
 @app.get(

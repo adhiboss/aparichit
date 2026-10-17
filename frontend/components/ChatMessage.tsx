@@ -48,7 +48,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           <div className="flex items-center gap-2 pr-1 text-[#99907c] font-label text-[11px]">
             <span>Delivered securely</span>
             <span>•</span>
-            <span>{formatTime(message.timestamp)}</span>
+            <span suppressHydrationWarning>{formatTime(message.timestamp)}</span>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <ModeBadge mode={message.mode} />
-            <span className="text-[11px] font-label text-[#99907c]">
+            <span suppressHydrationWarning className="text-[11px] font-label text-[#99907c]">
               {formatTime(message.timestamp)}
             </span>
           </div>

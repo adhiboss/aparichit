@@ -291,7 +291,7 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
                       {post.display_name}
                     </span>
                     <span>•</span>
-                    <span className="font-body text-xs text-[#99907c]">
+                    <span suppressHydrationWarning className="font-body text-xs text-[#99907c]">
                       {new Date(post.created_at).toLocaleDateString([], {
                         month: "short",
                         day: "numeric",

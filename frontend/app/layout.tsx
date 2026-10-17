@@ -35,10 +35,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${sansFont.variable} ${serifFont.variable} ${outfitFont.variable} dark`}
       style={{ colorScheme: "dark" }}
     >
-      <body className="min-h-screen bg-[#10131b] text-[#e0e2ee] antialiased selection:bg-[#d4af37]/30 selection:text-[#f0f2f5]">
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-[#10131b] text-[#e0e2ee] antialiased selection:bg-[#d4af37]/30 selection:text-[#f0f2f5]"
+      >
         {children}
       </body>
     </html>
