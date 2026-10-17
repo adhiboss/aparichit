@@ -5,6 +5,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from app.auth.anon_accounts import AnonymousAccount, AuthManager, get_auth_manager
+from app.community.matcher import SimilarProblemMatcher, get_similar_matcher
 from app.community.posts import PostManager, get_post_manager
 from app.config import Settings, get_settings
 from app.llm import get_llm_provider
@@ -23,7 +24,9 @@ from app.schemas import (
     PostReplyResponse,
     PostResponse,
     ReportResponse,
+    SimilarProblem,
 )
+
 
 app = FastAPI(
     title="APARICHIT Backend API",
@@ -327,4 +330,48 @@ def create_report(
         return ReportResponse(**report_data)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
+
+@app.get(
+    "/similar",
+    response_model=List[SimilarProblem],
+    summary="Find similar community problems",
+    tags=["Community"],
+)
+def get_similar_problems(
+    post_id: Optional[str] = Query(default=None, description="Target post ID to find matches for"),
+    query: Optional[str] = Query(default=None, description="Query text to find matches for"),
+    limit: int = Query(default=3, ge=1, le=10, description="Max matches to return"),
+    threshold: Optional[float] = Query(default=None, ge=0.0, le=1.0, description="Minimum cosine similarity threshold"),
+    post_manager: PostManager = Depends(get_post_manager),
+    matcher: SimilarProblemMatcher = Depends(get_similar_matcher),
+) -> List[SimilarProblem]:
+    """Search for semantically similar community posts."""
+    search_text = ""
+    exclude_id = None
+
+    if post_id:
+        post = post_manager.get_post(post_id)
+        if not post:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Post '{post_id}' not found",
+            )
+        search_text = post["content"]
+        exclude_id = post_id
+    elif query:
+        search_text = query.strip()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Either 'post_id' or 'query' parameter must be provided.",
+        )
+
+    return matcher.find_similar(
+        query_text=search_text,
+        top_k=limit,
+        threshold=threshold,
+        exclude_post_id=exclude_id,
+    )
+
 
