@@ -1,4 +1,4 @@
-"""FastAPI application entry point for APARICHIT backend service."""
+"""FastAPI application entry point for APARICHIT backend service (reloaded)."""
 
 from typing import Any, Dict, List, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, status
