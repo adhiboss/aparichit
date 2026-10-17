@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0c0f17;
+  --card-bg: #171c28;
+  --card-hover: #1e2536;
+  --card-border: #232c3f;
+  --card-border-subtle: #1c2436;
+  --gold-primary: #e6af2e;
+  --gold-secondary: #d4af37;
+  --gold-glow: rgba(230, 175, 46, 0.15);
+  --text-main: #f0f2f5;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --crisis-red: #ef4444;
+  --crisis-bg: rgba(239, 68, 68, 0.12);
+  --crisis-border: rgba(239, 68, 68, 0.35);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-main);
+  font-family: var(--font-sans), "Outfit", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c0f17;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232c3f;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* Scripture quote styling font helper */
+.font-scripture {
+  font-family: var(--font-serif), "Lora", "Cinzel", Georgia, serif;
+}
