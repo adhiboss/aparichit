@@ -32,7 +32,9 @@ from app.schemas import (
     ReportActionResponse,
     ReportResponse,
     SimilarProblem,
+    TraditionItem,
 )
+
 
 
 
@@ -80,6 +82,28 @@ def health_check(current_settings: Settings = Depends(get_settings)) -> HealthRe
         version=current_settings.APP_VERSION,
         llm_provider=current_settings.LLM_PROVIDER,
     )
+
+
+@app.get(
+    "/traditions",
+    response_model=List[TraditionItem],
+    summary="List supported scripture and wisdom traditions",
+    tags=["System"],
+)
+def list_traditions() -> List[TraditionItem]:
+    """Return all available wisdom traditions supported under the faith toggle."""
+    from app.rag.ingest import TRADITIONS
+
+    return [
+        TraditionItem(
+            id=key,
+            name=val["name"],
+            translation=val["translation"],
+            description=val["description"],
+        )
+        for key, val in TRADITIONS.items()
+    ]
+
 
 
 @app.post(

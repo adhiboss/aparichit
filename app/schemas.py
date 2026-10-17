@@ -198,3 +198,16 @@ class CrisisQueueResponse(BaseModel):
     total_pending: int
 
 
+# Multi-Tradition Schemas
+
+
+class TraditionItem(BaseModel):
+    """Metadata for a supported scripture and wisdom tradition."""
+
+    id: str = Field(..., description="Unique tradition identifier")
+    name: str = Field(..., description="Display name of the tradition")
+    translation: str = Field(..., description="Translation edition or translator")
+    description: str = Field(..., description="Overview of the tradition's core philosophical focus")
+
+
+
