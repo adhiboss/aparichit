@@ -118,6 +118,24 @@ Generates advice for a user query.
 }
 ```
 
+### `POST /auth/anonymous`
+Create an anonymous user account with a randomized poetic display name and secret session token.
+
+### `POST /posts`
+Share a problem or dilemma to the peer community (automatically scrubs PII and checks crisis safety).
+
+### `GET /posts`
+List published, non-crisis community posts for the public feed.
+
+### `GET /posts/{id}`
+Retrieve a community post along with its replies.
+
+### `POST /posts/{id}/replies`
+Add a supportive reply to an existing public post.
+
+### `POST /reports`
+Submit a moderation report against a post or reply.
+
 ---
 
 ## 5. Implementation Milestones
@@ -128,9 +146,10 @@ Generates advice for a user query.
 - [x] **Milestone 4: Safety & verification.** Safety classifier, crisis path, citation checker.
 - [x] **Milestone 5: Chat experience.** Session memory, query rewriting, streaming SSE endpoint, faith toggle.
 - [x] **Milestone 6: Evaluation.** 50+ evaluation scenarios and automated scoring framework.
-- [ ] **Milestone 7: Anonymous accounts & community.** Anonymous auth, posts, replies, reports, anonymizer.
+- [x] **Milestone 7: Anonymous accounts & community.** Anonymous auth, posts, replies, reports, anonymizer.
 - [ ] **Milestone 8: Similar-problem matching.** Vector embedding of shared posts, nearest-neighbor matching.
 - [ ] **Milestone 9: Moderation.** Crisis flagging on posts/replies, report queue, moderation view.
 - [ ] **Milestone 10: Other traditions (optional).** Separate collections behind faith toggle.
 - [ ] **Milestone 11: Local-model comparison (optional).** Local evaluation with Ollama.
 - [ ] **Milestone 12: Frontend integration.** Connect frontend to API.
+
