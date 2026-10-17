@@ -25,7 +25,7 @@ CRISIS_PATTERNS = [
 HARMFUL_PATTERNS = [
     r"\b(how to (kill|murder|poison|assassinate) (someone|somebody|a person|people|my))\b",
     r"\b(how to (make|build|create) a (bomb|explosive|weapon))\b",
-    r"\b(how to steal without getting caught|how to (launder money|rob a bank))\b",
+    r"\b(how to (steal|shoplift|rob|burgle|pickpocket|launder money))\b",
     r"\b(beat up someone|attack my coworker|revenge by violence)\b",
 ]
 
