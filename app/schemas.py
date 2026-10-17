@@ -92,7 +92,10 @@ class PostReplyResponse(BaseModel):
     user_id: str = Field(..., description="Author's anonymous user identifier")
     display_name: str = Field(..., description="Author's poetic anonymous name")
     content: str = Field(..., description="Anonymised reply content")
+    is_crisis: bool = Field(default=False, description="Flagged for crisis safety review")
+    status: str = Field(default="published", description="Reply status: published, pending_review, removed")
     created_at: str = Field(..., description="ISO 8601 timestamp")
+
 
 
 class PostResponse(BaseModel):
@@ -137,4 +140,61 @@ class ReportResponse(BaseModel):
     reason: str = Field(..., description="Report reason")
     status: str = Field(default="pending", description="Report status: pending, resolved, dismissed")
     created_at: str = Field(..., description="ISO 8601 timestamp")
+
+
+# Moderation Schemas
+
+
+class ReportActionRequest(BaseModel):
+    """Payload for resolving or dismissing a user report."""
+
+    action: Literal["dismiss", "remove", "restore"] = Field(..., description="Moderation action to take")
+    note: Optional[str] = Field(default=None, max_length=1000, description="Optional moderator note")
+
+
+class ReportActionResponse(BaseModel):
+    """Response payload after taking action on a report."""
+
+    report_id: str
+    action: str
+    status: str
+    note: Optional[str] = None
+
+
+class CrisisReviewRequest(BaseModel):
+    """Payload for reviewing an item in the crisis queue."""
+
+    action: Literal["approve", "escalate", "dismiss"] = Field(..., description="Review action for crisis item")
+
+
+class CrisisReviewResponse(BaseModel):
+    """Response payload after reviewing a crisis queue item."""
+
+    target_type: str
+    target_id: str
+    action: str
+    status: str
+
+
+class ModerationReportItem(BaseModel):
+    """Report representation including reported content preview."""
+
+    id: str
+    target_type: str
+    target_id: str
+    reason: str
+    reporter_id: str
+    status: str
+    created_at: str
+    target_content: Optional[str] = None
+    target_status: Optional[str] = None
+
+
+class CrisisQueueResponse(BaseModel):
+    """Representation of the pending crisis moderation queue."""
+
+    posts: List[dict]
+    replies: List[dict]
+    total_pending: int
+
 

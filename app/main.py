@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from app.auth.anon_accounts import AnonymousAccount, AuthManager, get_auth_manager
 from app.community.matcher import SimilarProblemMatcher, get_similar_matcher
+from app.community.moderation import ModerationManager, get_moderation_manager
 from app.community.posts import PostManager, get_post_manager
 from app.config import Settings, get_settings
 from app.llm import get_llm_provider
@@ -20,12 +21,19 @@ from app.schemas import (
     CreatePostRequest,
     CreateReplyRequest,
     CreateReportRequest,
+    CrisisQueueResponse,
+    CrisisReviewRequest,
+    CrisisReviewResponse,
     HealthResponse,
+    ModerationReportItem,
     PostReplyResponse,
     PostResponse,
+    ReportActionRequest,
+    ReportActionResponse,
     ReportResponse,
     SimilarProblem,
 )
+
 
 
 app = FastAPI(
@@ -373,5 +381,133 @@ def get_similar_problems(
         threshold=threshold,
         exclude_post_id=exclude_id,
     )
+
+
+# Moderation & Admin Security and Endpoints
+
+
+def verify_admin_access(
+    x_admin_token: Optional[str] = Header(None, alias="X-Admin-Token"),
+    authorization: Optional[str] = Header(None),
+    settings: Settings = Depends(get_settings),
+) -> None:
+    """Validate administrator credentials for moderation endpoints."""
+    token = None
+    if x_admin_token:
+        token = x_admin_token.strip()
+    elif authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+
+    if not token or token != settings.ADMIN_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access denied. Invalid or missing administrator credentials.",
+        )
+
+
+@app.get(
+    "/admin/reports",
+    response_model=List[ModerationReportItem],
+    summary="List moderation reports",
+    tags=["Moderation"],
+)
+def list_reports(
+    status_filter: Optional[str] = Query(default="pending", alias="status", description="Filter by report status"),
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    moderator: ModerationManager = Depends(get_moderation_manager),
+    _: None = Depends(verify_admin_access),
+) -> List[ModerationReportItem]:
+    """List filed user reports with attached content preview."""
+    reports = moderator.list_reports(status=status_filter, limit=limit, offset=offset)
+    return [ModerationReportItem(**r) for r in reports]
+
+
+@app.get(
+    "/admin/reports/{report_id}",
+    response_model=ModerationReportItem,
+    summary="Get report details",
+    tags=["Moderation"],
+)
+def get_report(
+    report_id: str,
+    moderator: ModerationManager = Depends(get_moderation_manager),
+    _: None = Depends(verify_admin_access),
+) -> ModerationReportItem:
+    """Retrieve details for a single moderation report."""
+    report = moderator.get_report(report_id)
+    if not report:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Report '{report_id}' not found",
+        )
+    return ModerationReportItem(**report)
+
+
+@app.post(
+    "/admin/reports/{report_id}/action",
+    response_model=ReportActionResponse,
+    summary="Take action on report",
+    tags=["Moderation"],
+)
+def resolve_report(
+    report_id: str,
+    request: ReportActionRequest,
+    moderator: ModerationManager = Depends(get_moderation_manager),
+    _: None = Depends(verify_admin_access),
+) -> ReportActionResponse:
+    """Apply resolution action (remove, dismiss, or restore) to reported content."""
+    try:
+        result = moderator.resolve_report(
+            report_id=report_id,
+            action=request.action,
+            note=request.note,
+        )
+        return ReportActionResponse(**result)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
+
+@app.get(
+    "/admin/crisis",
+    response_model=CrisisQueueResponse,
+    summary="List crisis moderation queue",
+    tags=["Moderation"],
+)
+def list_crisis_queue(
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    moderator: ModerationManager = Depends(get_moderation_manager),
+    _: None = Depends(verify_admin_access),
+) -> CrisisQueueResponse:
+    """View posts and replies pending review in the crisis safety queue."""
+    queue = moderator.list_crisis_queue(limit=limit, offset=offset)
+    return CrisisQueueResponse(**queue)
+
+
+@app.post(
+    "/admin/crisis/{target_type}/{target_id}/action",
+    response_model=CrisisReviewResponse,
+    summary="Review crisis queue item",
+    tags=["Moderation"],
+)
+def review_crisis_item(
+    target_type: str,
+    target_id: str,
+    request: CrisisReviewRequest,
+    moderator: ModerationManager = Depends(get_moderation_manager),
+    _: None = Depends(verify_admin_access),
+) -> CrisisReviewResponse:
+    """Approve (publish), escalate, or dismiss a crisis-flagged item."""
+    try:
+        result = moderator.review_crisis_item(
+            target_type=target_type,
+            target_id=target_id,
+            action=request.action,
+        )
+        return CrisisReviewResponse(**result)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
 
 
