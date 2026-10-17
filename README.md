@@ -126,7 +126,7 @@ Generates advice for a user query.
 - [x] **Milestone 2: Knowledge base.** Ingest public domain Garuda Purana: chunk, embed, store. Test retrieval from a script.
 - [x] **Milestone 3: RAG.** Retrieval-augmented generation, mode selection, structured citations.
 - [x] **Milestone 4: Safety & verification.** Safety classifier, crisis path, citation checker.
-- [ ] **Milestone 5: Chat experience.** Session memory, query rewriting, streaming SSE endpoint, faith toggle.
+- [x] **Milestone 5: Chat experience.** Session memory, query rewriting, streaming SSE endpoint, faith toggle.
 - [ ] **Milestone 6: Evaluation.** 50+ evaluation scenarios and automated scoring framework.
 - [ ] **Milestone 7: Anonymous accounts & community.** Anonymous auth, posts, replies, reports, anonymizer.
 - [ ] **Milestone 8: Similar-problem matching.** Vector embedding of shared posts, nearest-neighbor matching.
