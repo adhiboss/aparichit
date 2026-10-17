@@ -39,6 +39,8 @@ class Settings(BaseSettings):
 
     # Security & CORS
     CORS_ORIGINS: str = "http://localhost:3000"
+    ADMIN_TOKEN: str = "aparichit_admin_secret"
+
 
     # Thresholds & Limits
     SIMILARITY_THRESHOLD: float = 0.80

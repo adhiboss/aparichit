@@ -69,6 +69,8 @@ class Database:
                     user_id TEXT NOT NULL,
                     display_name TEXT NOT NULL,
                     content TEXT NOT NULL,
+                    is_crisis INTEGER DEFAULT 0,
+                    status TEXT DEFAULT 'published',
                     created_at TEXT NOT NULL,
                     FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
                     FOREIGN KEY (user_id) REFERENCES accounts (user_id) ON DELETE CASCADE
@@ -88,7 +90,16 @@ class Database:
                 );
             """)
 
+            # Schema migrations for existing database files
+            cursor.execute("PRAGMA table_info(replies);")
+            reply_cols = [row[1] for row in cursor.fetchall()]
+            if "is_crisis" not in reply_cols:
+                cursor.execute("ALTER TABLE replies ADD COLUMN is_crisis INTEGER DEFAULT 0;")
+            if "status" not in reply_cols:
+                cursor.execute("ALTER TABLE replies ADD COLUMN status TEXT DEFAULT 'published';")
+
             conn.commit()
+
 
 
 _GLOBAL_DB: Optional[Database] = None
