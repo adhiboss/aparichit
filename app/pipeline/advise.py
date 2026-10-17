@@ -118,6 +118,8 @@ def build_system_prompt(
             "Direct the user to seek licensed legal assistance."
         )
 
+    tradition_label = tradition.replace("_", " ").title() if tradition else "Garuda Purana"
+
     if not faith_on:
         faith_instruction = (
             "Spiritual Guidance: DISABLED.\n"
@@ -127,7 +129,7 @@ def build_system_prompt(
         )
     elif mode == "playful":
         faith_instruction = (
-            f"Spiritual Guidance: ENABLED (Tradition: {tradition}).\n"
+            f"Spiritual Guidance: ENABLED (Tradition: {tradition_label}).\n"
             "Mode: PLAYFUL.\n"
             "The user's query is lighthearted, casual, humorous, or technical. "
             "Give a direct, accurate, and witty answer (2 to 5 sentences). "
@@ -143,21 +145,21 @@ def build_system_prompt(
             for i, p in enumerate(passages)
         )
         faith_instruction = (
-            f"Spiritual Guidance: ENABLED (Tradition: {tradition}).\n"
+            f"Spiritual Guidance: ENABLED (Tradition: {tradition_label}).\n"
             "Mode: GROUNDED.\n"
-            "Verified scripture passages are provided below. In your 'What the Garuda Purana says' section, "
-            "you MUST base your scriptural reflection directly on these verified passage(s), specifically "
+            f"Verified scripture passages from {tradition_label} are provided below. In your scriptural reflection section, "
+            "you MUST base your reflection directly on these verified passage(s), specifically "
             "citing the chapter and verse. DO NOT invent, hallucinate, or cite any passage outside of these.\n\n"
             f"--- VERIFIED SCRIPTURE PASSAGES ---\n{passages_text}\n-----------------------------------"
         )
     else:  # inspired
         faith_instruction = (
-            f"Spiritual Guidance: ENABLED (Tradition: {tradition}).\n"
+            f"Spiritual Guidance: ENABLED (Tradition: {tradition_label}).\n"
             "Mode: INSPIRED.\n"
-            "No direct scripture verse was retrieved for this specific dilemma. "
+            f"No direct scripture verse was retrieved for this specific dilemma from {tradition_label}. "
             "DO NOT fabricate or invent a verse, quote, or chapter number. "
-            "Instead, frame your advice around general Garuda Purana ethical principles "
-            "(such as karma, self-examination, truthfulness, and duty) and clearly present it as an inspired reflection."
+            f"Instead, frame your advice around general {tradition_label} ethical principles "
+            "(such as self-examination, truthfulness, equanimity, and duty) and clearly present it as an inspired reflection."
         )
 
     return f"{system_base}\n\n{faith_instruction}{safety_directive}\n\n{format_base}".strip()
@@ -186,13 +188,13 @@ class AdvicePipeline:
         self.rewriter = rewriter or QueryRewriter(provider=self.provider)
         self.matcher = matcher or get_similar_matcher()
 
-
     def retrieve_passages(
         self,
         message: str,
         history: Optional[List[Dict[str, str]]] = None,
+        tradition: str = "garuda_purana",
     ) -> List[RetrievedPassage]:
-        """Perform contextual query-rewritten search with keyword fallback."""
+        """Perform contextual query-rewritten search with keyword fallback across chosen tradition."""
         if not self.retriever:
             return []
 
@@ -204,6 +206,7 @@ class AdvicePipeline:
             query=search_query,
             top_k=3,
             min_similarity=self.settings.RETRIEVAL_THRESHOLD,
+            tradition=tradition,
         )
         if passages:
             return passages
@@ -215,6 +218,7 @@ class AdvicePipeline:
                 query=kw_query,
                 top_k=3,
                 min_similarity=self.settings.RETRIEVAL_THRESHOLD,
+                tradition=tradition,
             )
 
         return passages
@@ -255,10 +259,15 @@ class AdvicePipeline:
         # 2. Load recent conversational memory turns
         history = self.memory.get_history(request.session_id, max_messages=6)
 
-        # 3. Retrieve scripture if faith_on is enabled
+        # 3. Retrieve scripture if faith_on is enabled for the requested tradition
         passages: List[RetrievedPassage] = []
         if request.faith_on:
-            passages = self.retrieve_passages(request.message, history)
+            passages = self.retrieve_passages(
+                message=request.message,
+                history=history,
+                tradition=request.tradition,
+            )
+
 
         # 4. Determine response mode
         mode = classify_mode(
@@ -363,7 +372,12 @@ class AdvicePipeline:
         history = self.memory.get_history(request.session_id, max_messages=6)
         passages: List[RetrievedPassage] = []
         if request.faith_on:
-            passages = self.retrieve_passages(request.message, history)
+            passages = self.retrieve_passages(
+                message=request.message,
+                history=history,
+                tradition=request.tradition,
+            )
+
 
         mode = classify_mode(
             message=request.message,
