@@ -1,10 +1,16 @@
-"""Advice generation pipeline orchestrator with RAG and structured citations."""
+"""Advice generation pipeline orchestrator with RAG, safety classifier, and citation verifier."""
 
 from pathlib import Path
 import re
 from typing import Dict, List, Optional, Set
 from app.config import Settings, get_settings
 from app.llm.base import LLMProvider
+from app.pipeline.classify import (
+    CRISIS_FALLBACK_RESPONSE,
+    HARMFUL_REFUSAL_RESPONSE,
+    SafetyClassifier,
+)
+from app.pipeline.verify import CitationVerifier
 from app.rag.retriever import PassageRetriever, RetrievedPassage
 from app.schemas import ChatRequest, ChatResponse, Citation, ResponseMode
 
@@ -86,10 +92,25 @@ def build_system_prompt(
     tradition: str = "garuda_purana",
     mode: ResponseMode = "inspired",
     passages: Optional[List[RetrievedPassage]] = None,
+    safety_flag: Optional[str] = None,
 ) -> str:
     """Build the system prompt combining persona, rules, mode instructions, and retrieved passages."""
     system_base = load_prompt_file("system.md")
     format_base = load_prompt_file("advice_format.md")
+
+    safety_directive = ""
+    if safety_flag == "medical":
+        safety_directive = (
+            "\nIMPORTANT: The user asks regarding medical symptoms/treatment. "
+            "You are NOT a doctor. Do not diagnose or prescribe. Provide general compassionate support "
+            "and explicitly urge consulting a qualified physician."
+        )
+    elif safety_flag == "legal":
+        safety_directive = (
+            "\nIMPORTANT: The user asks regarding legal matters. "
+            "You are NOT an attorney. Do not provide formal legal counsel. "
+            "Direct the user to seek licensed legal assistance."
+        )
 
     if not faith_on:
         faith_instruction = (
@@ -133,7 +154,7 @@ def build_system_prompt(
             "(such as karma, self-examination, truthfulness, and duty) and clearly present it as an inspired reflection."
         )
 
-    return f"{system_base}\n\n{faith_instruction}\n\n{format_base}".strip()
+    return f"{system_base}\n\n{faith_instruction}{safety_directive}\n\n{format_base}".strip()
 
 
 class AdvicePipeline:
@@ -143,11 +164,15 @@ class AdvicePipeline:
         self,
         provider: LLMProvider,
         retriever: Optional[PassageRetriever] = None,
+        safety_classifier: Optional[SafetyClassifier] = None,
+        citation_verifier: Optional[CitationVerifier] = None,
         settings: Optional[Settings] = None,
     ) -> None:
         self.provider = provider
         self.settings = settings or get_settings()
         self.retriever = retriever
+        self.safety_classifier = safety_classifier or SafetyClassifier()
+        self.citation_verifier = citation_verifier or CitationVerifier()
 
     def retrieve_passages(self, query: str) -> List[RetrievedPassage]:
         """Perform two-pass retrieval (direct query first, then content-keywords fallback)."""
@@ -175,34 +200,56 @@ class AdvicePipeline:
         return passages
 
     def generate_advice(self, request: ChatRequest) -> ChatResponse:
-        """Process a user chat request and generate an advice response with RAG and citations."""
-        passages: List[RetrievedPassage] = []
+        """Process a user chat request with safety classification, RAG, and citation verification."""
+        # 1. Safety Classification
+        classification = self.safety_classifier.classify(request.message)
 
-        # 1. Retrieve scripture if faith_on is enabled
+        # 1.1 Crisis Path: Instant bypass with helpline resources, dropping all persona & scripture
+        if classification.flag == "crisis":
+            return ChatResponse(
+                answer=classification.crisis_response or CRISIS_FALLBACK_RESPONSE,
+                mode="inspired",
+                citations=[],
+                source_labels=["crisis_support"],
+                similar=[],
+                safety_flag="crisis",
+            )
+
+        # 1.2 Harmful Path: Immediate peaceful refusal
+        if classification.flag == "harmful":
+            return ChatResponse(
+                answer=classification.crisis_response or HARMFUL_REFUSAL_RESPONSE,
+                mode="inspired",
+                citations=[],
+                source_labels=["ai_suggestion"],
+                similar=[],
+                safety_flag="harmful",
+            )
+
+        # 2. Retrieve scripture if faith_on is enabled
+        passages: List[RetrievedPassage] = []
         if request.faith_on:
             passages = self.retrieve_passages(request.message)
 
-        # 2. Determine response mode
+        # 3. Determine response mode
         mode = classify_mode(
             message=request.message,
             faith_on=request.faith_on,
             passages=passages,
         )
 
-        # 3. Build citations and source labels
+        # 4. Preliminary citations and source labels
         citations: List[Citation] = []
-        source_labels: List[str] = ["ai_suggestion"]
-
         if mode == "grounded" and passages:
             citations = [p.to_citation() for p in passages]
-            source_labels = ["scripture", "ai_suggestion"]
 
-        # 4. Construct system prompt
+        # 5. Construct system prompt
         system_content = build_system_prompt(
             faith_on=request.faith_on,
             tradition=request.tradition,
             mode=mode,
             passages=passages if mode == "grounded" else [],
+            safety_flag=classification.flag,
         )
 
         messages: List[Dict[str, str]] = [
@@ -210,15 +257,28 @@ class AdvicePipeline:
             {"role": "user", "content": request.message},
         ]
 
-        # 5. Generate LLM response
+        # 6. Generate LLM response
         raw_response = self.provider.generate(messages, stream=False)
         answer_text = str(raw_response).strip()
 
-        return ChatResponse(
+        # 7. Citation Verification & Anti-Hallucination Filtering
+        verified_answer, verified_citations = self.citation_verifier.verify(
             answer=answer_text,
-            mode=mode,
+            retrieved_passages=passages,
             citations=citations,
+        )
+
+        # If citation verification dropped all citations, fallback mode to inspired
+        if mode == "grounded" and not verified_citations:
+            mode = "inspired"
+
+        source_labels = ["scripture", "ai_suggestion"] if verified_citations else ["ai_suggestion"]
+
+        return ChatResponse(
+            answer=verified_answer,
+            mode=mode,
+            citations=verified_citations,
             source_labels=source_labels,
             similar=[],
-            safety_flag=None,
+            safety_flag=classification.flag,
         )
