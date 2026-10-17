@@ -33,7 +33,7 @@ class RetrievedPassage:
 
 
 class PassageRetriever:
-    """Retriever for querying and filtering relevant scripture passages."""
+    """Retriever for querying and filtering relevant scripture passages across multiple traditions."""
 
     def __init__(
         self,
@@ -41,17 +41,32 @@ class PassageRetriever:
         settings: Optional[Settings] = None,
     ) -> None:
         self.settings = settings or get_settings()
-        self.store = store or VectorStore(
-            db_path=self.settings.VECTOR_DB_PATH,
-            collection_name="garuda_purana",
-        )
+        self._stores: dict[str, VectorStore] = {}
+        if store:
+            self._stores["garuda_purana"] = store
         self.retrieval_threshold = self.settings.RETRIEVAL_THRESHOLD
+
+    def get_store(self, tradition: str = "garuda_purana") -> VectorStore:
+        """Get or create the vector store collection for a specific scripture tradition."""
+        key = (tradition or "garuda_purana").strip().lower()
+        if key not in self._stores:
+            self._stores[key] = VectorStore(
+                db_path=self.settings.VECTOR_DB_PATH,
+                collection_name=key,
+            )
+        return self._stores[key]
+
+    @property
+    def store(self) -> VectorStore:
+        """Default store backward compatibility property."""
+        return self.get_store("garuda_purana")
 
     def retrieve(
         self,
         query: str,
         top_k: int = 3,
         min_similarity: Optional[float] = None,
+        tradition: str = "garuda_purana",
     ) -> List[RetrievedPassage]:
         """Retrieve relevant passages for a query above the similarity threshold.
 
@@ -59,12 +74,14 @@ class PassageRetriever:
             query: The user or rewritten search query.
             top_k: Max passages to return.
             min_similarity: Override minimum cosine similarity threshold.
+            tradition: Scripture tradition collection to search ('garuda_purana', 'bhagavad_gita', etc.)
 
         Returns:
             List of RetrievedPassage objects meeting the threshold.
         """
         threshold = self.retrieval_threshold if min_similarity is None else min_similarity
-        raw_results = self.store.query(query_text=query, n_results=top_k)
+        target_store = self.get_store(tradition)
+        raw_results = target_store.query(query_text=query, n_results=top_k)
 
         passages: List[RetrievedPassage] = []
         for res in raw_results:
@@ -75,9 +92,9 @@ class PassageRetriever:
             meta = res.get("metadata", {})
             passage = RetrievedPassage(
                 id=res["id"],
-                source=meta.get("source", "Garuda Purana"),
-                translation=meta.get("translation", "Wood & Subrahmanyam 1911"),
-                section=meta.get("section", "Preta Kanda / Saroddhara"),
+                source=meta.get("source", tradition.replace("_", " ").title()),
+                translation=meta.get("translation", ""),
+                section=meta.get("section", ""),
                 chapter=meta.get("chapter", ""),
                 verse=meta.get("verse", ""),
                 text=res.get("text", ""),
@@ -87,3 +104,4 @@ class PassageRetriever:
             passages.append(passage)
 
         return passages
+
