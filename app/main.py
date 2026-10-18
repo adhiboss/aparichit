@@ -105,6 +105,44 @@ def list_traditions() -> List[TraditionItem]:
     ]
 
 
+@app.get(
+    "/traditions/{tradition_id}",
+    summary="Get detailed scripture text and chapters for a tradition",
+    tags=["System"],
+)
+def get_tradition_detail(tradition_id: str):
+    """Retrieve full chapters, verses, and philosophical context for a tradition in the wisdom library."""
+    import json
+    from app.rag.ingest import TRADITIONS, RAW_DIR
+
+    key = tradition_id.strip().lower()
+    if key not in TRADITIONS:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Tradition '{tradition_id}' not found. Available: {list(TRADITIONS.keys())}",
+        )
+
+    config = TRADITIONS[key]
+    raw_file = RAW_DIR / config["raw_file"]
+    chapters = []
+    if raw_file.exists():
+        with open(raw_file, "r", encoding="utf-8") as f:
+            chapters = json.load(f)
+
+    total_verses = sum(len(ch.get("verses", [])) for ch in chapters)
+
+    return {
+        "id": key,
+        "name": config["name"],
+        "source": config.get("source", config["name"]),
+        "translation": config.get("translation", ""),
+        "default_section": config.get("default_section", ""),
+        "description": config.get("description", ""),
+        "chapters": chapters,
+        "total_verses": total_verses,
+    }
+
+
 
 @app.post(
     "/chat",

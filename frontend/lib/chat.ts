@@ -7,6 +7,7 @@ import type {
   ChatRequest,
   ChatResponse,
   StreamMetaEvent,
+  TraditionDetail,
   TraditionItem,
 } from "./types.ts";
 
@@ -15,6 +16,15 @@ import type {
  */
 export async function fetchTraditions(): Promise<TraditionItem[]> {
   return apiRequest<TraditionItem[]>("/traditions");
+}
+
+/**
+ * Fetch complete scripture chapters, verses, and historical metadata for a tradition.
+ */
+export async function fetchTraditionDetail(
+  traditionId: string
+): Promise<TraditionDetail> {
+  return apiRequest<TraditionDetail>(`/traditions/${encodeURIComponent(traditionId)}`);
 }
 
 /**

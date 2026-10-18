@@ -9,7 +9,9 @@ import { ScriptureCitationDrawer } from "@/components/ScriptureCitationDrawer";
 import { SimilarProblemCards } from "@/components/SimilarProblemCards";
 import { CommunityFeed } from "@/components/CommunityFeed";
 import { HeroLanding } from "@/components/HeroLanding";
-import { ChatMessage, Citation, StreamMetaEvent } from "@/lib/types";
+import { TraditionDropdown } from "@/components/TraditionDropdown";
+import { ScriptureLibrary } from "@/components/ScriptureLibrary";
+import { ChatMessage, Citation, StreamMetaEvent, TraditionItem } from "@/lib/types";
 import {
   getSessionId,
   resetSessionId,
@@ -65,11 +67,31 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [faithOn, setFaithOn] = useState<boolean>(true);
   const [selectedTradition, setSelectedTradition] = useState<string>("bhagavad_gita");
-  const [traditions, setTraditions] = useState<Array<{ id: string; name: string }>>([
-    { id: "bhagavad_gita", name: "Bhagavad Gita" },
-    { id: "dhammapada", name: "Dhammapada" },
-    { id: "stoicism", name: "Stoicism" },
-    { id: "garuda_purana", name: "Garuda Purana" },
+  const [traditions, setTraditions] = useState<TraditionItem[]>([
+    {
+      id: "garuda_purana",
+      name: "Garuda Purana",
+      translation: "Wood & Subrahmanyam 1911",
+      description: "Classical Hindu dialogue on karma and moral duty.",
+    },
+    {
+      id: "bhagavad_gita",
+      name: "Bhagavad Gita",
+      translation: "Edwin Arnold 1885",
+      description: "Dialogue between Krishna and Arjuna on selfless action.",
+    },
+    {
+      id: "dhammapada",
+      name: "Dhammapada",
+      translation: "Max Müller 1881",
+      description: "Early Buddhist verses of wisdom on mental discipline.",
+    },
+    {
+      id: "stoicism",
+      name: "Meditations (Stoicism)",
+      translation: "George Long 1862",
+      description: "Marcus Aurelius's reflections on personal virtue.",
+    },
   ]);
   const [showCitationDrawer, setShowCitationDrawer] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("chat");
@@ -81,6 +103,14 @@ export default function HomePage() {
     const prefs = getSavedPreferences();
     setFaithOn(prefs.faith_on);
     if (prefs.tradition) setSelectedTradition(prefs.tradition);
+
+    if (typeof window !== "undefined") {
+      const storedPrompt = sessionStorage.getItem("aparichit_initial_prompt");
+      if (storedPrompt) {
+        setInitialInputPrompt(storedPrompt);
+        sessionStorage.removeItem("aparichit_initial_prompt");
+      }
+    }
 
     async function load() {
       try {
@@ -254,7 +284,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#14120e] text-[#f2ede4] flex flex-col font-body">
       {/* Top Navigation Header */}
-      <ChatHeader />
+      <ChatHeader
+        activeTab={activeTab}
+        onTabChange={(tab) => setActiveTab(tab)}
+      />
 
       {/* Main Container */}
       <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 flex flex-col space-y-6">
@@ -310,28 +343,16 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Right: Choose a Tradition Dropdown */}
+                  {/* Right: Custom Designed Tradition Dropdown (Replacing native OS select) */}
                   <div className="flex items-center gap-2.5">
                     <span className="font-label text-xs text-[#b5aa9b] hidden sm:inline">
                       Choose a tradition
                     </span>
-                    <div className="relative">
-                      <select
-                        value={selectedTradition}
-                        onChange={(e) => handleTraditionChange(e.target.value)}
-                        className="appearance-none pl-8 pr-8 py-2 rounded-xl bg-[#261f18] border border-[#362c22] hover:border-[#e59a27]/50 text-xs font-semibold text-[#f2ede4] focus:outline-none focus:border-[#e59a27] cursor-pointer shadow-sm transition-all"
-                      >
-                        {traditions.map((t) => (
-                          <option key={t.id} value={t.id} className="bg-[#1c1712] text-[#f2ede4]">
-                            {t.name}
-                          </option>
-                        ))}
-                      </select>
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-serif text-[#e59a27]">
-                        ॐ
-                      </span>
-                      <ChevronDown className="w-3.5 h-3.5 text-[#b5aa9b] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
+                    <TraditionDropdown
+                      traditions={traditions}
+                      selectedId={selectedTradition}
+                      onSelect={handleTraditionChange}
+                    />
                   </div>
                 </div>
 
@@ -364,6 +385,19 @@ export default function HomePage() {
             {/* View Tab Switcher: COMMUNITY FEED */}
             {activeTab === "community" && <CommunityFeed />}
 
+            {/* View Tab Switcher: SACRED SCRIPTURE WISDOM LIBRARY */}
+            {activeTab === "library" && (
+              <ScriptureLibrary
+                initialTraditionId={selectedTradition}
+                onConsultVerse={(verseText, tradName) => {
+                  setInitialInputPrompt(
+                    `How can I apply the wisdom of ${tradName} to my situation regarding this verse: "${verseText}"?`
+                  );
+                  setActiveTab("chat");
+                }}
+              />
+            )}
+
             {/* People Facing Something Similar */}
             <SimilarProblemCards onSelectPost={() => setActiveTab("community")} />
           </main>
@@ -374,6 +408,10 @@ export default function HomePage() {
               <ScriptureCitationDrawer
                 citations={latestCitations}
                 onClose={() => setShowCitationDrawer(false)}
+                onViewInLibrary={(tradId) => {
+                  if (tradId) setSelectedTradition(tradId);
+                  setActiveTab("library");
+                }}
               />
             </aside>
           )}

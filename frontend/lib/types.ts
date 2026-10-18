@@ -28,6 +28,30 @@ export interface SimilarProblem {
   similarity: number;
 }
 
+export interface TraditionVerse {
+  verse: string;
+  text: string;
+  topics: string[];
+}
+
+export interface TraditionChapter {
+  chapter: number;
+  chapter_title: string;
+  section: string;
+  verses: TraditionVerse[];
+}
+
+export interface TraditionDetail {
+  id: string;
+  name: string;
+  source: string;
+  translation: string;
+  default_section: string;
+  description: string;
+  chapters: TraditionChapter[];
+  total_verses: number;
+}
+
 export interface TraditionItem {
   id: string;
   name: string;

@@ -14,12 +14,14 @@ interface ScriptureCitationDrawerProps {
   citations: Citation[];
   onClose?: () => void;
   isOpen?: boolean;
+  onViewInLibrary?: (traditionId?: string) => void;
 }
 
 export const ScriptureCitationDrawer: React.FC<ScriptureCitationDrawerProps> = ({
   citations,
   onClose,
   isOpen = true,
+  onViewInLibrary,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -116,9 +118,18 @@ export const ScriptureCitationDrawer: React.FC<ScriptureCitationDrawerProps> = (
           {/* View in Library Button */}
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#211a14] hover:bg-[#29211a] border border-[#362c22] hover:border-[#e59a27]/50 text-[#f2ede4] text-xs font-label font-semibold transition-all cursor-pointer shadow-sm"
+            onClick={() => {
+              const srcLower = (primary.source || "").toLowerCase();
+              let matchedId = "bhagavad_gita";
+              if (srcLower.includes("garuda")) matchedId = "garuda_purana";
+              else if (srcLower.includes("dhamma")) matchedId = "dhammapada";
+              else if (srcLower.includes("meditation") || srcLower.includes("stoic")) matchedId = "stoicism";
+              else if (srcLower.includes("gita")) matchedId = "bhagavad_gita";
+              if (onViewInLibrary) onViewInLibrary(matchedId);
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#211a14] hover:bg-[#29211a] border border-[#362c22] hover:border-[#e59a27]/50 text-[#f2ede4] text-xs font-label font-semibold transition-all cursor-pointer shadow-sm group"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#e59a27]" />
+            <BookOpen className="w-3.5 h-3.5 text-[#e59a27] group-hover:scale-110 transition-transform" />
             <span>View in Library →</span>
           </button>
         </div>

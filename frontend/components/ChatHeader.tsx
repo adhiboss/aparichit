@@ -16,9 +16,15 @@ import {
 
 interface ChatHeaderProps {
   onSearch?: (query: string) => void;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
+export const ChatHeader: React.FC<ChatHeaderProps> = ({
+  onSearch,
+  activeTab,
+  onTabChange,
+}) => {
   const pathname = usePathname();
   const [account, setAccount] = useState<AnonymousAccount | null>(null);
   const [isRotating, setIsRotating] = useState(false);
@@ -53,10 +59,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
   };
 
   const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Chat", href: "/chat" },
-    { label: "Community", href: "/community" },
-    { label: "Library", href: "/chat" },
+    { id: "home", label: "Home", href: "/" },
+    { id: "chat", label: "Chat", href: "/" },
+    { id: "community", label: "Community", href: "/community" },
+    { id: "library", label: "Library", href: "/library" },
   ];
 
   return (
@@ -101,15 +107,22 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onSearch }) => {
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-7">
             {navLinks.map((item) => {
-              const active =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname?.startsWith(item.href);
+              const active = activeTab
+                ? activeTab === item.id || (item.id === "chat" && activeTab === "chat")
+                : item.href === "/"
+                ? pathname === "/"
+                : pathname?.startsWith(item.href);
 
               return (
                 <Link
                   key={item.label}
                   href={item.href}
+                  onClick={(e) => {
+                    if (onTabChange) {
+                      e.preventDefault();
+                      onTabChange(item.id);
+                    }
+                  }}
                   className={`font-label text-sm tracking-wide transition-colors relative py-1 ${
                     active
                       ? "text-[#e59a27] font-semibold after:absolute after:bottom-[-6px] after:left-0 after:w-full after:h-[2px] after:bg-[#e59a27]"

@@ -19,7 +19,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   const navItems = [
     { id: "chat", label: "Chat", icon: MessageSquare, href: "/" },
     { id: "community", label: "Community", icon: Users, href: "/community" },
-    { id: "library", label: "Library", icon: BookOpen, href: "/chat" },
+    { id: "library", label: "Library", icon: BookOpen, href: "/library" },
     { id: "profile", label: "My Profile", icon: User, href: "/chat" },
   ];
 
@@ -42,12 +42,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
             const Icon = item.icon;
             const isActive =
               activeTab === item.id ||
-              (item.id === "chat" && activeTab === "chat" && (pathname === "/" || pathname === "/chat"));
+              (item.id === "chat" && activeTab === "chat" && (pathname === "/" || pathname === "/chat")) ||
+              (item.id === "library" && (activeTab === "library" || pathname === "/library")) ||
+              (item.id === "community" && (activeTab === "community" || pathname === "/community"));
 
             return (
               <button
                 key={item.id}
-                onClick={() => onTabChange && onTabChange(item.id === "profile" || item.id === "library" ? "chat" : item.id)}
+                onClick={() => onTabChange && onTabChange(item.id === "profile" ? "chat" : item.id)}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isActive
                     ? "bg-[#211a14]/95 text-[#f0a83b] border border-[#e59a27]/40 shadow-lg shadow-[#e59a27]/10 backdrop-blur-md"

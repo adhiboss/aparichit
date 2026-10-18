@@ -178,6 +178,19 @@ describe("Contract Integrity & Real Backend Integration", () => {
     assert.ok(ids.includes("stoicism"));
   });
 
+  test("GET /traditions/{tradition_id} returns chapters, verses, and metadata", async () => {
+    const res = await fetch("http://localhost:8000/traditions/garuda_purana");
+    assert.equal(res.status, 200);
+    const detail = await res.json();
+    assert.equal(detail.id, "garuda_purana");
+    assert.equal(detail.name, "Garuda Purana");
+    assert.ok(Array.isArray(detail.chapters));
+    assert.ok(detail.chapters.length > 0);
+    assert.ok(detail.total_verses > 0);
+    assert.ok(detail.chapters[0].verses.length > 0);
+    assert.ok(typeof detail.chapters[0].verses[0].text === "string");
+  });
+
   test("POST /auth/anonymous generates poetic name and session token", async () => {
     const res = await fetch("http://localhost:8000/auth/anonymous", {
       method: "POST",
