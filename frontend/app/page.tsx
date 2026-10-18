@@ -254,36 +254,30 @@ export default function HomePage() {
         {(activeTab === "chat" || activeTab === "home") && (
           <div className="w-full flex flex-col flex-1">
             {/* Cinematic Hero Section with Sunset Landscape Background */}
-            <section className="relative w-full overflow-hidden bg-[#171A1F]">
-              {/* Background Image Container */}
-              <div className="absolute inset-0 -z-10">
-                <Image
-                  src="/images/hero_sunset.jpg"
-                  alt="Ancient temple sanctuary at golden sunset"
-                  fill
-                  priority
-                  className="object-cover object-center"
-                />
-                {/* Subtle dark charcoal overlay with gradients for text contrast */}
-                <div className="absolute inset-0 bg-[#171A1F]/65" />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#171A1F]/85 via-[#171A1F]/45 to-[#171A1F]" />
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(23,26,31,0.75)_0%,_rgba(23,26,31,0.25)_60%,_rgba(23,26,31,0.85)_100%)] pointer-events-none" />
-              </div>
+            <section
+              className="relative w-full bg-cover bg-center bg-no-repeat transition-all duration-300"
+              style={{
+                backgroundImage: "url('/images/hero_sunset.jpg')",
+              }}
+            >
+              {/* Subtle dark charcoal overlay - preserves sunset colors, mountains, and temple while keeping text crisp */}
+              <div className="absolute inset-0 bg-[#171A1F]/45 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#171A1F]/70 via-transparent to-[#171A1F] pointer-events-none" />
 
               {/* Centered Hero Content */}
               <div className="max-w-3xl mx-auto px-5 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 flex flex-col items-center text-center relative z-10">
                 {/* Main Headline */}
-                <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#E7E1D5] tracking-tight leading-[1.15] max-w-2xl font-normal drop-shadow-sm">
+                <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#E7E1D5] tracking-tight leading-[1.15] max-w-2xl font-normal drop-shadow-md">
                   Find perspective in life&apos;s difficult moments.
                 </h1>
 
                 {/* Supporting Text */}
-                <p className="mt-4 sm:mt-5 text-base sm:text-lg text-[#E7E1D5]/90 max-w-xl font-light leading-relaxed">
+                <p className="mt-4 sm:mt-5 text-base sm:text-lg text-[#E7E1D5]/90 max-w-xl font-light leading-relaxed drop-shadow">
                   Ask your questions, explore philosophical wisdom, or learn from real experiences — anonymously.
                 </p>
 
                 {/* Spiritual Guidance Toggle & Tradition Selector */}
-                <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 bg-[#171A1F]/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#2E333D]/70 shadow-lg">
+                <div className="relative z-30 mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 bg-[#171A1F]/85 backdrop-blur-md px-4 py-2 rounded-full border border-[#2E333D]/80 shadow-xl">
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
@@ -318,7 +312,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Main Chat Input */}
-                <div className="mt-6 w-full max-w-2xl sm:max-w-3xl">
+                <div className="relative z-10 mt-6 w-full max-w-2xl sm:max-w-3xl">
                   <ChatInput
                     onSendMessage={handleSendMessage}
                     isLoading={isLoading}
@@ -328,7 +322,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Three Suggested Prompts */}
-                <div className="mt-4 flex flex-wrap justify-center gap-2 max-w-2xl">
+                <div className="relative z-0 mt-4 flex flex-wrap justify-center gap-2 max-w-2xl">
                   {[
                     "How do I handle burnout without losing purpose?",
                     "Finding detachment in high-stakes decisions",
@@ -338,7 +332,7 @@ export default function HomePage() {
                       key={prompt}
                       type="button"
                       onClick={() => handleSendMessage(prompt)}
-                      className="px-3.5 py-1.5 rounded-full bg-[#171A1F]/80 hover:bg-[#242830] border border-[#2E333D] hover:border-[#B69A61]/50 text-xs text-[#9EA3AF] hover:text-[#E7E1D5] transition-colors cursor-pointer text-left backdrop-blur-sm"
+                      className="px-3.5 py-1.5 rounded-full bg-[#171A1F]/85 hover:bg-[#242830] border border-[#2E333D] hover:border-[#B69A61]/50 text-xs text-[#9EA3AF] hover:text-[#E7E1D5] transition-colors cursor-pointer text-left backdrop-blur-sm shadow-sm"
                     >
                       {prompt}
                     </button>

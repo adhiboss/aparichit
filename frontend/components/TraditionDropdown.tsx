@@ -84,7 +84,7 @@ export const TraditionDropdown: React.FC<TraditionDropdownProps> = ({
   }, [isOpen]);
 
   return (
-    <div ref={dropdownRef} className={`relative inline-block ${className}`}>
+    <div ref={dropdownRef} className={`relative inline-block z-40 ${className}`}>
       {/* Editorial Trigger Button */}
       <button
         type="button"
@@ -110,7 +110,7 @@ export const TraditionDropdown: React.FC<TraditionDropdownProps> = ({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-[#242830] border border-[#2E333D] shadow-xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+          className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-[#242830] border border-[#2E333D] shadow-2xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
         >
           <div className="space-y-0.5 px-1 max-h-64 overflow-y-auto">
             {traditions.map((tradition) => {
