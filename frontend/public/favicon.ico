@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">APARICHIT favicon</title>
+  <rect width="64" height="64" rx="14" fill="#171A1F"/>
+  <g fill="none" stroke="#D4AF37" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 29 A16 16 0 0 1 30 13" stroke-width="1.8"/>
+    <path d="M34 13 A16 16 0 0 1 47 29" stroke-width="1.8"/>
+    <circle cx="32" cy="10" r="2" fill="#D4AF37" stroke="none"/>
+    <path d="M32 48 C21 40 22 28 32 18 C42 28 43 40 32 48Z" stroke-width="2.6"/>
+    <path d="M31 46 C25 38 27 31 32 26 C37 31 39 38 33 46" stroke-width="2"/>
+    <path d="M28 47 C18 46 12 40 10 32 C19 32 25 36 29 42" stroke-width="2.4"/>
+    <path d="M36 47 C46 46 52 40 54 32 C45 32 39 36 35 42" stroke-width="2.4"/>
+    <path d="M15 49 C22 53 28 53 32 49 C36 53 42 53 49 49" stroke-width="2.4"/>
+  </g>
+</svg>

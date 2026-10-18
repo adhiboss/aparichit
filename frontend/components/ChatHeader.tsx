@@ -74,22 +74,12 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           }}
           className="flex items-center gap-3 group"
         >
-          {/* Subtle Muted Gold Lotus */}
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-5 h-5 text-[#B69A61]"
-          >
-            <path d="M12 3c-1.5 2-3 4.5-3 7 0 2 1.5 3.5 3 3.5s3-1.5 3-3.5c0-2.5-1.5-5-3-7z" />
-            <path d="M8 9C6 10.5 4 13 4 15.5 4 17.5 5.5 19 8 19c1.5 0 2.8-.7 3.5-1.8" />
-            <path d="M16 9c2 1.5 4 4 4 6.5 0 2-1.5 3.5-4 3.5-1.5 0-2.8-.7-3.5-1.8" />
-            <path d="M12 21c-4 0-7-1.5-7-3.5 0-.5.5-1 1.5-1.5" />
-            <path d="M12 21c4 0 7-1.5 7-3.5 0-.5-.5-1-1.5-1.5" />
-          </svg>
+          {/* APARICHIT Emblem */}
+          <img
+            src="/aparichit-favicon.svg"
+            alt="APARICHIT Emblem"
+            className="w-6 h-6 rounded-md shadow-sm group-hover:scale-105 transition-transform"
+          />
 
           <div className="flex flex-col">
             <span className="font-headline text-base sm:text-lg font-medium tracking-wider text-[#E7E1D5]">

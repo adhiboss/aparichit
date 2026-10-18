@@ -27,6 +27,13 @@ export const metadata: Metadata = {
   title: "APARICHIT (अपारिचित) — Ancient Wisdom & Sanctuary",
   description:
     "An anonymous AI-guided sanctuary and peer support platform rooted in classical philosophical canons.",
+  icons: {
+    icon: [
+      { url: "/aparichit-favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/aparichit-favicon.svg",
+    apple: "/aparichit-favicon.svg",
+  },
 };
 
 export default function RootLayout({
