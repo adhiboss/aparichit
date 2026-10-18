@@ -17,19 +17,19 @@ const TRADITION_METADATA: Record<
 > = {
   garuda_purana: {
     symbol: "ॐ",
-    subtitle: "Wood & Subrahmanyam 1911",
+    subtitle: "Karma, mortality & the soul's journey",
   },
   bhagavad_gita: {
     symbol: "ॐ",
-    subtitle: "Edwin Arnold 1885",
+    subtitle: "Duty, inner conflict & selfless action",
   },
   dhammapada: {
     symbol: "☸",
-    subtitle: "Max Müller 1881",
+    subtitle: "Mindfulness, peace & mental mastery",
   },
   stoicism: {
     symbol: "🏛",
-    subtitle: "George Long 1862",
+    subtitle: "Resilience, reason & inner sovereignty",
   },
 };
 
@@ -110,14 +110,14 @@ export const TraditionDropdown: React.FC<TraditionDropdownProps> = ({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-[#242830] border border-[#2E333D] shadow-2xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+          className="absolute right-0 top-full mt-2 w-72 sm:w-80 rounded-xl bg-[#242830] border border-[#2E333D] shadow-2xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
         >
           <div className="space-y-0.5 px-1 max-h-64 overflow-y-auto">
             {traditions.map((tradition) => {
               const isSelected = tradition.id === selectedTradition.id;
               const meta = TRADITION_METADATA[tradition.id] || {
                 symbol: "ॐ",
-                subtitle: tradition.translation || "",
+                subtitle: tradition.description || "Classical wisdom canon",
               };
 
               return (
@@ -130,7 +130,7 @@ export const TraditionDropdown: React.FC<TraditionDropdownProps> = ({
                     onSelect(tradition.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-left transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-left transition-colors cursor-pointer ${
                     isSelected
                       ? "bg-[#2A303A] text-[#E7E1D5]"
                       : "text-[#9E9CA3] hover:bg-[#2A303A]/60 hover:text-[#E7E1D5]"
@@ -141,10 +141,10 @@ export const TraditionDropdown: React.FC<TraditionDropdownProps> = ({
                       {meta.symbol}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <span className="block text-xs font-medium truncate text-[#E7E1D5]">
+                      <span className="block text-xs font-medium text-[#E7E1D5]">
                         {tradition.name}
                       </span>
-                      <span className="block text-[11px] text-[#6C717D] truncate">
+                      <span className="block text-[11px] text-[#9E9CA3] mt-0.5 leading-snug">
                         {meta.subtitle}
                       </span>
                     </div>
