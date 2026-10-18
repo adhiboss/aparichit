@@ -387,7 +387,7 @@ export default function HomePage() {
 
         {/* VIEW: COMMUNITY FEED */}
         {activeTab === "community" && (
-          <main className="max-w-4xl w-full mx-auto px-5 sm:px-8 py-8">
+          <main className="w-full">
             <CommunityFeed />
           </main>
         )}

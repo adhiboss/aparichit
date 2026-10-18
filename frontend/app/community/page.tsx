@@ -11,7 +11,7 @@ function CommunityContent() {
   const initialPostId = searchParams.get("post_id") || undefined;
 
   return (
-    <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8">
+    <main className="flex-1 w-full">
       <CommunityFeed initialPostId={initialPostId} />
     </main>
   );

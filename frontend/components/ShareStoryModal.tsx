@@ -93,10 +93,43 @@ export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
           </div>
         </div>
 
+        {/* Topic Tag Selector */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-medium text-[#9EA3AF]">
+            Select Dilemma Theme:
+          </label>
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              "Duty & Family",
+              "Career & Calling",
+              "Forgiveness & Healing",
+              "Solitude & Inner Peace",
+              "Ambition & Surrender",
+            ].map((topic) => (
+              <button
+                key={topic}
+                type="button"
+                onClick={() => {
+                  if (!content.startsWith(`[${topic}]`)) {
+                    setContent(`[${topic}] ${content.replace(/^\[[^\]]+\]\s*/, "")}`);
+                  }
+                }}
+                className={`px-2.5 py-1 rounded-full text-xs transition-colors cursor-pointer ${
+                  content.startsWith(`[${topic}]`)
+                    ? "bg-[#B69A61] text-[#171A1F] font-semibold"
+                    : "bg-[#1E222A] hover:bg-[#282D37] text-[#9EA3AF] border border-[#2E333D]"
+                }`}
+              >
+                {topic}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Story Editor */}
         <div className="space-y-1.5">
           <label className="block text-xs font-medium text-[#9EA3AF]">
-            Review & Edit Your Story Before Sharing
+            Your Reflection / Dilemma
           </label>
           <textarea
             value={content}
