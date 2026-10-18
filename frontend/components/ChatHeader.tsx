@@ -198,6 +198,17 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
                 <button
                   onClick={() => {
+                    if (onTabChange) onTabChange("profile");
+                    setShowAccountMenu(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[#b5aa9b] hover:text-[#f2ede4] hover:bg-[#29211a] transition-colors text-left cursor-pointer"
+                >
+                  <User className="w-3.5 h-3.5 text-[#e59a27]" />
+                  <span className="font-label">My Profile & Privacy</span>
+                </button>
+
+                <button
+                  onClick={() => {
                     handleRotate();
                     setShowAccountMenu(false);
                   }}
@@ -207,7 +218,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   <RefreshCw
                     className={`w-3.5 h-3.5 text-[#e59a27] ${isRotating ? "animate-spin" : ""}`}
                   />
-                  <span className="font-label">Generate New Pseudonym</span>
+                  <span className="font-label">Rotate Pseudonym</span>
                 </button>
               </div>
             )}

@@ -11,6 +11,7 @@ import { CommunityFeed } from "@/components/CommunityFeed";
 import { HeroLanding } from "@/components/HeroLanding";
 import { TraditionDropdown } from "@/components/TraditionDropdown";
 import { ScriptureLibrary } from "@/components/ScriptureLibrary";
+import { UserProfile } from "@/components/UserProfile";
 import { ChatMessage, Citation, StreamMetaEvent, TraditionItem } from "@/lib/types";
 import {
   getSessionId,
@@ -394,6 +395,22 @@ export default function HomePage() {
                     `How can I apply the wisdom of ${tradName} to my situation regarding this verse: "${verseText}"?`
                   );
                   setActiveTab("chat");
+                }}
+              />
+            )}
+
+            {/* View Tab Switcher: ANONYMOUS PROFILE & PRIVACY SANCTUARY */}
+            {activeTab === "profile" && (
+              <UserProfile
+                onStartChat={(prompt) => {
+                  if (prompt) setInitialInputPrompt(prompt);
+                  setActiveTab("chat");
+                }}
+                onExploreLibrary={() => setActiveTab("library")}
+                onExploreCommunity={() => setActiveTab("community")}
+                onPreferencesUpdated={(p) => {
+                  setFaithOn(p.faith_on);
+                  setSelectedTradition(p.tradition);
                 }}
               />
             )}
