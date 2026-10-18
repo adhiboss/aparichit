@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Serif, Outfit } from "next/font/google";
 import "./globals.css";
+import "lenis/dist/lenis.css";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 const sansFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -43,6 +45,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-[#171A1F] text-[#E7E1D5] antialiased selection:bg-[#B69A61]/25 selection:text-[#E7E1D5]"
       >
+        <SmoothScroll />
         {children}
       </body>
     </html>
