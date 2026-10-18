@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { ChatHeader } from "@/components/ChatHeader";
-import { AppSidebar } from "@/components/AppSidebar";
 import { ChatInput } from "@/components/ChatInput";
 import { ChatMessage as ChatMessageComponent } from "@/components/ChatMessage";
 import { ScriptureCitationDrawer } from "@/components/ScriptureCitationDrawer";
@@ -25,14 +24,6 @@ import {
   clearSessionHistory,
   fetchTraditions,
 } from "@/lib/chat";
-import {
-  Sparkles,
-  RefreshCw,
-  Lock,
-  ChevronDown,
-  BookOpen,
-  Compass,
-} from "lucide-react";
 
 const INITIAL_DEMO_MESSAGES: ChatMessage[] = [
   {
@@ -46,17 +37,19 @@ const INITIAL_DEMO_MESSAGES: ChatMessage[] = [
     id: "msg_asst_demo",
     role: "assistant",
     content:
-      "It's completely understandable to feel lost in your career, especially when you care deeply about your parents' expectations. The Bhagavad Gita offers a perspective that can bring clarity in such moments.\n\n1. Finding Clarity\nConfusion often arises when we focus only on the outcome. The Gita reminds us to focus on our duties, our abilities, and sincere effort, rather than being overwhelmed by others' expectations.\n\n2. A Balanced Approach\nTake time to reflect on what truly interests you and what you are naturally good at. It is possible to respect your parents' wishes while also choosing a path that aligns with your values.\n\n3. Next Steps\n• Reflect on your strengths and interests.\n• Have an honest conversation with your parents.\n• Take small steps towards gaining clarity (explore, learn, and seek guidance).",
+      "It is completely natural to feel unmoored when your own sense of vocation seems at odds with the hopes of those who raised you. The ancient tradition of the Bhagavad Gita addresses this exact threshold of paralysis: when we confuse who we are with the external outcome of our actions.\n\n1. Finding Clarity\nConfusion often arises when we fixate entirely on results that we cannot control. The Gita advises returning focus to what is within your hands: your authentic effort, sincerity of purpose, and inner duty (svadharma), rather than the fear of external judgment.\n\n2. A Balanced Approach\nTake quiet time to distinguish between what is expected of you and what you are uniquely built to offer. Honoring your parents does not require erasing your authenticity—it begins by expressing your dedication through sincere effort and calm communication.\n\n3. Next Steps\n• Reflect on your core strengths and honest interests.\n• Initiate a calm, non-defensive conversation with your family.\n• Take small, deliberate actions toward gaining clarity rather than trying to solve the entire horizon at once.",
     timestamp: "2026-10-18T10:24:08.000Z",
     mode: "grounded",
     citations: [
       {
         source: "Bhagavad Gita",
-        translation: "Swami Sivananda",
+        translation: "Edwin Arnold 1885 / The Song Celestial",
         chapter: "Chapter 2",
         verse: "47",
         excerpt:
-          "You have the right to perform your prescribed duty, but you are not entitled to the fruits of your actions.",
+          "Thy right is to the work alone, never to its fruits; let not the fruits of action be thy motive, nor let thy attachment be to inaction.",
+        context:
+          "Krishna explains to Arjuna the doctrine of Nishkama Karma: acting without anxious obsession over praise, blame, or future rewards.",
       },
     ],
     source_labels: ["scripture", "ai_suggestion"],
@@ -94,7 +87,7 @@ export default function HomePage() {
       description: "Marcus Aurelius's reflections on personal virtue.",
     },
   ]);
-  const [showCitationDrawer, setShowCitationDrawer] = useState<boolean>(true);
+  const [showCitationDrawer, setShowCitationDrawer] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("chat");
   const [initialInputPrompt, setInitialInputPrompt] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -199,9 +192,6 @@ export default function HomePage() {
                 : m
             )
           );
-          if (meta.citations && meta.citations.length > 0) {
-            setShowCitationDrawer(true);
-          }
         },
         // onError fallback
         async (streamErr: Error) => {
@@ -229,9 +219,6 @@ export default function HomePage() {
                   : m
               )
             );
-            if (resp.citations && resp.citations.length > 0) {
-              setShowCitationDrawer(true);
-            }
           } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : "Service error";
             setMessages((prev) =>
@@ -274,207 +261,186 @@ export default function HomePage() {
       ?.citations || [
       {
         source: "Bhagavad Gita",
-        translation: "Swami Sivananda",
+        translation: "Edwin Arnold 1885 / The Song Celestial",
         chapter: "Chapter 2",
         verse: "47",
         excerpt:
-          "You have the right to perform your prescribed duty, but you are not entitled to the fruits of your actions.",
+          "Thy right is to the work alone, never to its fruits; let not the fruits of action be thy motive, nor let thy attachment be to inaction.",
+        context:
+          "Krishna explains to Arjuna the doctrine of Nishkama Karma: acting without anxious obsession over praise, blame, or future rewards.",
       },
     ];
 
   return (
-    <div className="min-h-screen bg-[#14120e] text-[#f2ede4] flex flex-col font-body">
-      {/* Top Navigation Header */}
+    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body">
+      {/* Refined Top Navigation Header */}
       <ChatHeader
         activeTab={activeTab}
         onTabChange={(tab) => setActiveTab(tab)}
       />
 
-      {/* Main Container */}
-      <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 flex flex-col space-y-6">
-        <div className="flex items-start gap-6 w-full">
-          {/* Left Column: Artwork & Navigation Sidebar */}
-          <AppSidebar
-            activeTab={activeTab}
-            onTabChange={(tab) => setActiveTab(tab)}
-          />
-
-          {/* Center Main Stage Column */}
-          <main className="flex-1 min-w-0 space-y-6">
-            {/* View Tab Switcher: HOME / HERO VIEW */}
-            {activeTab === "home" && (
-              <HeroLanding
-                onStartChat={(prompt) => {
-                  if (prompt) setInitialInputPrompt(prompt);
-                  setActiveTab("chat");
-                }}
-                onExploreCommunity={() => setActiveTab("community")}
-              />
-            )}
-
-            {/* View Tab Switcher: CHAT STAGE */}
-            {activeTab === "chat" && (
-              <section className="rounded-2xl bg-[#1c1712] border border-[#362c22] p-5 sm:p-6 shadow-2xl space-y-5">
-                {/* Header Controls inside Chat Box from image: Spiritual guidance toggle + Tradition dropdown */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#362c22]/70">
-                  {/* Left: Spiritual Guidance Toggle */}
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={faithOn}
-                      onClick={() => handleFaithToggle(!faithOn)}
-                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        faithOn ? "bg-[#e59a27]" : "bg-[#29211a]"
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#140e06] shadow ring-0 transition duration-200 ease-in-out ${
-                          faithOn ? "translate-x-5" : "translate-x-0"
-                        }`}
-                      />
-                    </button>
-                    <div className="flex flex-col text-left">
-                      <span className="font-label text-xs sm:text-sm text-[#f2ede4] font-medium">
-                        Spiritual guidance
-                      </span>
-                      <span className="font-label text-[11px] text-[#e59a27]">
-                        {faithOn ? "On ॐ" : "Off"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Right: Custom Designed Tradition Dropdown (Replacing native OS select) */}
-                  <div className="flex items-center gap-2.5">
-                    <span className="font-label text-xs text-[#b5aa9b] hidden sm:inline">
-                      Choose a tradition
+      {/* Main Content Area */}
+      <div className="flex-1 w-full flex flex-col">
+        {/* VIEW: CHAT STAGE (One Wide, Centered Column) */}
+        {activeTab === "chat" && (
+          <main className="max-w-3xl w-full mx-auto px-5 sm:px-8 py-8 flex flex-col flex-1">
+            {/* Top Toolbar: Guidance Mode & Tradition Dropdown */}
+            <div className="flex items-center justify-between pb-6 mb-8 border-b border-[#242830]">
+              <div className="flex items-center gap-4">
+                {/* Spiritual Guidance Toggle */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={faithOn}
+                    onClick={() => handleFaithToggle(!faithOn)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors duration-150 ease-in-out focus:outline-none ${
+                      faithOn ? "bg-[#B69A61]" : "bg-[#242830] border border-[#2E333D]"
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-[#171A1F] transition duration-150 ease-in-out ${
+                        faithOn ? "translate-x-4.5" : "translate-x-0.5"
+                      } mt-[2px]`}
+                    />
+                  </button>
+                  <span className="text-xs text-[#9E9CA3]">
+                    Spiritual guidance:{" "}
+                    <span className="text-[#E7E1D5]">
+                      {faithOn ? "On (ॐ)" : "Off"}
                     </span>
-                    <TraditionDropdown
-                      traditions={traditions}
-                      selectedId={selectedTradition}
-                      onSelect={handleTraditionChange}
-                    />
-                  </div>
+                  </span>
                 </div>
 
-                {/* Chat Message Stream */}
-                <div className="space-y-4 max-h-[520px] overflow-y-auto pr-1">
-                  {messages.map((msg, idx) => (
-                    <ChatMessageComponent
-                      key={msg.id || idx}
-                      message={msg}
-                      previousUserMessage={
-                        idx > 0 && messages[idx - 1].role === "user"
-                          ? messages[idx - 1].content
-                          : undefined
-                      }
-                      onOpenCitationDrawer={() => setShowCitationDrawer(true)}
-                    />
-                  ))}
-                </div>
+                <div className="h-3.5 w-[1px] bg-[#282D37]" />
 
-                {/* Bottom Input Field */}
-                <ChatInput
-                  onSendMessage={handleSendMessage}
-                  isLoading={isLoading}
-                  placeholder="Tell us what's on your mind..."
-                  initialValue={initialInputPrompt}
+                {/* Tradition Dropdown */}
+                <TraditionDropdown
+                  traditions={traditions}
+                  selectedId={selectedTradition}
+                  onSelect={handleTraditionChange}
                 />
-              </section>
-            )}
+              </div>
 
-            {/* View Tab Switcher: COMMUNITY FEED */}
-            {activeTab === "community" && <CommunityFeed />}
+              {/* Clear / New Conversation Action */}
+              {messages.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearHistory}
+                  className="text-xs text-[#6C717D] hover:text-[#E7E1D5] transition-colors cursor-pointer"
+                >
+                  New Conversation
+                </button>
+              )}
+            </div>
 
-            {/* View Tab Switcher: SACRED SCRIPTURE WISDOM LIBRARY */}
-            {activeTab === "library" && (
-              <ScriptureLibrary
-                initialTraditionId={selectedTradition}
-                onConsultVerse={(verseText, tradName) => {
-                  setInitialInputPrompt(
-                    `How can I apply the wisdom of ${tradName} to my situation regarding this verse: "${verseText}"?`
-                  );
-                  setActiveTab("chat");
-                }}
+            {/* Conversation Messages */}
+            <div className="space-y-6 flex-1">
+              {messages.map((msg, idx) => (
+                <ChatMessageComponent
+                  key={msg.id || idx}
+                  message={msg}
+                  previousUserMessage={
+                    idx > 0 && messages[idx - 1].role === "user"
+                      ? messages[idx - 1].content
+                      : undefined
+                  }
+                  onOpenCitationDrawer={() => setShowCitationDrawer(true)}
+                />
+              ))}
+            </div>
+
+            {/* Chat Input Section */}
+            <div className="sticky bottom-4 z-20 pt-6 mt-4 bg-gradient-to-t from-[#171A1F] via-[#171A1F]/95 to-transparent">
+              <ChatInput
+                onSendMessage={handleSendMessage}
+                isLoading={isLoading}
+                placeholder="Ask for guidance, share a dilemma, or explore a philosophical principle..."
+                initialValue={initialInputPrompt}
               />
-            )}
+            </div>
 
-            {/* View Tab Switcher: ANONYMOUS PROFILE & PRIVACY SANCTUARY */}
-            {activeTab === "profile" && (
-              <UserProfile
-                onStartChat={(prompt) => {
-                  if (prompt) setInitialInputPrompt(prompt);
-                  setActiveTab("chat");
-                }}
-                onExploreLibrary={() => setActiveTab("library")}
-                onExploreCommunity={() => setActiveTab("community")}
-                onPreferencesUpdated={(p) => {
-                  setFaithOn(p.faith_on);
-                  setSelectedTradition(p.tradition);
-                }}
-              />
-            )}
-
-            {/* People Facing Something Similar */}
+            {/* People Facing Similar Dilemmas */}
             <SimilarProblemCards onSelectPost={() => setActiveTab("community")} />
           </main>
+        )}
 
-          {/* Right Column: Verified Scripture Citation Drawer */}
-          {showCitationDrawer && (
-            <aside className="w-80 shrink-0 hidden xl:block">
-              <ScriptureCitationDrawer
-                citations={latestCitations}
-                onClose={() => setShowCitationDrawer(false)}
-                onViewInLibrary={(tradId) => {
-                  if (tradId) setSelectedTradition(tradId);
-                  setActiveTab("library");
-                }}
-              />
-            </aside>
-          )}
-        </div>
+        {/* VIEW: HOME VIEW */}
+        {activeTab === "home" && (
+          <main className="max-w-4xl w-full mx-auto px-5 sm:px-8 py-8">
+            <HeroLanding
+              onStartChat={(prompt) => {
+                if (prompt) setInitialInputPrompt(prompt);
+                setActiveTab("chat");
+              }}
+              onExploreCommunity={() => setActiveTab("community")}
+            />
+          </main>
+        )}
+
+        {/* VIEW: COMMUNITY FEED */}
+        {activeTab === "community" && (
+          <main className="max-w-4xl w-full mx-auto px-5 sm:px-8 py-8">
+            <CommunityFeed />
+          </main>
+        )}
+
+        {/* VIEW: SACRED SCRIPTURE WISDOM LIBRARY */}
+        {activeTab === "library" && (
+          <main className="max-w-4xl w-full mx-auto px-5 sm:px-8 py-8">
+            <ScriptureLibrary
+              initialTraditionId={selectedTradition}
+              onConsultVerse={(verseText, tradName) => {
+                setInitialInputPrompt(
+                  `How can I apply the wisdom of ${tradName} to my situation regarding this verse: "${verseText}"?`
+                );
+                setActiveTab("chat");
+              }}
+            />
+          </main>
+        )}
+
+        {/* VIEW: ANONYMOUS PROFILE & PRIVACY SANCTUARY */}
+        {activeTab === "profile" && (
+          <main className="max-w-4xl w-full mx-auto px-5 sm:px-8 py-8">
+            <UserProfile
+              onStartChat={(prompt) => {
+                if (prompt) setInitialInputPrompt(prompt);
+                setActiveTab("chat");
+              }}
+              onExploreLibrary={() => setActiveTab("library")}
+              onExploreCommunity={() => setActiveTab("community")}
+              onPreferencesUpdated={(p) => {
+                setFaithOn(p.faith_on);
+                setSelectedTradition(p.tradition);
+              }}
+            />
+          </main>
+        )}
       </div>
 
-      {/* Footer */}
-      <footer className="w-full bg-[#0e0c0a] border-t border-[#362c22] mt-auto">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col items-center md:items-start gap-1">
-            <div className="flex items-center gap-2">
-              <span className="font-headline text-sm font-semibold text-[#e59a27] tracking-wide">
-                APARICHIT
-              </span>
-              <span className="font-body text-xs text-[#7a6e5e]">
-                — Ethical Sanctuary
-              </span>
-            </div>
-            <p className="font-headline text-xs text-[#b5aa9b] italic text-center md:text-left">
-              “Bridging timeless insight and human solace”
-            </p>
-            <p className="font-label text-[11px] text-[#7a6e5e]">
-              © 2026 APARICHIT. All queries remain strictly ephemeral and private.
-            </p>
-          </div>
+      {/* Collapsible Scripture Citation Slide-over Drawer */}
+      <ScriptureCitationDrawer
+        citations={latestCitations}
+        isOpen={showCitationDrawer}
+        onClose={() => setShowCitationDrawer(false)}
+        onViewInLibrary={(tradId) => {
+          if (tradId) setSelectedTradition(tradId);
+          setActiveTab("library");
+        }}
+      />
 
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => setActiveTab("chat")}
-              className="font-label text-xs text-[#b5aa9b] hover:text-[#e59a27] transition-colors cursor-pointer"
-            >
-              Ethical AI
-            </button>
-            <button
-              onClick={() => setActiveTab("chat")}
-              className="font-label text-xs text-[#b5aa9b] hover:text-[#e59a27] transition-colors cursor-pointer"
-            >
-              Traditions
-            </button>
-            <button
-              onClick={() => setActiveTab("community")}
-              className="font-label text-xs text-[#b5aa9b] hover:text-[#e59a27] transition-colors cursor-pointer"
-            >
-              Privacy First
-            </button>
+      {/* Refined Editorial Footer */}
+      <footer className="w-full bg-[#171A1F] border-t border-[#242830] mt-auto">
+        <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#6C717D]">
+          <div className="flex items-center gap-2">
+            <span className="font-headline font-medium text-[#E7E1D5]">
+              APARICHIT
+            </span>
+            <span>—</span>
+            <span>Ancient Wisdom for Modern Dilemmas</span>
           </div>
+          <div>All queries are processed anonymously with complete privacy.</div>
         </div>
       </footer>
     </div>

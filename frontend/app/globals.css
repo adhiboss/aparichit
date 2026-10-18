@@ -1,112 +1,77 @@
 @import "tailwindcss";
 
 :root {
-  --background: #14120e;
-  --surface: #14120e;
-  --surface-container-lowest: #0e0c0a;
-  --surface-container-low: #1b1612;
-  --surface-container: #211a14;
-  --surface-container-high: #29211a;
-  --surface-container-highest: #332a21;
-  --on-surface: #f2ede4;
-  --on-surface-variant: #b5aa9b;
-  --outline: #7a6e5e;
-  --outline-variant: #3d3227;
-  --border-subtle: #362c22;
-  --primary: #e59a27;
-  --primary-container: #d99026;
-  --on-primary: #140e06;
-  --secondary: #f0a83b;
-  --gold-primary: #e59a27;
-  --gold-warm: #f0a83b;
-  --gold-glow: rgba(229, 154, 39, 0.28);
+  /* Editorial Palette */
+  --bg-charcoal: #171A1F;
+  --card-grey: #242830;
+  --card-grey-light: #2A303A;
+  --text-ivory: #E7E1D5;
+  --text-muted: #9E9CA3;
+  --text-subtle: #6C717D;
+  --accent-gold: #B69A61;
+  --accent-gold-hover: #C7AC72;
+  --border-subtle: #282D37;
+  --border-light: #323946;
+
+  /* Crisis Safety Alert */
   --crisis-red: #ffb4ab;
-  --crisis-bg: rgba(147, 0, 10, 0.25);
-  --crisis-border: rgba(255, 180, 171, 0.4);
+  --crisis-bg: rgba(147, 0, 10, 0.2);
+  --crisis-border: rgba(255, 180, 171, 0.35);
 }
 
 body {
-  background-color: var(--surface);
-  color: var(--on-surface);
-  font-family: var(--font-sans), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-charcoal);
+  color: var(--text-ivory);
+  font-family: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
   min-height: 100vh;
   overflow-x: hidden;
   letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbars */
+/* Subtle, unobtrusive scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0e0c0a;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #29211a;
-  border-radius: 4px;
+  background: #2E3440;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e59a27;
+  background: #3B4353;
 }
 
-/* Typography Utility Classes */
+/* Typography Hierarchy */
 .font-headline {
-  font-family: var(--font-serif), "Noto Serif", Georgia, serif;
+  font-family: var(--font-serif), "Noto Serif", Georgia, Cambria, "Times New Roman", serif;
 }
 
 .font-scripture {
-  font-family: var(--font-serif), "Noto Serif", Georgia, serif;
-}
-
-.font-label {
-  font-family: var(--font-label), "Outfit", sans-serif;
+  font-family: var(--font-serif), "Noto Serif", Georgia, Cambria, "Times New Roman", serif;
 }
 
 .font-body {
   font-family: var(--font-sans), "Plus Jakarta Sans", sans-serif;
 }
 
-/* Warm Sunset Amber Gradient & Accents */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #fbd58a 0%, #f0a83b 50%, #e59a27 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bg-gold-gradient {
-  background: linear-gradient(135deg, #f0a83b 0%, #e59a27 100%);
-}
-
-.border-gold-subtle {
-  border-color: rgba(229, 154, 39, 0.2);
-}
-
-.border-gold-bright {
-  border-color: rgba(229, 154, 39, 0.45);
-}
-
-.shadow-gold-glow {
-  box-shadow: 0 0 24px rgba(229, 154, 39, 0.25);
-}
-
-.shadow-gold-bloom {
-  box-shadow: 0 0 32px rgba(229, 154, 39, 0.38);
-}
-
-.shadow-sanctuary-card {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
-}
-
-.shadow-sanctuary-elevated {
-  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.6);
-}
-
-/* Scripture Callout Box */
-.scripture-box {
-  background: linear-gradient(180deg, rgba(35, 27, 20, 0.95) 0%, rgba(20, 16, 12, 0.95) 100%);
-  border: 1px solid rgba(229, 154, 39, 0.3);
+/* Clean Editorial Blockquote */
+.editorial-quote {
+  border-left: 2px solid var(--accent-gold);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-serif), "Noto Serif", Georgia, serif;
+  font-style: italic;
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.65;
+  color: var(--text-ivory);
 }

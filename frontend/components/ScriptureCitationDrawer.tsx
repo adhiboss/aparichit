@@ -1,14 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Citation } from "@/lib/types";
-import {
-  BookOpen,
-  X,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { X, BookOpen, ExternalLink } from "lucide-react";
 
 interface ScriptureCitationDrawerProps {
   citations: Citation[];
@@ -20,102 +14,86 @@ interface ScriptureCitationDrawerProps {
 export const ScriptureCitationDrawer: React.FC<ScriptureCitationDrawerProps> = ({
   citations,
   onClose,
-  isOpen = true,
+  isOpen = false,
   onViewInLibrary,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
   if (!isOpen || !citations || citations.length === 0) return null;
 
   const primary = citations[0];
 
   return (
-    <aside className="w-80 shrink-0 flex flex-col rounded-2xl bg-[#1c1712] border border-[#362c22] shadow-2xl p-5 text-[#f2ede4] space-y-4 max-h-[720px] overflow-y-auto animate-in fade-in duration-200">
-      {/* Header matching image */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#362c22]">
-        <div className="flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-[#e59a27]" />
-          <h3 className="font-label text-xs font-semibold tracking-wider text-[#f2ede4]">
-            Verified Scripture Citation
-          </h3>
-        </div>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1 rounded-lg text-[#7a6e5e] hover:text-[#f2ede4] transition-colors cursor-pointer"
-          aria-label="Toggle citation details"
-        >
-          {isExpanded ? (
-            <ChevronUp className="w-4 h-4" />
-          ) : (
-            <ChevronDown className="w-4 h-4" />
-          )}
-        </button>
-      </div>
+    <>
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 transition-opacity"
+      />
 
-      {isExpanded && (
-        <div className="space-y-3.5">
-          {/* Source pill + Primary source badge */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="font-serif text-[#e59a27] text-sm">ॐ</span>
-              <span className="font-headline text-sm font-semibold text-[#f2ede4]">
+      {/* Slide-over Drawer */}
+      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#242830] border-l border-[#2E333D] shadow-2xl z-50 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-200">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#2E333D]">
+            <div>
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#B69A61]">
+                Scriptural Citation
+              </span>
+              <h2 className="font-headline text-lg font-medium text-[#E7E1D5] mt-0.5">
                 {primary.source}
-              </span>
+              </h2>
             </div>
-            <span className="text-[10px] font-label px-2 py-0.5 rounded-full bg-[#122920] text-[#34d399] border border-[#1f4e3b]">
-              Primary source
-            </span>
+            <button
+              onClick={onClose}
+              className="p-2 text-[#9E9CA3] hover:text-[#E7E1D5] rounded-lg hover:bg-[#2A303A] transition-colors cursor-pointer"
+              aria-label="Close drawer"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <div className="font-label text-xs text-[#b5aa9b]">
-            {primary.chapter}
-            {primary.verse ? `, Verse ${primary.verse}` : ""}
+          {/* Chapter & Location */}
+          <div className="text-xs text-[#9E9CA3]">
+            <span>{primary.chapter}</span>
+            {primary.verse && <span> • Verse {primary.verse}</span>}
           </div>
 
-          {/* Quoted Verse in Warm Golden Scripture Box */}
-          <div className="p-3.5 rounded-xl bg-[#231c15] border border-[#e59a27]/40 shadow-inner">
-            <p className="font-headline text-xs sm:text-sm text-[#f2ede4] italic leading-relaxed">
-              “{primary.excerpt}”
+          {/* Authentic Scripture Excerpt */}
+          <blockquote className="editorial-quote">
+            &ldquo;{primary.excerpt}&rdquo;
+          </blockquote>
+
+          {/* Canonical Context */}
+          <div className="space-y-2 pt-2">
+            <h4 className="text-xs font-medium uppercase tracking-wider text-[#9E9CA3]">
+              Context & Hermeneutics
+            </h4>
+            <p className="text-sm leading-relaxed text-[#E7E1D5]/90">
+              {primary.context ||
+                "In this passage, the canon addresses the resolution of doubt, prioritizing authentic duty and inner detachment from fluctuating outcomes."}
             </p>
           </div>
 
-          {/* Full Context */}
-          <div className="space-y-1">
-            <div className="font-label text-xs font-semibold text-[#f2ede4]">
-              Full context
+          {/* Metadata Overview */}
+          <div className="p-4 rounded-xl bg-[#1D2128] border border-[#2E333D] space-y-2.5 text-xs">
+            <div className="flex justify-between py-1 border-b border-[#282D37]">
+              <span className="text-[#9E9CA3]">Tradition</span>
+              <span className="text-[#E7E1D5] font-medium">{primary.source}</span>
             </div>
-            <p className="font-body text-xs text-[#b5aa9b] leading-relaxed">
-              In this verse, the wisdom explains the importance of focusing on one&apos;s sincere duty (karma) without attachment to the results. It encourages effort and inner steadiness, even in uncertain times.
-            </p>
-          </div>
-
-          {/* Metadata Table */}
-          <div className="p-3.5 rounded-xl bg-[#14120e] border border-[#362c22] space-y-2 text-xs">
-            <div className="flex justify-between py-0.5 border-b border-[#362c22]/50">
-              <span className="text-[#7a6e5e]">Source</span>
-              <span className="text-[#f2ede4] font-medium">{primary.source}</span>
-            </div>
-            <div className="flex justify-between py-0.5 border-b border-[#362c22]/50">
-              <span className="text-[#7a6e5e]">Chapter</span>
-              <span className="text-[#f2ede4] font-medium">{primary.chapter}</span>
-            </div>
-            <div className="flex justify-between py-0.5 border-b border-[#362c22]/50">
-              <span className="text-[#7a6e5e]">Verse</span>
-              <span className="text-[#f2ede4] font-medium">{primary.verse || "47"}</span>
-            </div>
-            <div className="flex justify-between py-0.5 border-b border-[#362c22]/50">
-              <span className="text-[#7a6e5e]">Translation</span>
-              <span className="text-[#f2ede4] font-medium text-right max-w-[150px] truncate">
-                {primary.translation || "Swami Sivananda"}
-              </span>
-            </div>
-            <div className="flex justify-between py-0.5">
-              <span className="text-[#7a6e5e]">Language</span>
-              <span className="text-[#f2ede4] font-medium">Sanskrit (with English translation)</span>
+            {primary.translation && (
+              <div className="flex justify-between py-1 border-b border-[#282D37]">
+                <span className="text-[#9E9CA3]">Translation</span>
+                <span className="text-[#E7E1D5]">{primary.translation}</span>
+              </div>
+            )}
+            <div className="flex justify-between py-1">
+              <span className="text-[#9E9CA3]">License</span>
+              <span className="text-[#E7E1D5]">Public Domain Canonical Text</span>
             </div>
           </div>
+        </div>
 
-          {/* View in Library Button */}
+        {/* Footer Actions */}
+        <div className="pt-6 border-t border-[#2E333D] mt-6">
           <button
             type="button"
             onClick={() => {
@@ -123,17 +101,22 @@ export const ScriptureCitationDrawer: React.FC<ScriptureCitationDrawerProps> = (
               let matchedId = "bhagavad_gita";
               if (srcLower.includes("garuda")) matchedId = "garuda_purana";
               else if (srcLower.includes("dhamma")) matchedId = "dhammapada";
-              else if (srcLower.includes("meditation") || srcLower.includes("stoic")) matchedId = "stoicism";
+              else if (
+                srcLower.includes("meditation") ||
+                srcLower.includes("stoic")
+              )
+                matchedId = "stoicism";
               else if (srcLower.includes("gita")) matchedId = "bhagavad_gita";
               if (onViewInLibrary) onViewInLibrary(matchedId);
+              if (onClose) onClose();
             }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#211a14] hover:bg-[#29211a] border border-[#362c22] hover:border-[#e59a27]/50 text-[#f2ede4] text-xs font-label font-semibold transition-all cursor-pointer shadow-sm group"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#2A303A] hover:bg-[#323946] border border-[#2E333D] text-[#E7E1D5] text-xs font-medium transition-colors cursor-pointer"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#e59a27] group-hover:scale-110 transition-transform" />
-            <span>View in Library →</span>
+            <BookOpen className="w-4 h-4 text-[#B69A61]" />
+            <span>Open in Scripture Library →</span>
           </button>
         </div>
-      )}
-    </aside>
+      </div>
+    </>
   );
 };

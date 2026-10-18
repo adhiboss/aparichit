@@ -1,14 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { SimilarProblem } from "@/lib/types";
-import {
-  Shield,
-  Plus,
-  MessageSquare,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight, Lock, Plus } from "lucide-react";
 import { ShareStoryModal } from "./ShareStoryModal";
 
 interface SimilarProblemCardsProps {
@@ -24,7 +18,6 @@ interface DisplayCard {
   snippet: string;
   tags: string[];
   replyCount: number;
-  image: string;
 }
 
 const DEFAULT_DISPLAY_CARDS: DisplayCard[] = [
@@ -33,132 +26,109 @@ const DEFAULT_DISPLAY_CARDS: DisplayCard[] = [
     name: "Silent Peak",
     timeAgo: "2 days ago",
     snippet:
-      "I was in a similar situation. I felt pressured about my career and my parents' expectations. Here's what helped me...",
-    tags: ["Career", "Family", "Life Decisions"],
-    replyCount: 124,
-    image: "/images/hero_sunset.jpg",
+      "I was in a similar situation. I felt paralyzed by my family's expectations versus what I knew was right for my path. What helped was separating my duty from their emotional reactions.",
+    tags: ["Career", "Family", "Duty"],
+    replyCount: 24,
   },
   {
     id: "sim_2",
     name: "Blue Moon",
     timeAgo: "1 week ago",
     snippet:
-      "I tried a different path after feeling lost. It was not easy, but taking small steps and exploring my interests helped me find clarity.",
-    tags: ["Career", "Mental Health", "Self Growth"],
-    replyCount: 89,
-    image: "/images/wisdom_manuscript.jpg",
+      "I took a different path after feeling lost for months. Taking small steps and focusing purely on the effort rather than the guaranteed outcome gave me my peace back.",
+    tags: ["Clarity", "Inner Peace", "Doubt"],
+    replyCount: 19,
   },
   {
     id: "sim_3",
     name: "Wandering Soul",
     timeAgo: "2 weeks ago",
     snippet:
-      "I felt like I was disappointing my family too. An honest conversation and setting small goals changed everything for me.",
-    tags: ["Family", "Expectations", "Inner Peace"],
-    replyCount: 76,
-    image: "/images/community_campfire.jpg",
+      "An honest, calm conversation changed everything. I stopped assuming what they wanted and explained my principles clearly without defensive anger.",
+    tags: ["Family", "Dialogue", "Courage"],
+    replyCount: 16,
   },
 ];
 
 export const SimilarProblemCards: React.FC<SimilarProblemCardsProps> = ({
-  similar,
   userMessage,
   onSelectPost,
 }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   return (
-    <section className="rounded-2xl bg-[#1c1712] border border-[#362c22] p-5 sm:p-6 shadow-2xl space-y-5">
-      {/* Header Row matching user image */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-[#362c22]/70">
+    <section className="mt-12 pt-8 border-t border-[#242830] space-y-6">
+      {/* Editorial Section Header */}
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
         <div>
-          <h3 className="font-headline text-base sm:text-lg font-semibold text-[#f2ede4]">
-            People Facing Something Similar
+          <h3 className="font-headline text-lg font-medium text-[#E7E1D5]">
+            People Facing Similar Dilemmas
           </h3>
-          <p className="font-body text-xs text-[#b5aa9b] mt-0.5">
-            You are not alone. Here are anonymous people who faced similar situations.
+          <p className="text-xs text-[#9E9CA3] mt-0.5">
+            Reflections shared by others walking through similar moments.
           </p>
         </div>
 
-        {/* Right actions: Privacy badge + Solid Warm Golden Share Button */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#14120e] border border-[#362c22] text-[11px] text-[#b5aa9b]">
-            <Shield className="w-3.5 h-3.5 text-[#e59a27] shrink-0" />
-            <span>
-              Your chat stays private unless you share it. We remove personal details before sharing.
-            </span>
-          </div>
-
-          <button
-            onClick={() => setIsShareModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#e59a27] hover:bg-[#f0a83b] text-[#140e06] font-label text-xs font-semibold transition-all shadow-md shadow-[#e59a27]/20 hover:shadow-[#e59a27]/35 cursor-pointer active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Share My Story Anonymously</span>
-          </button>
-        </div>
+        <button
+          onClick={() => setIsShareModalOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#242830] hover:bg-[#2A303A] border border-[#2E333D] text-[#E7E1D5] text-xs font-medium transition-colors cursor-pointer self-start sm:self-auto"
+        >
+          <Plus className="w-3.5 h-3.5 text-[#B69A61]" />
+          <span>Share Your Story</span>
+        </button>
       </div>
 
-      {/* 3 Horizontal Cards Grid from image */}
+      {/* 3 Clean Editorial Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {DEFAULT_DISPLAY_CARDS.map((card) => (
           <div
             key={card.id}
             onClick={() => onSelectPost && onSelectPost(card.id)}
-            className="p-4 rounded-xl bg-[#14120e] border border-[#362c22] hover:border-[#e59a27]/40 transition-all flex flex-col justify-between space-y-3 group shadow-sm cursor-pointer"
+            className="p-5 rounded-xl bg-[#242830] hover:bg-[#2A303A] border border-[#282D37] transition-colors flex flex-col justify-between space-y-4 cursor-pointer group"
           >
             <div className="space-y-3">
-              {/* Thumbnail + Name & Time */}
-              <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-[#362c22]">
-                  <Image
-                    src={card.image}
-                    alt={card.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-label text-xs font-semibold text-[#f2ede4] group-hover:text-[#e59a27] transition-colors">
-                    {card.name}
-                  </span>
-                  <span className="font-label text-[10px] text-[#7a6e5e]">
-                    {card.timeAgo}
-                  </span>
-                </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium text-[#E7E1D5] group-hover:text-[#B69A61] transition-colors">
+                  {card.name}
+                </span>
+                <span className="text-[#6C717D] text-[11px]">{card.timeAgo}</span>
               </div>
 
-              {/* Snippet text */}
-              <p className="font-body text-xs text-[#b5aa9b] line-clamp-3 leading-relaxed">
+              <p className="text-[14px] leading-relaxed text-[#E7E1D5]/85 line-clamp-3">
                 {card.snippet}
               </p>
 
-              {/* Tags */}
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {card.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 rounded-md text-[10px] font-label bg-[#211a14] text-[#b5aa9b] border border-[#362c22]"
+                    className="px-2 py-0.5 rounded text-[10px] text-[#9E9CA3] bg-[#1D2128]"
                   >
-                    {tag}
+                    #{tag}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Footer row */}
-            <div className="pt-2 border-t border-[#362c22]/50 flex items-center justify-between text-xs text-[#7a6e5e]">
-              <span className="flex items-center gap-1.5 font-label text-[11px] text-[#b5aa9b]">
-                <MessageSquare className="w-3.5 h-3.5 text-[#e59a27]" />
-                <span>{card.replyCount} replies</span>
+            <div className="pt-3 border-t border-[#2E333D] flex items-center justify-between text-xs">
+              <span className="text-[#6C717D] text-[11px]">
+                {card.replyCount} community reflections
               </span>
-              <span className="inline-flex items-center gap-1 text-[#e59a27] font-label text-xs font-semibold group-hover:translate-x-0.5 transition-transform">
-                <span>Read Replies</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-1 text-[#B69A61] font-medium text-xs group-hover:translate-x-0.5 transition-transform">
+                <span>Read</span>
+                <ArrowRight className="w-3 h-3" />
               </span>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Discreet Privacy Note */}
+      <div className="flex items-center gap-2 text-[11px] text-[#6C717D] pt-1">
+        <Lock className="w-3 h-3 text-[#B69A61]" />
+        <span>
+          Your conversations remain strictly private. Stories appear in community reflections only when explicitly shared.
+        </span>
       </div>
 
       {/* Share Story Modal */}

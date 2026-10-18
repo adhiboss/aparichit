@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Paperclip, Loader2 } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
-  onClearHistory?: () => void;
   isLoading: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -14,10 +13,9 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
-  onClearHistory,
   isLoading,
   disabled,
-  placeholder = "Tell us what's on your mind...",
+  placeholder = "Reflect on a dilemma, ask for guidance, or explore a philosophical principle...",
   initialValue = "",
 }) => {
   const [text, setText] = useState(initialValue);
@@ -32,7 +30,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 140)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
     }
   }, [text]);
 
@@ -54,18 +52,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="relative w-full">
-      <div className="relative rounded-2xl bg-[#201913] border border-[#362c22] focus-within:border-[#e59a27] focus-within:ring-1 focus-within:ring-[#e59a27]/30 shadow-2xl transition-all flex items-center px-3.5 py-2">
-        {/* Attachment icon */}
-        <button
-          type="button"
-          className="p-1.5 text-[#7a6e5e] hover:text-[#e59a27] rounded-xl transition-colors cursor-pointer"
-          title="Attach context (optional)"
-          aria-label="Attach context"
-        >
-          <Paperclip className="w-4 h-4" />
-        </button>
-
+    <div className="w-full">
+      <div className="relative rounded-xl bg-[#242830] border border-[#2E333D] focus-within:border-[#B69A61]/60 transition-colors flex items-end p-2.5 sm:p-3 gap-2">
         {/* Input Textarea */}
         <textarea
           ref={textareaRef}
@@ -75,21 +63,21 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           disabled={isLoading || disabled}
           placeholder={placeholder}
           rows={1}
-          className="flex-1 bg-transparent px-3 py-1.5 font-body text-xs sm:text-sm text-[#f2ede4] placeholder-[#7a6e5e] resize-none focus:outline-none disabled:opacity-50 max-h-36 leading-relaxed"
+          className="flex-1 bg-transparent px-2 py-1 text-[15px] sm:text-[16px] text-[#E7E1D5] placeholder-[#6C717D] resize-none focus:outline-none disabled:opacity-50 max-h-40 leading-relaxed"
         />
 
-        {/* Right Action: Warm Golden Send Button from image */}
+        {/* Send Action Button */}
         <button
           type="button"
           onClick={handleSend}
           disabled={isLoading || !text.trim() || disabled}
-          className="w-9 h-9 rounded-xl bg-[#e59a27] hover:bg-[#f0a83b] text-[#140e06] flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-md shadow-[#e59a27]/25 shrink-0 cursor-pointer"
+          className="h-9 w-9 rounded-lg bg-[#B69A61] hover:bg-[#C7AC72] text-[#171A1F] flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed shrink-0 cursor-pointer"
           aria-label="Send message"
         >
           {isLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin text-[#140e06]" />
+            <Loader2 className="w-4 h-4 animate-spin text-[#171A1F]" />
           ) : (
-            <Send className="w-4 h-4 text-[#140e06] fill-current" />
+            <Send className="w-4 h-4 text-[#171A1F] fill-current" />
           )}
         </button>
       </div>

@@ -18,6 +18,7 @@ export interface Citation {
   chapter: string;
   verse?: string | null;
   excerpt: string;
+  context?: string | null;
 }
 
 export interface SimilarProblem {
