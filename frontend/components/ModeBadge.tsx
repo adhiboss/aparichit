@@ -14,22 +14,22 @@ export const ModeBadge: React.FC<ModeBadgeProps> = ({ mode }) => {
   switch (mode) {
     case "grounded":
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#e6af2e]/15 text-[#e6af2e] border border-[#e6af2e]/30 shadow-sm">
-          <BookOpen className="w-3.5 h-3.5 text-[#e6af2e]" />
-          Grounded Scripture
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#122920] text-[#34d399] border border-[#1f4e3b] shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#34d399]" />
+          Grounded
         </span>
       );
     case "inspired":
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#2a1d36] text-[#c084fc] border border-[#432c59]">
+          <Sparkles className="w-3 h-3 text-[#c084fc]" />
           Thematic Reflection
         </span>
       );
     case "playful":
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-          <Smile className="w-3.5 h-3.5 text-emerald-300" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#2b2413] text-[#f0a83b] border border-[#4d3c1c]">
+          <Smile className="w-3 h-3 text-[#f0a83b]" />
           Playful Wisdom
         </span>
       );
