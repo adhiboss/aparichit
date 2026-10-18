@@ -19,12 +19,12 @@ function CommunityContent() {
 
 export default function CommunityPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#0c0f17] text-[#f0f2f5]">
+    <div className="min-h-screen flex flex-col bg-[#171A1F] text-[#E7E1D5]">
       <ChatHeader />
       <Suspense
         fallback={
           <div className="flex-1 flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-[#e6af2e]" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#B69A61]" />
           </div>
         }
       >

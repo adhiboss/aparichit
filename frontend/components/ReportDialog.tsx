@@ -62,12 +62,12 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-md rounded-2xl bg-[#171c28] border border-[#232c3f] shadow-2xl p-6 relative text-[#f0f2f5] space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-2xl bg-[#242830] border border-[#2E333D] shadow-2xl p-6 relative text-[#E7E1D5] space-y-4">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-[#94a3b8] hover:text-white rounded-lg hover:bg-[#232c3f] transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-[#9EA3AF] hover:text-[#E7E1D5] rounded-lg hover:bg-[#1E222A] transition-colors cursor-pointer"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
@@ -79,8 +79,8 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
             <Flag className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold">Report Community Content</h3>
-            <p className="text-xs text-[#94a3b8]">
+            <h3 className="text-base font-semibold text-[#E7E1D5]">Report Community Content</h3>
+            <p className="text-xs text-[#9EA3AF]">
               Flag this {targetType} for human moderation review.
             </p>
           </div>
@@ -89,10 +89,10 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
         {isSuccess ? (
           <div className="py-6 text-center space-y-2">
             <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-            <p className="text-sm font-semibold text-[#f0f2f5]">
+            <p className="text-sm font-semibold text-[#E7E1D5]">
               Report submitted successfully
             </p>
-            <p className="text-xs text-[#94a3b8]">
+            <p className="text-xs text-[#9EA3AF]">
               Thank you for keeping our community safe. Our team will review this shortly.
             </p>
           </div>
@@ -100,7 +100,7 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
           <>
             {/* Reason Radio Group */}
             <div className="space-y-2">
-              <label className="block text-xs font-medium text-[#cbd5e1]">
+              <label className="block text-xs font-medium text-[#9EA3AF]">
                 Select reason for reporting:
               </label>
               <div className="space-y-2">
@@ -109,8 +109,8 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
                     key={r.id}
                     className={`flex items-center gap-3 p-3 rounded-xl border text-xs cursor-pointer transition-colors ${
                       reason === r.id
-                        ? "bg-[#232c3f] border-[#e6af2e]/60 text-[#f0f2f5]"
-                        : "bg-[#0c0f17] border-[#232c3f] text-[#94a3b8] hover:bg-[#141924]"
+                        ? "bg-[#1E222A] border-[#B69A61] text-[#E7E1D5]"
+                        : "bg-[#1E222A]/50 border-[#2E333D] text-[#9EA3AF] hover:bg-[#1E222A]"
                     }`}
                   >
                     <input
@@ -119,7 +119,7 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
                       value={r.id}
                       checked={reason === r.id}
                       onChange={(e) => setReason(e.target.value)}
-                      className="text-[#e6af2e] focus:ring-0"
+                      className="text-[#B69A61] focus:ring-0"
                     />
                     <span>{r.label}</span>
                   </label>
@@ -139,7 +139,7 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-medium text-[#94a3b8] hover:text-white rounded-lg hover:bg-[#232c3f] transition-colors"
+                className="px-4 py-2 text-xs font-medium text-[#9EA3AF] hover:text-[#E7E1D5] rounded-lg hover:bg-[#1E222A] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -147,7 +147,7 @@ export const ReportDialog: React.FC<ReportDialogProps> = ({
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-500 text-white transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-rose-600 hover:bg-rose-500 text-white transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>

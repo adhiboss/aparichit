@@ -102,88 +102,72 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
 
   if (loading || !post) {
     return (
-      <div className="flex justify-center items-center py-20 text-[#e59a27]">
+      <div className="flex justify-center items-center py-20 text-[#B69A61]">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 animate-in fade-in duration-300">
-      {/* Back Navigation & Meta State */}
+    <div className="max-w-3xl mx-auto w-full flex flex-col gap-6">
+      {/* Back Navigation */}
       <div className="flex items-center justify-between pb-2">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-[#b5aa9b] hover:text-[#e59a27] transition-colors group font-label text-sm font-medium cursor-pointer"
+          className="inline-flex items-center gap-2 text-[#9EA3AF] hover:text-[#E7E1D5] transition-colors text-sm font-medium cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-          <span>Back to Sanctuary Discourses</span>
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Reflections</span>
         </button>
 
-        <div className="flex items-center gap-2 text-[#7a6e5e] text-xs">
-          <Lock className="w-3.5 h-3.5 text-[#e59a27]" />
-          <span className="font-label uppercase tracking-widest text-[11px]">
-            End-to-End Ephemeral Ledger
-          </span>
-        </div>
+        <span className="text-xs text-[#9EA3AF] uppercase tracking-wider">
+          Confidential Discussion
+        </span>
       </div>
 
       {/* Main Discourse Card */}
-      <article className="bg-[#1c1712] rounded-xl p-6 sm:p-10 border border-[#362c22] shadow-2xl relative overflow-hidden">
-        {/* Left Gold Gradient Hairline */}
-        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#e59a27] via-[#e59a27]/30 to-transparent" />
-
+      <article className="bg-[#242830] rounded-xl p-6 sm:p-8 border border-[#2E333D] border-l-2 border-l-[#B69A61]">
         {/* Header Info */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#362c22]/70">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#261f18] border border-[#3d3227] flex items-center justify-center text-[#e59a27]">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="font-body text-sm font-medium text-[#f2ede4]">
-                  {post.display_name}
-                </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#e59a27]/15 text-[#e59a27] font-label text-[10px] border border-[#e59a27]/25">
-                  Verified Pseudonym
-                </span>
-              </div>
-              <span className="font-label text-xs text-[#7a6e5e] mt-0.5">
-                Offered 2 hours ago • Contemplative Inquiry
-              </span>
-            </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-[#2E333D]">
+          <div className="flex flex-col">
+            <span className="text-base font-semibold text-[#E7E1D5]">
+              {post.display_name}
+            </span>
+            <span className="text-xs text-[#9EA3AF] mt-0.5">
+              Anonymous Inquiry • Shared with community
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#261f18] text-[#b5aa9b] font-label text-xs border border-[#3d3227]">
+            <span className="px-2.5 py-1 rounded text-xs bg-[#1E222A] text-[#9EA3AF] border border-[#2E333D]">
               Duty & Family
             </span>
-            <span className="px-3 py-1 rounded-full bg-[#e59a27]/15 text-[#e59a27] font-label text-xs font-semibold border border-[#e59a27]/25">
+            <span className="text-xs text-[#B69A61] font-medium">
               Bhagavad Gita
             </span>
           </div>
         </div>
 
         {/* Discourse Narrative */}
-        <div className="py-6 flex flex-col gap-4 text-[#b5aa9b] font-body text-base leading-relaxed whitespace-pre-wrap">
+        <div className="py-6 text-[#E7E1D5] text-base sm:text-[17px] leading-[1.75] whitespace-pre-wrap">
           {post.content}
         </div>
 
         {/* AI Synthesis Collapsible Panel */}
-        <div className="mt-4 rounded-xl bg-[#211a14] border border-[#362c22] p-5 transition-all">
+        <div className="mt-2 rounded-lg bg-[#1E222A] border border-[#2E333D] p-5">
           <button
             onClick={() => setIsSynthesisOpen(!isSynthesisOpen)}
-            className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-none"
+            className="w-full flex items-center justify-between text-left cursor-pointer focus:outline-none"
           >
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-5 h-5 text-[#e59a27]" />
-              <span className="font-headline text-base text-[#f2ede4] tracking-wide">
-                Sanctuary AI Hermeneutic Synthesis
+              <Sparkles className="w-4 h-4 text-[#B69A61]" />
+              <span className="font-serif text-base text-[#E7E1D5]">
+                Scriptural Hermeneutic Synthesis
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-[#7a6e5e] group-hover:text-[#e59a27] transition-colors">
-              <span className="font-label text-xs uppercase tracking-wider">
-                {isSynthesisOpen ? "Collapse" : "Expand"}
+            <div className="flex items-center gap-1.5 text-xs text-[#9EA3AF]">
+              <span className="uppercase tracking-wider">
+                {isSynthesisOpen ? "Hide" : "Show"}
               </span>
               {isSynthesisOpen ? (
                 <ChevronUp className="w-4 h-4" />
@@ -194,44 +178,39 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
           </button>
 
           {isSynthesisOpen && (
-            <div className="mt-4 pt-4 border-t border-[#362c22] flex flex-col gap-3.5">
-              <div className="p-4 rounded-lg bg-[#14120e] border border-[#362c22]">
-                <p className="font-headline text-sm sm:text-base text-[#e59a27] italic leading-relaxed">
+            <div className="mt-4 pt-4 border-t border-[#2E333D] flex flex-col gap-4">
+              <blockquote className="border-l-2 border-[#B69A61] pl-4 py-1">
+                <p className="font-serif italic text-base text-[#E7E1D5] leading-relaxed">
                   “Better is one’s own natural duty, though imperfectly performed, than another’s duty performed to perfection. Conforming to another’s path brings fear and distortion.”
                 </p>
-                <div className="mt-3 flex items-center justify-between flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#e59a27]/15 text-[#e59a27] font-label text-xs tracking-widest uppercase border border-[#e59a27]/25 font-semibold">
-                    <BookOpen className="w-3.5 h-3.5" />
-                    Bhagavad Gita 3.35 • Swadharma vs. Paradharma
-                  </span>
-                  <span className="font-body text-xs text-[#7a6e5e]">
-                    Ethical Resolution Vector
-                  </span>
+                <div className="mt-2 text-xs text-[#B69A61]">
+                  Bhagavad Gita 3.35 • Swadharma vs. Paradharma
                 </div>
-              </div>
-              <p className="font-body text-sm text-[#b5aa9b] leading-relaxed">
-                <strong className="text-[#f2ede4]">Philosophical Commentary:</strong> Ancient Vedic ethics draws a sacred distinction between loving reverence (<span className="text-[#e59a27]">Pitri Rna</span> / ancestral gratitude) and the subversion of one’s sacred innate nature (<span className="text-[#e59a27]">Swabhava</span>). Filial respect is sustained through integrity, not spiritual martyrdom. When the seed attempts to grow into a stone out of gratitude to the soil, both soil and seed are diminished.
+              </blockquote>
+
+              <p className="text-sm text-[#9EA3AF] leading-relaxed">
+                <strong className="text-[#E7E1D5]">Philosophical Reflection:</strong> Ancient Vedic ethics distinguishes between filial reverence (<span className="text-[#B69A61]">Pitri Rna</span> / ancestral gratitude) and the suppression of one’s innate calling (<span className="text-[#B69A61]">Swabhava</span>). Reverence is fulfilled through truthful living, not inward martyrdom. When a seed attempts to become stone out of gratitude to the soil, both soil and seed are diminished.
               </p>
             </div>
           )}
         </div>
 
         {/* Post Action Bar */}
-        <div className="mt-6 pt-5 border-t border-[#362c22] flex flex-wrap items-center justify-between gap-4 text-xs text-[#7a6e5e]">
+        <div className="mt-6 pt-4 border-t border-[#2E333D] flex flex-wrap items-center justify-between gap-4 text-xs text-[#9EA3AF]">
           <div className="flex items-center gap-6">
             <button
               onClick={handleLike}
-              className={`inline-flex items-center gap-2 font-label transition-colors cursor-pointer ${
-                liked ? "text-rose-400 font-semibold" : "hover:text-[#f2ede4]"
+              className={`inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
+                liked ? "text-rose-400 font-semibold" : "hover:text-[#E7E1D5]"
               }`}
             >
               <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
               <span>{likesCount} Held Space</span>
             </button>
 
-            <div className="inline-flex items-center gap-2 font-label text-[#b5aa9b]">
-              <MessageSquare className="w-4 h-4 text-[#e59a27]" />
-              <span>{post.reply_count} Contemplative Responses</span>
+            <div className="inline-flex items-center gap-1.5 text-[#E7E1D5]">
+              <MessageSquare className="w-4 h-4 text-[#B69A61]" />
+              <span>{post.reply_count} Responses</span>
             </div>
           </div>
 
@@ -242,63 +221,58 @@ export const DiscussionThread: React.FC<DiscussionThreadProps> = ({
                   navigator.clipboard.writeText(window.location.href);
                 }
               }}
-              className="hover:text-[#e59a27] transition-colors flex items-center gap-1.5 cursor-pointer font-label"
+              className="hover:text-[#E7E1D5] transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>Share Discreetly</span>
+              <span>Share link</span>
             </button>
 
             <button
               onClick={() => setReportTarget({ type: "post", id: post.id })}
-              className="hover:text-rose-400 transition-colors flex items-center gap-1.5 cursor-pointer font-label"
+              className="hover:text-rose-400 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Flag className="w-3.5 h-3.5" />
-              <span>Report Anonymously</span>
+              <span>Report</span>
             </button>
           </div>
         </div>
       </article>
 
       {/* Contemplative Responses List */}
-      <section className="mt-4 space-y-4">
-        <h3 className="font-headline text-lg sm:text-xl text-[#f2ede4] tracking-wide">
-          Fellow Seeker Contemplations ({post.replies?.length || 0})
+      <section className="mt-2 space-y-3">
+        <h3 className="font-serif text-lg text-[#E7E1D5]">
+          Seeker Contemplations ({post.replies?.length || 0})
         </h3>
 
         {post.replies && post.replies.length > 0 ? (
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {post.replies.map((reply) => (
               <div
                 key={reply.id}
-                className="p-5 rounded-xl bg-[#1c1712] border border-[#362c22] shadow-sm space-y-2"
+                className="p-5 rounded-xl bg-[#242830] border border-[#2E333D] space-y-2"
               >
-                <div className="flex items-center justify-between text-xs text-[#7a6e5e]">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-[#261f18] text-[#e59a27] flex items-center justify-center text-[10px]">
-                      ॐ
-                    </div>
-                    <span className="font-label font-medium text-[#f2ede4]">
-                      {reply.display_name}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between text-xs text-[#9EA3AF]">
+                  <span className="font-medium text-[#E7E1D5]">
+                    {reply.display_name}
+                  </span>
                   <button
                     onClick={() =>
                       setReportTarget({ type: "reply", id: reply.id })
                     }
-                    className="hover:text-rose-400 transition-colors text-[11px] font-label cursor-pointer"
+                    className="hover:text-rose-400 transition-colors text-[11px] cursor-pointer"
                   >
                     Report
                   </button>
                 </div>
-                <p className="font-body text-sm text-[#b5aa9b] leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm text-[#E7E1D5] leading-relaxed whitespace-pre-wrap">
                   {reply.content}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 rounded-xl bg-[#1c1712] border border-[#362c22] text-[#7a6e5e] text-xs">
-            No reflections yet. Be the first kindred pilgrim to offer solace.
+          <div className="text-center py-8 rounded-xl bg-[#242830] border border-[#2E333D] text-[#9EA3AF] text-xs">
+            No reflections yet. Be the first kindred seeker to offer solace.
           </div>
         )}
 

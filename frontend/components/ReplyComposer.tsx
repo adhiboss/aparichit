@@ -44,25 +44,25 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 pt-3">
-      <div className="relative rounded-xl bg-[#0c0f17] border border-[#232c3f] focus-within:border-[#e6af2e] transition-colors p-3">
+      <div className="relative rounded-xl bg-[#242830] border border-[#2E333D] focus-within:border-[#B69A61] transition-colors p-3.5">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Offer compassionate reflection or share your experience..."
+          placeholder="Offer a thoughtful reflection or share your experience..."
           rows={3}
           disabled={isSubmitting}
-          className="w-full bg-transparent text-xs text-[#f0f2f5] placeholder-[#64748b] resize-none focus:outline-none leading-relaxed disabled:opacity-50"
+          className="w-full bg-transparent text-sm text-[#E7E1D5] placeholder-[#6F7684] resize-none focus:outline-none leading-relaxed disabled:opacity-50"
         />
 
-        <div className="flex items-center justify-between pt-2 border-t border-[#232c3f]/50">
-          <span className="text-[11px] text-[#64748b]">
+        <div className="flex items-center justify-between pt-2.5 border-t border-[#2E333D]">
+          <span className="text-xs text-[#9EA3AF]">
             Replies are reviewed for community safety and mutual kindness.
           </span>
 
           <button
             type="submit"
             disabled={isSubmitting || !content.trim()}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#e6af2e] hover:bg-[#d4af37] text-[#0c0f17] text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#B69A61] hover:bg-[#c4a96e] text-[#171A1F] text-xs font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? (
               <>

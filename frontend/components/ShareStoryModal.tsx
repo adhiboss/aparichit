@@ -56,12 +56,12 @@ export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-xl rounded-2xl bg-[#171c28] border border-[#232c3f] shadow-2xl p-6 relative text-[#f0f2f5] space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+      <div className="w-full max-w-xl rounded-2xl bg-[#242830] border border-[#2E333D] shadow-2xl p-6 relative text-[#E7E1D5] space-y-4">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-[#94a3b8] hover:text-white rounded-lg hover:bg-[#232c3f] transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-[#9EA3AF] hover:text-[#E7E1D5] rounded-lg hover:bg-[#1E222A] transition-colors cursor-pointer"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
@@ -69,25 +69,25 @@ export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
 
         {/* Modal Header */}
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#e6af2e]/15 text-[#e6af2e] border border-[#e6af2e]/30">
+          <div className="p-2.5 rounded-lg bg-[#1E222A] text-[#B69A61] border border-[#2E333D]">
             <Share2 className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold">Share Your Story Anonymously</h3>
-            <p className="text-xs text-[#94a3b8]">
-              Your experience can help someone walking a similar path.
+            <h3 className="text-lg font-serif text-[#E7E1D5]">Share Your Dilemma Anonymously</h3>
+            <p className="text-xs text-[#9EA3AF]">
+              Your experience offers guidance to seekers navigating similar paths.
             </p>
           </div>
         </div>
 
         {/* Privacy Highlight Banner */}
-        <div className="p-3.5 rounded-xl bg-[#0c0f17] border border-[#232c3f] flex items-start gap-3 text-xs">
-          <ShieldCheck className="w-5 h-5 text-[#e6af2e] shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-xl bg-[#1E222A] border border-[#2E333D] flex items-start gap-3 text-xs">
+          <ShieldCheck className="w-5 h-5 text-[#B69A61] shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <div className="font-semibold text-[#e6af2e]">
-              Privacy Notice: Your chat stays private unless you share it.
+            <div className="font-semibold text-[#B69A61]">
+              Privacy Notice: Your dialogue remains private unless intentionally shared.
             </div>
-            <p className="text-[#94a3b8] leading-relaxed">
+            <p className="text-[#9EA3AF] leading-relaxed">
               When submitted, the server automatically strips personal identifiers (phone numbers, emails, addresses, real names, schools, and workplaces) before publishing under your anonymous pseudonym.
             </p>
           </div>
@@ -95,28 +95,28 @@ export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
 
         {/* Story Editor */}
         <div className="space-y-1.5">
-          <label className="block text-xs font-medium text-[#cbd5e1]">
+          <label className="block text-xs font-medium text-[#9EA3AF]">
             Review & Edit Your Story Before Sharing
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={5}
-            className="w-full p-3.5 text-sm rounded-xl bg-[#0c0f17] border border-[#232c3f] text-[#f0f2f5] placeholder-[#64748b] focus:outline-none focus:border-[#e6af2e] focus:ring-1 focus:ring-[#e6af2e] transition-colors"
-            placeholder="Describe your situation or dilemma..."
+            className="w-full p-3.5 text-sm rounded-xl bg-[#1E222A] border border-[#2E333D] text-[#E7E1D5] placeholder-[#6F7684] focus:outline-none focus:border-[#B69A61] transition-colors"
+            placeholder="Describe your inquiry, dilemma, or reflections..."
           />
         </div>
 
         {/* Confirmation Checkbox */}
-        <label className="flex items-start gap-2.5 cursor-pointer text-xs text-[#cbd5e1] select-none">
+        <label className="flex items-start gap-2.5 cursor-pointer text-xs text-[#9EA3AF] select-none">
           <input
             type="checkbox"
             checked={confirmedPrivacy}
             onChange={(e) => setConfirmedPrivacy(e.target.checked)}
-            className="mt-0.5 rounded border-[#232c3f] bg-[#0c0f17] text-[#e6af2e] focus:ring-0 cursor-pointer"
+            className="mt-0.5 rounded border-[#2E333D] bg-[#1E222A] text-[#B69A61] focus:ring-0 cursor-pointer"
           />
           <span>
-            I understand that clicking Publish will make this story visible to the anonymous peer community.
+            I understand that clicking Publish will make this reflection visible to the anonymous peer community.
           </span>
         </label>
 
@@ -133,7 +133,7 @@ export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-medium text-[#94a3b8] hover:text-white rounded-lg hover:bg-[#232c3f] transition-colors"
+            className="px-4 py-2 text-xs font-medium text-[#9EA3AF] hover:text-[#E7E1D5] rounded-lg hover:bg-[#1E222A] transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -141,7 +141,7 @@ export const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting || !content.trim() || !confirmedPrivacy}
-            className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold rounded-lg bg-[#e6af2e] hover:bg-[#d4af37] text-[#0c0f17] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#e6af2e]/10"
+            className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold rounded-lg bg-[#B69A61] hover:bg-[#c4a96e] text-[#171A1F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? (
               <>

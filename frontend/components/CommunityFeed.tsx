@@ -131,63 +131,62 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
   });
 
   return (
-    <div className="w-full flex flex-col gap-8 animate-in fade-in duration-300">
-      {/* Header Section */}
+    <div className="w-full flex flex-col gap-8">
+      {/* Editorial Header Section */}
       <header className="flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-[#362c22]/70">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#2E333D]">
           <div className="flex flex-col gap-2 max-w-2xl">
-            <div className="flex items-center gap-2 text-[#7a6e5e] text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#e59a27] animate-ping" />
-              <span className="font-label uppercase tracking-widest text-[#e59a27] font-semibold">
-                Confidential Collective Stream
+            <div className="flex items-center gap-2 text-xs text-[#9EA3AF]">
+              <span className="uppercase tracking-widest text-[#B69A61] font-semibold">
+                Anonymous Sanctuary
               </span>
               <span>•</span>
-              <span className="font-label uppercase tracking-wider text-[#7a6e5e]">
-                284 Seekers Present
+              <span className="uppercase tracking-wider">
+                Confidential Peer Reflections
               </span>
             </div>
 
-            <div className="flex flex-wrap items-baseline gap-2">
-              <h1 className="font-headline text-2xl sm:text-4xl text-[#f2ede4] tracking-tight">
-                Anonymous Sanctuary Feed
+            <div className="flex flex-wrap items-baseline gap-3">
+              <h1 className="font-serif text-3xl sm:text-4xl text-[#E7E1D5] tracking-tight">
+                Collective Contemplations
               </h1>
-              <span className="font-headline text-lg sm:text-xl text-[#b5aa9b] font-light opacity-60">
+              <span className="text-sm font-serif italic text-[#9EA3AF]">
                 (अपारिचित संवाद)
               </span>
             </div>
 
-            <p className="font-body text-sm text-[#b5aa9b] max-w-xl leading-relaxed">
-              A confidential haven to read, share, and reflect upon real dilemmas with peers and philosophical mentors under the cloak of complete anonymity.
+            <p className="text-base text-[#9EA3AF] max-w-xl leading-relaxed">
+              Read, offer solace, and reflect upon ethical dilemmas with peers and philosophical mentors under complete anonymity.
             </p>
           </div>
 
           {/* + New Post Button */}
           <button
             onClick={() => setIsShareModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#e59a27] text-[#140e06] font-label text-sm font-semibold hover:bg-[#f0a83b] transition-all duration-300 shadow-[0_4px_20px_rgba(229,154,39,0.25)] hover:shadow-[0_4px_28px_rgba(229,154,39,0.4)] shrink-0 cursor-pointer active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#B69A61] text-[#171A1F] text-sm font-semibold hover:bg-[#c4a96e] transition-colors shrink-0 cursor-pointer active:scale-[0.99]"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>+ New Post</span>
+            <span>New Reflection</span>
           </button>
         </div>
 
         {/* Controls & Filter Toolbar */}
-        <div className="flex flex-col gap-4 p-4 rounded-xl bg-[#1c1712] border border-[#362c22] shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
+        <div className="flex flex-col gap-3 p-3 sm:p-4 rounded-xl bg-[#242830] border border-[#2E333D]">
           {/* Row 1: Search & Sorting */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7a6e5e]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9EA3AF]" />
               <input
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder="Search topics, traditions, or keywords..."
-                className="w-full pl-10 pr-4 py-2.5 bg-[#261f18] border border-[#3d3227] rounded-lg text-sm text-[#f2ede4] placeholder:text-[#7a6e5e] focus:outline-none focus:border-[#e59a27] transition-all"
+                placeholder="Search inquiries, traditions, or keywords..."
+                className="w-full pl-10 pr-4 py-2 bg-[#1E222A] border border-[#2E333D] rounded-lg text-sm text-[#E7E1D5] placeholder:text-[#6F7684] focus:outline-none focus:border-[#B69A61] transition-colors"
               />
               {searchFilter && (
                 <button
                   onClick={() => setSearchFilter("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#7a6e5e] hover:text-[#f2ede4]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#9EA3AF] hover:text-[#E7E1D5]"
                 >
                   Clear
                 </button>
@@ -195,43 +194,43 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
             </div>
 
             {/* Sorting Tab Group */}
-            <div className="flex items-center gap-1 p-1 bg-[#261f18] rounded-lg border border-[#3d3227] shrink-0 self-start lg:self-center">
+            <div className="flex items-center gap-1 p-1 bg-[#1E222A] rounded-lg border border-[#2E333D] shrink-0">
               <button
                 onClick={() => setSortOption("latest")}
-                className={`px-3 py-1.5 rounded-md font-label text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                   sortOption === "latest"
-                    ? "bg-[#e59a27] text-[#140e06] shadow-sm font-semibold"
-                    : "text-[#b5aa9b] hover:text-[#f2ede4]"
+                    ? "bg-[#B69A61] text-[#171A1F] font-semibold"
+                    : "text-[#9EA3AF] hover:text-[#E7E1D5]"
                 }`}
               >
                 Latest
               </button>
               <button
                 onClick={() => setSortOption("replies")}
-                className={`px-3 py-1.5 rounded-md font-label text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                   sortOption === "replies"
-                    ? "bg-[#e59a27] text-[#140e06] shadow-sm font-semibold"
-                    : "text-[#b5aa9b] hover:text-[#f2ede4]"
+                    ? "bg-[#B69A61] text-[#171A1F] font-semibold"
+                    : "text-[#9EA3AF] hover:text-[#E7E1D5]"
                 }`}
               >
                 Most Replies
               </button>
               <button
                 onClick={() => setSortOption("reflections")}
-                className={`px-3 py-1.5 rounded-md font-label text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                   sortOption === "reflections"
-                    ? "bg-[#e59a27] text-[#140e06] shadow-sm font-semibold"
-                    : "text-[#b5aa9b] hover:text-[#f2ede4]"
+                    ? "bg-[#B69A61] text-[#171A1F] font-semibold"
+                    : "text-[#9EA3AF] hover:text-[#E7E1D5]"
                 }`}
               >
-                Deep Reflections
+                Deep Inquiries
               </button>
             </div>
           </div>
 
           {/* Row 2: Tradition Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <span className="font-label text-xs uppercase tracking-wider text-[#7a6e5e] mr-1 shrink-0 flex items-center gap-1">
+          <div className="flex items-center gap-2 overflow-x-auto pt-1 scrollbar-none">
+            <span className="text-xs uppercase tracking-wider text-[#9EA3AF] mr-1 shrink-0">
               Tradition:
             </span>
             {[
@@ -244,10 +243,10 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
               <button
                 key={t.id}
                 onClick={() => setSelectedTradition(t.id)}
-                className={`px-3.5 py-1 rounded-full text-xs font-label whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors cursor-pointer ${
                   selectedTradition === t.id
-                    ? "bg-[#e59a27]/20 border border-[#e59a27] text-[#e59a27] font-semibold"
-                    : "bg-[#261f18] hover:bg-[#2e251e] text-[#b5aa9b] hover:text-[#f2ede4] border border-[#3d3227]"
+                    ? "bg-[#B69A61]/20 border border-[#B69A61] text-[#B69A61] font-semibold"
+                    : "bg-[#1E222A] hover:bg-[#2A2F3A] text-[#9EA3AF] hover:text-[#E7E1D5] border border-[#2E333D]"
                 }`}
               >
                 {t.label}
@@ -259,16 +258,16 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
 
       {/* Main Feed Stream */}
       {loading ? (
-        <div className="flex justify-center items-center py-20 text-[#e59a27]">
+        <div className="flex justify-center items-center py-20 text-[#B69A61]">
           <Loader2 className="w-8 h-8 animate-spin" />
         </div>
       ) : filteredPosts.length === 0 ? (
-        <div className="text-center py-16 text-[#7a6e5e] bg-[#1c1712] rounded-xl border border-[#362c22]">
-          <p className="font-headline text-lg text-[#f2ede4]">No discourses found matching this inquiry.</p>
-          <p className="font-body text-xs mt-1">Try relaxing filters or share the first reflection.</p>
+        <div className="text-center py-16 text-[#9EA3AF] bg-[#242830] rounded-xl border border-[#2E333D]">
+          <p className="font-serif text-lg text-[#E7E1D5]">No reflections found matching this inquiry.</p>
+          <p className="text-xs mt-1">Try relaxing filters or share the first reflection.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
           {filteredPosts.map((post) => {
             const callout = SCRIPTURE_CALLOUTS[post.id];
 
@@ -276,22 +275,16 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
               <article
                 key={post.id}
                 onClick={() => setSelectedPostId(post.id)}
-                className="group relative flex flex-col rounded-xl bg-[#1c1712] hover:bg-[#231c15] border border-[#362c22] hover:border-[#e59a27]/40 transition-all duration-300 p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.6)] overflow-hidden cursor-pointer"
+                className="group flex flex-col rounded-xl bg-[#242830] hover:bg-[#282D37] border border-[#2E333D] hover:border-[#3D4452] transition-colors p-6 sm:p-7 cursor-pointer border-l-2 border-l-[#B69A61]"
               >
-                {/* Subtle Left Accent Hairline */}
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#e59a27] via-[#e59a27]/30 to-transparent" />
-
                 {/* Card Meta Row */}
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-4 text-[#7a6e5e]">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-[#261f18] border border-[#3d3227] flex items-center justify-center text-[#e59a27] text-xs">
-                      <Shield className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="font-label text-xs sm:text-sm font-medium text-[#f2ede4]">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs text-[#9EA3AF]">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-[#E7E1D5]">
                       {post.display_name}
                     </span>
                     <span>•</span>
-                    <span suppressHydrationWarning className="font-body text-xs text-[#7a6e5e]">
+                    <span suppressHydrationWarning>
                       {new Date(post.created_at).toLocaleDateString([], {
                         month: "short",
                         day: "numeric",
@@ -301,10 +294,10 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
 
                   {callout && (
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-label tracking-wider bg-[#261f18] text-[#b5aa9b]">
+                      <span className="px-2 py-0.5 rounded text-[11px] bg-[#1E222A] text-[#9EA3AF] border border-[#2E333D]">
                         {callout.tag}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-label tracking-wider bg-[#e59a27]/15 text-[#e59a27] font-semibold border border-[#e59a27]/25">
+                      <span className="text-[11px] text-[#B69A61] font-medium">
                         {callout.tradition}
                       </span>
                     </div>
@@ -312,21 +305,21 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
                 </div>
 
                 {/* Post Content */}
-                <div className="flex flex-col gap-2 mb-4">
-                  <p className="font-body text-sm sm:text-base text-[#b5aa9b] group-hover:text-[#f2ede4] transition-colors leading-relaxed line-clamp-3">
+                <div className="mb-4">
+                  <p className="text-base text-[#E7E1D5] leading-relaxed line-clamp-3">
                     {post.content}
                   </p>
                 </div>
 
-                {/* Scripture Insight Callout Accent */}
+                {/* Scripture Insight Callout */}
                 {callout && (
-                  <div className="mb-4 p-3.5 rounded-lg bg-[#14120e] border border-[#362c22] flex items-start gap-3">
-                    <BookOpen className="w-4 h-4 text-[#e59a27] shrink-0 mt-0.5" />
+                  <div className="mb-4 p-3.5 rounded-lg bg-[#1E222A] border-l-2 border-[#B69A61] flex items-start gap-3">
+                    <BookOpen className="w-4 h-4 text-[#B69A61] shrink-0 mt-0.5" />
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-headline text-xs italic text-[#f2ede4]">
+                      <span className="font-serif italic text-sm text-[#E7E1D5]">
                         “{callout.quote}”
                       </span>
-                      <span className="font-label text-[10px] text-[#e59a27] uppercase tracking-wider font-medium">
+                      <span className="text-[11px] text-[#B69A61] uppercase tracking-wider">
                         — {callout.source}
                       </span>
                     </div>
@@ -334,20 +327,20 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({
                 )}
 
                 {/* Bottom Action Row */}
-                <div className="pt-2 flex items-center justify-between text-xs text-[#7a6e5e]">
+                <div className="pt-2 flex items-center justify-between text-xs text-[#9EA3AF]">
                   <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1.5 text-[#b5aa9b]">
-                      <MessageSquare className="w-3.5 h-3.5 text-[#e59a27]" />
-                      <span>{post.reply_count || 0} Contemplations</span>
+                    <span className="flex items-center gap-1.5 text-[#E7E1D5]">
+                      <MessageSquare className="w-3.5 h-3.5 text-[#B69A61]" />
+                      <span>{post.reply_count || 0} reflections</span>
                     </span>
-                    <span className="flex items-center gap-1.5 text-[#7a6e5e]">
+                    <span className="flex items-center gap-1.5 text-[#9EA3AF]">
                       <Heart className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Held Space</span>
+                      <span>Held space</span>
                     </span>
                   </div>
 
-                  <span className="inline-flex items-center gap-1 text-[#e59a27] font-label font-semibold group-hover:translate-x-0.5 transition-transform">
-                    <span>Read Replies</span>
+                  <span className="inline-flex items-center gap-1 text-[#B69A61] font-medium group-hover:translate-x-0.5 transition-transform">
+                    <span>Read Discussion</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
