@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { getOrInitAccount, createAnonymousAccount } from "../lib/auth.ts";
 import type { AnonymousAccount } from "../lib/types.ts";
+import { AmbientAudio } from "./AmbientAudio";
 
 interface ChatHeaderProps {
   onSearch?: (query: string) => void;
@@ -122,6 +123,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               );
             })}
           </nav>
+
+          {/* Ambient Atmosphere Audio (Molkom Tawny Owl) */}
+          <AmbientAudio compact />
 
           {/* User Profile Pill */}
           <div className="relative">

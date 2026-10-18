@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Plus_Jakarta_Sans, Noto_Serif, Outfit } from "next/font/google";
 import "./globals.css";
 import "lenis/dist/lenis.css";
@@ -52,6 +53,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-[#171A1F] text-[#E7E1D5] antialiased selection:bg-[#B69A61]/25 selection:text-[#E7E1D5]"
       >
+        <Script
+          src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
+          strategy="afterInteractive"
+        />
+        <Script
+          src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"
+          strategy="afterInteractive"
+        />
         <SmoothScroll />
         {children}
       </body>

@@ -11,6 +11,8 @@ import { CommunityFeed } from "@/components/CommunityFeed";
 import { TraditionDropdown } from "@/components/TraditionDropdown";
 import { ScriptureLibrary } from "@/components/ScriptureLibrary";
 import { UserProfile } from "@/components/UserProfile";
+import { VantaBirds } from "@/components/VantaBirds";
+import { GsapHeroText } from "@/components/GsapHeroText";
 import { ChatMessage, Citation, StreamMetaEvent, TraditionItem } from "@/lib/types";
 import {
   getSessionId,
@@ -59,6 +61,7 @@ export default function HomePage() {
   const [showCitationDrawer, setShowCitationDrawer] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("chat");
   const [initialInputPrompt, setInitialInputPrompt] = useState<string>("");
+  const [vantaAtmosphere, setVantaAtmosphere] = useState<"twilight" | "charcoal">("twilight");
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Initialize preferences & traditions
@@ -253,28 +256,64 @@ export default function HomePage() {
         {/* VIEW: HOMEPAGE / CHAT STAGE */}
         {(activeTab === "chat" || activeTab === "home") && (
           <div className="w-full flex flex-col flex-1">
-            {/* Cinematic Hero Section with Sunset Landscape Background */}
+            {/* Cinematic Hero Section with Sunset Landscape Background & Vanta Birds */}
             <section
-              className="relative w-full bg-cover bg-center bg-no-repeat transition-all duration-300"
-              style={{
-                backgroundImage: "url('/images/hero_sunset.jpg')",
-              }}
+              className={`relative w-full transition-all duration-500 overflow-hidden ${
+                vantaAtmosphere === "twilight"
+                  ? "bg-cover bg-center bg-no-repeat"
+                  : "bg-[#171A1F]"
+              }`}
+              style={
+                vantaAtmosphere === "twilight"
+                  ? { backgroundImage: "url('/images/hero_sunset.jpg')" }
+                  : { backgroundColor: "#171A1F" }
+              }
             >
-              {/* Subtle dark charcoal overlay - preserves sunset colors, mountains, and temple while keeping text crisp */}
-              <div className="absolute inset-0 bg-[#171A1F]/45 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-b from-[#171A1F]/70 via-transparent to-[#171A1F] pointer-events-none" />
+              {/* Vanta Birds Animation - Smooth 3D gold birds flying across canvas */}
+              <VantaBirds
+                backgroundAlpha={vantaAtmosphere === "twilight" ? 0.0 : 1.0}
+                backgroundColor={0x171a1f}
+                color1={0xb69a61}
+                color2={0xd4af37}
+                quantity={3.0}
+                birdSize={1.2}
+                wingSpan={20.0}
+                speedLimit={3.0}
+                separation={50.0}
+                alignment={50.0}
+                cohesion={50.0}
+              />
+
+              {/* Subtle dark charcoal overlay - preserves sunset colors while keeping text crisp */}
+              {vantaAtmosphere === "twilight" && (
+                <>
+                  <div className="absolute inset-0 bg-[#171A1F]/45 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#171A1F]/70 via-transparent to-[#171A1F] pointer-events-none" />
+                </>
+              )}
 
               {/* Centered Hero Content */}
               <div className="max-w-3xl mx-auto px-5 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 flex flex-col items-center text-center relative z-10">
-                {/* Main Headline */}
-                <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#E7E1D5] tracking-tight leading-[1.15] max-w-2xl font-normal drop-shadow-md">
-                  Find perspective in life&apos;s difficult moments.
-                </h1>
+                {/* Vanta Atmosphere Badge & Switcher */}
+                <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#171A1F]/80 backdrop-blur-md border border-[#2E333D] text-[11px] text-[#9EA3AF] shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B69A61] animate-pulse" />
+                  <span>Smooth Golden Birds</span>
+                  <span className="text-[#2E333D]">•</span>
+                  <button
+                    type="button"
+                    onClick={() => setVantaAtmosphere(vantaAtmosphere === "twilight" ? "charcoal" : "twilight")}
+                    className="text-[#B69A61] hover:underline cursor-pointer font-medium"
+                    title="Switch flight backdrop"
+                  >
+                    {vantaAtmosphere === "twilight" ? "Sunset Sky Mode" : "Charcoal Canvas Mode"}
+                  </button>
+                </div>
 
-                {/* Supporting Text */}
-                <p className="mt-4 sm:mt-5 text-base sm:text-lg text-[#E7E1D5]/90 max-w-xl font-light leading-relaxed drop-shadow">
-                  Ask your questions, explore philosophical wisdom, or learn from real experiences — anonymously.
-                </p>
+                {/* GSAP Stagger Text Animation */}
+                <GsapHeroText
+                  headline="Find perspective in life's difficult moments."
+                  subheadline="Ask your questions, explore philosophical wisdom, or learn from real experiences — anonymously."
+                />
 
                 {/* Spiritual Guidance Toggle & Tradition Selector */}
                 <div className="relative z-30 mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 bg-[#171A1F]/85 backdrop-blur-md px-4 py-2 rounded-full border border-[#2E333D]/80 shadow-xl">
