@@ -1,3 +1,6 @@
+
+
+![APARICHIT Application Screenshot](screen.png)
 # APARICHIT (अपारिचित)
 
 ### Ancient Wisdom. Modern Perspective. Anonymous Support.
