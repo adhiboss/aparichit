@@ -126,3 +126,52 @@ export function savePreferences(prefs: Partial<UserPreferences>): void {
     console.error("Failed to save preferences to localStorage", err);
   }
 }
+
+const SAVED_FLASHCARDS_KEY = "aparichit_saved_flashcards";
+
+/**
+ * Retrieve the list of saved flashcard IDs.
+ */
+export function getSavedFlashcardIds(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SAVED_FLASHCARDS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Toggle bookmark state for a flashcard ID.
+ * Returns true if now saved, false if removed.
+ */
+export function toggleSavedFlashcardId(id: string): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const current = getSavedFlashcardIds();
+    const index = current.indexOf(id);
+    let updated: string[];
+    let isNowSaved = false;
+    if (index >= 0) {
+      updated = current.filter((item) => item !== id);
+      isNowSaved = false;
+    } else {
+      updated = [...current, id];
+      isNowSaved = true;
+    }
+    window.localStorage.setItem(SAVED_FLASHCARDS_KEY, JSON.stringify(updated));
+    return isNowSaved;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if a flashcard is currently saved.
+ */
+export function isFlashcardSaved(id: string): boolean {
+  return getSavedFlashcardIds().includes(id);
+}

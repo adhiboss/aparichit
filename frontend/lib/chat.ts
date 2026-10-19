@@ -6,6 +6,7 @@ import { apiRequest, getApiBaseUrl } from "./api.ts";
 import type {
   ChatRequest,
   ChatResponse,
+  FlashcardsResponse,
   StreamMetaEvent,
   TraditionDetail,
   TraditionItem,
@@ -25,6 +26,14 @@ export async function fetchTraditionDetail(
   traditionId: string
 ): Promise<TraditionDetail> {
   return apiRequest<TraditionDetail>(`/traditions/${encodeURIComponent(traditionId)}`);
+}
+
+/**
+ * Fetch daily featured wisdom flashcard and chronicle archive.
+ */
+export async function fetchFlashcards(date?: string): Promise<FlashcardsResponse> {
+  const query = date ? `?date=${encodeURIComponent(date)}` : "";
+  return apiRequest<FlashcardsResponse>(`/library/flashcards${query}`);
 }
 
 /**

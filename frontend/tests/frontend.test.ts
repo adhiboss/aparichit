@@ -250,5 +250,17 @@ describe("Contract Integrity & Real Backend Integration", () => {
     // PII should be scrubbed
     assert.ok(!postData.content.includes("9876543210"));
   });
+
+  test("GET /library/flashcards returns daily featured card and verified scripture archive", async () => {
+    const res = await fetch("http://localhost:8000/library/flashcards");
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.ok(data.featured);
+    assert.ok(data.featured.passage.length > 5);
+    assert.ok(data.featured.source.length > 0);
+    assert.ok(data.featured.meaning.length > 5);
+    assert.ok(Array.isArray(data.cards));
+    assert.ok(data.total >= 50);
+  });
 });
 

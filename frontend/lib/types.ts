@@ -60,6 +60,33 @@ export interface TraditionItem {
   description: string;
 }
 
+export interface WisdomFlashcard {
+  id: string;
+  tradition_id: string;
+  tradition_name: string;
+  tradition_symbol: string;
+  source: string;
+  translation_edition: string;
+  chapter: number;
+  chapter_title: string;
+  section?: string;
+  verse: string;
+  passage: string;
+  meaning: string;
+  practical_reflection: string;
+  topics: string[];
+  is_paraphrase: boolean;
+  contemporary_label?: string;
+  date_for?: string;
+}
+
+export interface FlashcardsResponse {
+  date: string;
+  featured: WisdomFlashcard;
+  cards: WisdomFlashcard[];
+  total: number;
+}
+
 export interface ChatRequest {
   session_id: string;
   message: string;

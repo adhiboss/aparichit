@@ -143,6 +143,19 @@ def get_tradition_detail(tradition_id: str):
     }
 
 
+@app.get(
+    "/library/flashcards",
+    summary="Get daily wisdom flashcards and previous chronicle grounded in authentic scriptures",
+    tags=["Library"],
+)
+def get_library_flashcards(date: Optional[str] = None):
+    """Retrieve daily featured wisdom flashcard and chronicle grounded in authentic scriptures."""
+    from app.rag.flashcards import get_daily_wisdom_payload
+
+    return get_daily_wisdom_payload(date)
+
+
+
 
 @app.post(
     "/chat",

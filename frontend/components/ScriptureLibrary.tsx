@@ -12,8 +12,10 @@ import {
   Filter,
   ShieldCheck,
   Bookmark,
+  Layers,
 } from "lucide-react";
 import { fetchTraditionDetail, fetchTraditions } from "../lib/chat.ts";
+import { DailyWisdomFlashcards } from "./DailyWisdomFlashcards";
 import type {
   TraditionDetail,
   TraditionItem,
@@ -275,6 +277,8 @@ export const ScriptureLibrary: React.FC<ScriptureLibraryProps> = ({
   initialTraditionId = "garuda_purana",
   onConsultVerse,
 }) => {
+  const [librarySection, setLibrarySection] =
+    useState<"flashcards" | "repository">("flashcards");
   const [selectedTraditionId, setSelectedTraditionId] =
     useState<string>(initialTraditionId);
   const [traditionDetail, setTraditionDetail] = useState<TraditionDetail | null>(
@@ -398,45 +402,100 @@ export const ScriptureLibrary: React.FC<ScriptureLibraryProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Sacred Scripture Library Header */}
-      <div className="rounded-2xl bg-[#1c1712] border border-[#362c22] p-6 shadow-2xl relative overflow-hidden">
-        {/* Background ambient warm glow */}
-        <div className="absolute -right-16 -top-16 w-64 h-64 bg-[#e59a27]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div>
-            <div className="flex items-center gap-2 text-[#e59a27] text-xs font-semibold uppercase tracking-widest mb-1.5">
-              <BookOpen className="w-4 h-4 text-[#e59a27]" />
-              <span>Ancient Wisdom Scripture Repository</span>
-            </div>
-            <h1 className="font-headline text-2xl sm:text-3xl font-medium text-[#f2ede4] tracking-wide">
-              The Scripture Wisdom Library
-            </h1>
-            <p className="font-body text-xs sm:text-sm text-[#b5aa9b] mt-1 max-w-2xl leading-relaxed">
-              Explore authentic, public-domain sacred texts and moral discourses
-              that ground APARICHIT’s guidance. Filter by life dilemma, study original
-              chapters, and consult the AI directly on any verse.
-            </p>
+      {/* Top Segmented Subsection Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#242830] border border-[#2E333D] shadow-xl">
+        <div className="space-y-0.5">
+          <div className="inline-flex items-center gap-2 text-[#B69A61] text-xs font-semibold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Classical Wisdom Sanctuary</span>
           </div>
-
-          {/* Verification Badge */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="px-3.5 py-2 rounded-xl bg-[#211a14] border border-[#362c22] flex items-center gap-2.5">
-              <ShieldCheck className="w-4 h-4 text-[#34d399]" />
-              <div className="text-left">
-                <span className="block text-[11px] font-semibold text-[#f2ede4]">
-                  Public Domain & Grounded
-                </span>
-                <span className="block text-[10px] text-[#7a6e5e]">
-                  Human Verified Translations
-                </span>
-              </div>
-            </div>
-          </div>
+          <h1 className="font-serif text-2xl sm:text-3xl text-[#E7E1D5] tracking-tight">
+            The Scripture Wisdom Library
+          </h1>
+          <p className="text-xs text-[#9EA3AF] max-w-xl">
+            Contemplate one daily passage at a time or browse full public-domain sacred canons.
+          </p>
         </div>
 
-        {/* Tradition Navigation Tabs */}
-        <div className="mt-6 pt-5 border-t border-[#362c22]/80 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {/* Section Switcher Tabs */}
+        <div className="flex items-center gap-1.5 p-1 bg-[#1E222A] rounded-xl border border-[#2E333D] shrink-0 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setLibrarySection("flashcards")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              librarySection === "flashcards"
+                ? "bg-[#B69A61] text-[#171A1F] font-semibold shadow-sm"
+                : "text-[#9EA3AF] hover:text-[#E7E1D5]"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Daily Wisdom Flashcards</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setLibrarySection("repository")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              librarySection === "repository"
+                ? "bg-[#B69A61] text-[#171A1F] font-semibold shadow-sm"
+                : "text-[#9EA3AF] hover:text-[#E7E1D5]"
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Scripture Repository</span>
+          </button>
+        </div>
+      </div>
+
+      {/* SUBSECTION 1: DAILY WISDOM FLASHCARDS */}
+      {librarySection === "flashcards" && (
+        <DailyWisdomFlashcards
+          onReflect={(passage, tradition, meta) => {
+            if (onConsultVerse) {
+              onConsultVerse(passage, tradition);
+            }
+          }}
+        />
+      )}
+
+      {/* SUBSECTION 2: FULL SCRIPTURE REPOSITORY BROWSER */}
+      {librarySection === "repository" && (
+        <div className="space-y-6">
+          {/* Sacred Scripture Library Header */}
+          <div className="rounded-2xl bg-[#242830] border border-[#2E333D] p-6 shadow-xl relative overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+              <div>
+                <div className="flex items-center gap-2 text-[#B69A61] text-xs font-semibold uppercase tracking-widest mb-1.5">
+                  <BookOpen className="w-4 h-4 text-[#B69A61]" />
+                  <span>Ancient Wisdom Scripture Repository</span>
+                </div>
+                <h2 className="font-serif text-2xl font-medium text-[#E7E1D5] tracking-wide">
+                  Browse Authentic Scripture Canons
+                </h2>
+                <p className="font-body text-xs sm:text-sm text-[#9EA3AF] mt-1 max-w-2xl leading-relaxed">
+                  Explore authentic, public-domain sacred texts and moral discourses
+                  that ground APARICHIT’s guidance. Filter by life dilemma and study original chapters.
+                </p>
+              </div>
+
+              {/* Verification Badge */}
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="px-3.5 py-2 rounded-xl bg-[#1E222A] border border-[#2E333D] flex items-center gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-[#34d399]" />
+                  <div className="text-left">
+                    <span className="block text-[11px] font-semibold text-[#E7E1D5]">
+                      Public Domain & Grounded
+                    </span>
+                    <span className="block text-[10px] text-[#9EA3AF]">
+                      Human Verified Translations
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tradition Navigation Tabs */}
+            <div className="mt-6 pt-5 border-t border-[#2E333D] flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {TRADITION_TABS.map((tab) => {
             const isActive = tab.id === selectedTraditionId;
             return (
@@ -733,6 +792,9 @@ export const ScriptureLibrary: React.FC<ScriptureLibraryProps> = ({
           ))}
         </div>
       )}
+        </div>
+      )}
     </div>
   );
 };
+

@@ -20,7 +20,7 @@ export default function LibraryPage() {
   };
 
   const handleConsultVerse = (verseText: string, traditionName: string) => {
-    const prompt = `How can I apply the wisdom of ${traditionName} to my situation regarding this verse: "${verseText}"?`;
+    const prompt = `I am contemplating this passage from ${traditionName}: "${verseText}". How can I apply its core principle to my personal dilemmas?`;
     if (typeof window !== "undefined") {
       sessionStorage.setItem("aparichit_initial_prompt", prompt);
     }
@@ -28,7 +28,7 @@ export default function LibraryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#14120e] text-[#f2ede4] flex flex-col font-body">
+    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body">
       {/* Top Header */}
       <ChatHeader activeTab="library" onTabChange={handleTabChange} />
 
