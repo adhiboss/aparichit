@@ -68,3 +68,11 @@
 
 ---
 
+### Entry #9: Safety Protocols: Crisis Intervention & Anonymous Hotlines
+- **Category**: `Safety`
+- **Milestone**: docs(update): document emergency crisis intervention and safety bypass protocols
+- **Summary & Insights**:
+  Implemented a dedicated crisis detection guardrail. If severe distress or self-harm ideation is detected, the LLM pipeline is bypassed in favor of compassionate, immediate emergency hotline resources (Vandrevala Foundation, AASRA, Tele-MANAS).
+
+---
+
