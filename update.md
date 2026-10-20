@@ -388,3 +388,11 @@
 
 ---
 
+### Entry #49: Philosophical Deep Dive: Marcus Aurelius & Dichotomy of Control
+- **Category**: `Philosophy`
+- **Milestone**: docs(update): log philosophical study on Marcus Aurelius and dichotomy of control
+- **Summary & Insights**:
+  Integrated core Stoic teachings from Meditations on distinguishing between external events beyond our influence and internal judgments within our sovereign domain.
+
+---
+
