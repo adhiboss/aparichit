@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     # LLM Settings
     LLM_PROVIDER: str = "hosted"  # Options: "hosted", "local", "mock"
     LLM_API_KEY: str = ""
-    LLM_API_BASE_URL: str = "https://api.openai.com/v1"
-    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_API_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai"
+    LLM_MODEL: str = "gemini-flash-lite-latest"
     LLM_TIMEOUT: float = 60.0
 
     # Local LLM (Ollama)
