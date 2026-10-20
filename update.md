@@ -452,3 +452,11 @@
 
 ---
 
+### Entry #57: Future Roadmap: Offline PWA & Audio Recitations
+- **Category**: `Roadmap`
+- **Milestone**: docs(update): document future roadmap for offline PWA and audio recitations
+- **Summary & Insights**:
+  Outlined next development phases: full Progressive Web App (PWA) service worker caching for offline sanctuary reading, and Sanskrit/Pali authentic audio chant recordings.
+
+---
+
