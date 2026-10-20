@@ -92,3 +92,11 @@
 
 ---
 
+### Entry #12: Scripture Library API & Verse Inspection Endpoints
+- **Category**: `Backend API`
+- **Milestone**: docs(update): log scripture library API endpoints and chapter/verse query flow
+- **Summary & Insights**:
+  Built RESTful endpoints (`/traditions`, `/traditions/{id}`, `/library/search`) allowing users to query individual chapters, explore historical context, and inspect original verse translations.
+
+---
+
