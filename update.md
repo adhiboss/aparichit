@@ -124,3 +124,11 @@
 
 ---
 
+### Entry #16: Smooth Kinetic Scrolling with Lenis
+- **Category**: `Frontend UX`
+- **Milestone**: docs(update): log Lenis smooth scroll integration and momentum physics
+- **Summary & Insights**:
+  Integrated Lenis smooth scrolling with calibrated momentum and inertial damping, giving the reading experience an elegant, meditative magazine feel.
+
+---
+
