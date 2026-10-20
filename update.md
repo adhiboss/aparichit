@@ -44,3 +44,11 @@
 
 ---
 
+### Entry #6: Vector Embeddings & Semantic Indexing
+- **Category**: `RAG Backend`
+- **Milestone**: docs(update): log SentenceTransformers embedding generation and vector indexing
+- **Summary & Insights**:
+  Employed the SentenceTransformers 'all-MiniLM-L6-v2' dense bi-encoder model to generate 384-dimensional dense vectors for all scripture chunks and thematic verses.
+
+---
+
