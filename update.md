@@ -380,3 +380,11 @@
 
 ---
 
+### Entry #48: Lesson Learned: Mobile-First Card Stages & Ergonomics
+- **Category**: `Lessons Learned`
+- **Milestone**: docs(update): document lessons learned on mobile-first card stages and touch targets
+- **Summary & Insights**:
+  Refined card interaction zones: separated card flipping from bookmarking, sharing, and navigation buttons using event bubbling prevention (`e.stopPropagation()`) for effortless single-handed mobile navigation.
+
+---
+
