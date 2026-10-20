@@ -196,3 +196,11 @@
 
 ---
 
+### Entry #25: Sanctuary Reading List: LocalStorage Bookmark System
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): document localStorage bookmark persistence for sanctuary reading list
+- **Summary & Insights**:
+  Engineered offline-ready bookmarking for contemplation cards using SSR-safe localStorage utilities. Users can curate a personal repository of verses that speak to their soul.
+
+---
+
