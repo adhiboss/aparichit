@@ -19,8 +19,9 @@ class HostedLLMProvider:
         timeout: float = 60.0,
     ) -> None:
         self.api_key = api_key.strip() if api_key else ""
-        self.model = model
-        self.base_url = base_url.rstrip("/")
+        cleaned_model = model.strip().strip("'\"") if model else ""
+        self.model = cleaned_model or "gemini-flash-lite-latest"
+        self.base_url = base_url.strip().rstrip("/") if base_url else "https://generativelanguage.googleapis.com/v1beta/openai"
         self.timeout = timeout
 
     def _get_headers(self) -> Dict[str, str]:
