@@ -244,3 +244,11 @@
 
 ---
 
+### Entry #31: Cross-Browser WebKit Backface-Visibility Support
+- **Category**: `Frontend Engineering`
+- **Milestone**: docs(update): log WebKit backface-visibility cross-browser compatibility fix
+- **Summary & Insights**:
+  Added explicit `-webkit-backface-visibility: hidden` vendor prefixes alongside standard `backface-visibility: hidden` to guarantee seamless 3D flips without rendering artifacts on Safari and iOS browsers.
+
+---
+
