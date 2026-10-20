@@ -28,3 +28,11 @@
 
 ---
 
+### Entry #4: Scripture Ingestion: Dhammapada Yamaka-Vagga & Thematic Verses
+- **Category**: `Data Pipeline`
+- **Milestone**: docs(update): log Dhammapada Yamaka-Vagga extraction and Max Müller translation
+- **Summary & Insights**:
+  Extracted canonical Pali Buddhist teachings from Prof. F. Max Müller's 1881 translation (Sacred Books of the East, Vol. X). Curated verses across Twin Verses, Thought, The Wise Man, and Self-Mastery.
+
+---
+
