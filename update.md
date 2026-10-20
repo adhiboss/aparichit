@@ -356,3 +356,11 @@
 
 ---
 
+### Entry #45: Lesson Learned: Resolving Percentage Heights in Min-Height Parents
+- **Category**: `Lessons Learned`
+- **Milestone**: docs(update): document lessons learned on percentage heights in min-height parents
+- **Summary & Insights**:
+  Mastered the CSS box model quirk regarding percentage heights inside containers having only `min-height`. Explicit fixed heights on both container and 3D rotator ensure predictable rendering across all browsers.
+
+---
+
