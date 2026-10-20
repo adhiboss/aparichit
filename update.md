@@ -60,3 +60,11 @@
 
 ---
 
+### Entry #8: RAG Prompt Engineering & Strict Grounding
+- **Category**: `RAG Backend`
+- **Milestone**: docs(update): log RAG prompt engineering and strict grounding principles
+- **Summary & Insights**:
+  Architected contextual RAG prompts that mandate verbatim scripture citation. Configured the model to synthesize ancient guidance with modern therapeutic empathy while strictly forbidding citation fabrication.
+
+---
+
