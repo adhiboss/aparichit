@@ -340,3 +340,11 @@
 
 ---
 
+### Entry #43: Frontend Performance Benchmarking & Minimal Layout Shifts
+- **Category**: `Performance`
+- **Milestone**: docs(update): log frontend performance benchmarking and minimal hydration shift
+- **Summary & Insights**:
+  Eliminated Cumulative Layout Shift (CLS) on the card viewer by enforcing fixed dimensional aspect ratios and using `suppressHydrationWarning` on client-rendered calendar dates.
+
+---
+
