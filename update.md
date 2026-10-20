@@ -100,3 +100,11 @@
 
 ---
 
+### Entry #13: Daily Wisdom Flashcards Engine & Deterministic Daily Seed
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): document daily wisdom flashcard generation and seed selection
+- **Summary & Insights**:
+  Created a deterministic date-hashing algorithm (`dayOfYear * 31 + year`) to select a single curated 'Contemplation of the Day' synchronized for all global users while offering access to the full 62-card canon.
+
+---
+
