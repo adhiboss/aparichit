@@ -148,3 +148,11 @@
 
 ---
 
+### Entry #19: Anonymous Session Management & Poetic Pseudonyms
+- **Category**: `Privacy`
+- **Milestone**: docs(update): document anonymous session management and poetic pseudonyms
+- **Summary & Insights**:
+  Users require no phone numbers or passwords. The system generates poetic anonymous identities (e.g., 'Silent Pilgrim', 'Serene Wanderer', 'Solitary Ascetic') paired with client-held UUID session tokens.
+
+---
+
