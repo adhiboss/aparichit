@@ -20,3 +20,11 @@
 
 ---
 
+### Entry #3: Scripture Ingestion: Bhagavad Gita Chapter Structuring
+- **Category**: `Data Pipeline`
+- **Milestone**: docs(update): log Bhagavad Gita chapter structuring and Edwin Arnold edition
+- **Summary & Insights**:
+  Ingested Sir Edwin Arnold's 1885 poetic translation 'The Song Celestial'. Structured all 18 discourses into standardized chapter metadata, Sanskrit discourse titles, and verbatim English verses.
+
+---
+
