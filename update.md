@@ -324,3 +324,11 @@
 
 ---
 
+### Entry #41: Deployment Readiness & Environment Configuration
+- **Category**: `DevOps`
+- **Milestone**: docs(update): log environment variable setup and deployment readiness criteria
+- **Summary & Insights**:
+  Standardized `.env.example` configurations across frontend and backend (`NEXT_PUBLIC_API_URL`, `EMBEDDING_MODEL`, `ALLOWED_ORIGINS`) to streamline Docker and cloud deployments.
+
+---
+
