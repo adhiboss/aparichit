@@ -332,3 +332,11 @@
 
 ---
 
+### Entry #42: Error Boundary Architecture & Offline Fallback Strategy
+- **Category**: `Resilience`
+- **Milestone**: docs(update): document error boundary architecture and offline fallback strategies
+- **Summary & Insights**:
+  Equipped client components with graceful degradation: if the backend server is temporarily unreachable, the frontend falls back to verified bundled scripture flashcards without disruption.
+
+---
+
