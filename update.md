@@ -180,3 +180,11 @@
 
 ---
 
+### Entry #23: Surprise Me: Non-Repeating Random Card Draw
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): document non-repeating random wisdom card selector algorithm
+- **Summary & Insights**:
+  Implemented a 'Surprise Me' random draw function that samples uniformly from the card deck while guaranteeing the drawn card is different from the currently mounted card.
+
+---
+
