@@ -108,3 +108,11 @@
 
 ---
 
+### Entry #14: Next.js 16 App Router & React 19 Integration
+- **Category**: `Frontend`
+- **Milestone**: docs(update): log Next.js 16 App Router and React 19 architecture decisions
+- **Summary & Insights**:
+  Upgraded frontend infrastructure to Next.js 16 with Turbopack and React 19. Leveraged server components for static metadata and fast prerendering paired with interactive client components for dynamic experiences.
+
+---
+
