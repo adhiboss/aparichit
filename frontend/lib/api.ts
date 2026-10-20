@@ -2,9 +2,17 @@
  * Core HTTP client service for APARICHIT frontend.
  */
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:8000";
+const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "");
+const isPlaceholder =
+  !envUrl ||
+  envUrl.includes("your-service-name") ||
+  envUrl.includes("example.com");
+
+const API_BASE_URL = isPlaceholder
+  ? (process.env.NODE_ENV === "production"
+      ? "https://aparichit-agua.onrender.com"
+      : "http://localhost:8000")
+  : envUrl;
 
 export class ApiError extends Error {
   status: number;
