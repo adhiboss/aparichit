@@ -316,3 +316,11 @@
 
 ---
 
+### Entry #40: Next.js Turbopack Optimization & Static Prerendering
+- **Category**: `Performance`
+- **Milestone**: docs(update): document Next.js Turbopack build optimization and static prerendering
+- **Summary & Insights**:
+  Optimized Turbopack build pipeline to statically prerender all key routes (`/`, `/library`, `/chat`, `/community`, `/profile`), resulting in instantaneous route transitions.
+
+---
+
