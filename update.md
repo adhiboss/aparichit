@@ -348,3 +348,11 @@
 
 ---
 
+### Entry #44: Lesson Learned: SSR Hydration Safety with Calendar Dates
+- **Category**: `Lessons Learned`
+- **Milestone**: docs(update): document lessons learned on SSR hydration safety with date formatting
+- **Summary & Insights**:
+  Learned that rendering `new Date().toLocaleDateString()` on the server causes hydration mismatches due to timezone differences between the build server and client browser. Resolved via `suppressHydrationWarning` and mounted state checks.
+
+---
+
