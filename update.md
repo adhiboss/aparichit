@@ -252,3 +252,11 @@
 
 ---
 
+### Entry #32: Mobile Touch Optimization & Viewport Zoom Prevention
+- **Category**: `Mobile UX`
+- **Milestone**: docs(update): document mobile touch optimization and viewport zoom prevention
+- **Summary & Insights**:
+  Configured viewport meta tags and 16px minimum input font sizes to eliminate disruptive automatic iOS zoom on focus, ensuring an app-like feel on mobile browsers.
+
+---
+
