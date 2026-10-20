@@ -308,3 +308,11 @@
 
 ---
 
+### Entry #39: Backend Contract Testing & Integration Verification
+- **Category**: `Testing`
+- **Milestone**: docs(update): log backend contract testing for auth, chat, and traditions
+- **Summary & Insights**:
+  Verified all backend REST contracts against FastAPI schemas: health checks, tradition details, crisis safety triggers, anonymous authentication, and library flashcards.
+
+---
+
