@@ -473,20 +473,30 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
             {/* 3D Flipping Card Container */}
             <div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="relative w-full min-h-[440px] sm:min-h-[420px] rounded-2xl cursor-pointer select-none transition-all duration-300 hover:scale-[1.01]"
-              style={{ perspective: "1400px" }}
+              className="relative w-full rounded-2xl cursor-pointer select-none transition-all duration-300 hover:scale-[1.01]"
+              style={{
+                perspective: "1400px",
+                height: "480px",
+                minHeight: "480px",
+              }}
             >
               <div
-                className="w-full h-full relative transition-transform duration-700 ease-out"
+                className="w-full relative transition-transform duration-700 ease-out"
                 style={{
                   transformStyle: "preserve-3d",
                   transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+                  height: "100%",
+                  minHeight: "480px",
                 }}
               >
                 {/* CARD FRONT FACE */}
                 <div
-                  className="absolute inset-0 w-full h-full rounded-2xl bg-[#242830] border border-[#2E333D] p-5 sm:p-9 flex flex-col justify-between shadow-2xl backface-hidden overflow-y-auto"
-                  style={{ backfaceVisibility: "hidden" }}
+                  className="absolute inset-0 w-full rounded-2xl bg-[#242830] border border-[#2E333D] p-5 sm:p-8 flex flex-col justify-between shadow-2xl overflow-y-auto"
+                  style={{
+                    height: "100%",
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                  }}
                 >
                   {/* Top Bar: Tradition Badge & Actions */}
                   <div className="flex items-center justify-between gap-3">
@@ -532,8 +542,8 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                   </div>
 
                   {/* Middle: Authentic Scripture Passage */}
-                  <div className="my-auto py-6">
-                    <p className="font-serif italic text-xl sm:text-2xl md:text-[26px] text-[#E7E1D5] leading-relaxed drop-shadow-sm">
+                  <div className="my-auto py-5">
+                    <p className="font-serif italic text-xl sm:text-2xl md:text-[25px] text-[#E7E1D5] leading-relaxed drop-shadow-sm">
                       &ldquo;{currentCard.passage}&rdquo;
                     </p>
 
@@ -577,9 +587,11 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
 
                 {/* CARD BACK FACE */}
                 <div
-                  className="absolute inset-0 w-full h-full rounded-2xl bg-[#242830] border border-[#B69A61]/60 p-5 sm:p-9 flex flex-col justify-between shadow-2xl backface-hidden overflow-y-auto"
+                  className="absolute inset-0 w-full rounded-2xl bg-[#242830] border border-[#B69A61]/60 p-5 sm:p-8 flex flex-col justify-between shadow-2xl overflow-y-auto"
                   style={{
+                    height: "100%",
                     backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
                     transform: "rotateY(180deg)",
                   }}
                 >
