@@ -140,3 +140,11 @@
 
 ---
 
+### Entry #18: Responsive Navigation Architecture: Mobile Dock & Desktop Header
+- **Category**: `Frontend UX`
+- **Milestone**: docs(update): log responsive navigation architecture and mobile bottom dock
+- **Summary & Insights**:
+  Constructed dual-mode navigation: a streamlined header with gold brand seal on desktop and an ergonomic thumb-friendly bottom dock navigation bar on mobile devices.
+
+---
+
