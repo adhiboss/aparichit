@@ -11,6 +11,7 @@ import { Plus_Jakarta_Sans, Noto_Serif, Outfit } from "next/font/google";
 import "./globals.css";
 import "lenis/dist/lenis.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { Analytics } from "@vercel/analytics/next";
 
 const sansFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({
         />
         <SmoothScroll />
         {children}
+        <Analytics />
       </body>
     </html>
   );
