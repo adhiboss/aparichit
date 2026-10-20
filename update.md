@@ -164,3 +164,11 @@
 
 ---
 
+### Entry #21: 3D Perspective Card Flipping Stage
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): document 3D card stage flip mechanics and perspective styling
+- **Summary & Insights**:
+  Developed a tactile 3D card flipping stage using CSS 3D transforms (`perspective: 1400px`, `transform-style: preserve-3d`). Clicking flips the card smoothly between ancient verse and contemporary interpretation.
+
+---
+
