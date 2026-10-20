@@ -396,3 +396,11 @@
 
 ---
 
+### Entry #50: Philosophical Deep Dive: Bhagavad Gita & Nishkama Karma
+- **Category**: `Philosophy`
+- **Milestone**: docs(update): log philosophical study on Bhagavad Gita and Nishkama Karma
+- **Summary & Insights**:
+  Embedded the foundational principle of selfless action (Karmanye Vadhikaraste): dedicating effort wholly to ethical duty without anxious obsession over worldly outcomes.
+
+---
+
