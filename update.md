@@ -12,3 +12,11 @@
 
 ---
 
+### Entry #2: Scripture Ingestion: Garuda Purana Translation Parsing
+- **Category**: `Data Pipeline`
+- **Milestone**: docs(update): document Garuda Purana scripture extraction and translation history
+- **Summary & Insights**:
+  Integrated the 1911 Ernest Wood and S. V. Subrahmanyam translation of the Garuda Purana Saroddhara (Preta Kanda). Parsed chapters 1 through 16 into structured JSON records preserving chapter titles and verse ranges.
+
+---
+
