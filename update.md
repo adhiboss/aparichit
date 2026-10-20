@@ -260,3 +260,11 @@
 
 ---
 
+### Entry #33: iOS Safe-Area Inset Architecture
+- **Category**: `Mobile UX`
+- **Milestone**: docs(update): log iOS safe-area inset handling for notch and home indicator
+- **Summary & Insights**:
+  Applied CSS `env(safe-area-inset-bottom)` and `env(safe-area-inset-top)` variables to prevent floating navigation elements from colliding with device notches or gesture navigation bars.
+
+---
+
