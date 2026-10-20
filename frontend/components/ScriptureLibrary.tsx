@@ -281,6 +281,13 @@ export const ScriptureLibrary: React.FC<ScriptureLibraryProps> = ({
     useState<"flashcards" | "repository">("flashcards");
   const [selectedTraditionId, setSelectedTraditionId] =
     useState<string>(initialTraditionId);
+
+  useEffect(() => {
+    if (initialTraditionId) {
+      setSelectedTraditionId(initialTraditionId);
+    }
+  }, [initialTraditionId]);
+
   const [traditionDetail, setTraditionDetail] = useState<TraditionDetail | null>(
     FALLBACK_TRADITIONS[initialTraditionId] || FALLBACK_TRADITIONS.garuda_purana
   );

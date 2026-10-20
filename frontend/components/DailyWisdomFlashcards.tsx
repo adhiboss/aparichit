@@ -15,6 +15,11 @@ import {
   Filter,
   ShieldCheck,
   Info,
+  ChevronLeft,
+  ChevronRight,
+  Dices,
+  RotateCcw,
+  Eye,
 } from "lucide-react";
 import { fetchFlashcards } from "@/lib/chat";
 import {
@@ -129,7 +134,9 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<"today" | "chronicle" | "saved">("today");
   const [cards, setCards] = useState<WisdomFlashcard[]>(OFFLINE_FALLBACK_CARDS);
-  const [featuredCard, setFeaturedCard] = useState<WisdomFlashcard>(OFFLINE_FALLBACK_CARDS[0]);
+  const [dailyFeaturedCard, setDailyFeaturedCard] = useState<WisdomFlashcard>(OFFLINE_FALLBACK_CARDS[0]);
+  const [currentCard, setCurrentCard] = useState<WisdomFlashcard>(OFFLINE_FALLBACK_CARDS[0]);
+  const [todayTraditionFilter, setTodayTraditionFilter] = useState<string>("all");
   const [todayDateStr, setTodayDateStr] = useState<string>("");
   const [displayDate, setDisplayDate] = useState<string>("");
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
@@ -164,11 +171,9 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
         if (!isMounted) return;
         if (res && res.cards && res.cards.length > 0) {
           setCards(res.cards);
-          if (res.featured) {
-            setFeaturedCard(res.featured);
-          } else {
-            setFeaturedCard(res.cards[0]);
-          }
+          const feat = res.featured || res.cards[0];
+          setDailyFeaturedCard(feat);
+          setCurrentCard(feat);
         }
       })
       .catch((err) => {
@@ -179,6 +184,74 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
       isMounted = false;
     };
   }, []);
+
+  // Deck of cards for "Today's Card" view (can be filtered by tradition)
+  const todayDeckCards = useMemo(() => {
+    if (todayTraditionFilter === "all") return cards;
+    return cards.filter((c) => c.tradition_id === todayTraditionFilter);
+  }, [cards, todayTraditionFilter]);
+
+  const currentCardIndex = useMemo(() => {
+    const idx = todayDeckCards.findIndex((c) => c.id === currentCard.id);
+    return idx !== -1 ? idx : 0;
+  }, [todayDeckCards, currentCard]);
+
+  const handleNextCard = () => {
+    if (todayDeckCards.length === 0) return;
+    const nextIdx = (currentCardIndex + 1) % todayDeckCards.length;
+    setCurrentCard(todayDeckCards[nextIdx]);
+    setIsFlipped(false);
+  };
+
+  const handlePrevCard = () => {
+    if (todayDeckCards.length === 0) return;
+    const prevIdx =
+      (currentCardIndex - 1 + todayDeckCards.length) % todayDeckCards.length;
+    setCurrentCard(todayDeckCards[prevIdx]);
+    setIsFlipped(false);
+  };
+
+  const handleRandomCard = () => {
+    if (todayDeckCards.length <= 1) return;
+    let randIdx = Math.floor(Math.random() * todayDeckCards.length);
+    if (randIdx === currentCardIndex) {
+      randIdx = (randIdx + 1) % todayDeckCards.length;
+    }
+    setCurrentCard(todayDeckCards[randIdx]);
+    setIsFlipped(false);
+    showToast("Drew a fresh passage from the canon");
+  };
+
+  const handleResetToDailyFeatured = () => {
+    setTodayTraditionFilter("all");
+    setCurrentCard(dailyFeaturedCard);
+    setIsFlipped(false);
+    showToast("Returned to Today's Curated Pick");
+  };
+
+  const handleSelectTodayTradition = (tradId: string) => {
+    setTodayTraditionFilter(tradId);
+    const matching =
+      tradId === "all" ? cards : cards.filter((c) => c.tradition_id === tradId);
+    if (matching.length > 0) {
+      const exists = matching.find((c) => c.id === currentCard.id);
+      if (!exists) {
+        setCurrentCard(matching[0]);
+        setIsFlipped(false);
+      }
+    }
+  };
+
+  const handleInspectCardIn3D = (card: WisdomFlashcard) => {
+    setTodayTraditionFilter("all");
+    setCurrentCard(card);
+    setIsFlipped(false);
+    setActiveSubTab("today");
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    showToast(`Opened in 3D Card Stage: ${card.source} ${card.verse}`);
+  };
 
   // Show temporary toast notification
   const showToast = (msg: string) => {
@@ -341,25 +414,60 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
         </div>
       </div>
 
-      {/* VIEW 1: TODAY'S FEATURED FLASHCARD */}
+      {/* VIEW 1: TODAY'S FEATURED FLASHCARD & INTERACTIVE DECK */}
       {activeSubTab === "today" && (
         <div className="flex flex-col items-center py-4 sm:py-6">
           <div className="w-full max-w-2xl">
-            {/* Header info badge */}
-            <div className="flex items-center justify-between text-xs text-[#9EA3AF] mb-3 px-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#B69A61] animate-pulse" />
-                <span className="uppercase tracking-wider text-[11px] font-medium text-[#E7E1D5]">
-                  Today&apos;s Contemplation
-                </span>
-                <span>•</span>
-                <span suppressHydrationWarning>
-                  {displayDate || todayDateStr || "Today"}
+            {/* Header info badge & Quick Tradition Deck Filter */}
+            <div className="flex flex-col gap-2.5 mb-3">
+              <div className="flex items-center justify-between text-xs text-[#9EA3AF] px-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="w-2 h-2 rounded-full bg-[#B69A61] animate-pulse" />
+                  <span className="uppercase tracking-wider text-[11px] font-medium text-[#E7E1D5]">
+                    Today&apos;s Contemplation
+                  </span>
+                  <span>•</span>
+                  <span suppressHydrationWarning>
+                    {displayDate || todayDateStr || "Today"}
+                  </span>
+                  {currentCard.id === dailyFeaturedCard?.id ? (
+                    <span className="px-2 py-0.5 rounded-full bg-[#B69A61]/20 border border-[#B69A61] text-[#B69A61] text-[10px] font-semibold">
+                      Curated Daily Pick
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleResetToDailyFeatured}
+                      className="inline-flex items-center gap-1 text-[11px] text-[#B69A61] hover:underline cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Return to Today&apos;s Pick</span>
+                    </button>
+                  )}
+                </div>
+
+                <span className="text-[11px] text-[#9EA3AF] hidden sm:block">
+                  Click card or Flip button to reveal meaning
                 </span>
               </div>
-              <span className="text-[11px] text-[#9EA3AF]">
-                Click card or Flip button to reveal meaning
-              </span>
+
+              {/* Tradition Filter Bar directly in Card Stage */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+                {TRADITION_FILTERS.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => handleSelectTodayTradition(t.id)}
+                    className={`px-2.5 py-1 rounded-lg text-xs whitespace-nowrap transition-colors cursor-pointer ${
+                      todayTraditionFilter === t.id
+                        ? "bg-[#B69A61] text-[#171A1F] font-semibold"
+                        : "bg-[#1E222A] hover:bg-[#2A2F3A] text-[#9EA3AF] border border-[#2E333D]"
+                    }`}
+                  >
+                    {t.symbol && <span className="mr-1">{t.symbol}</span>}
+                    <span>{t.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* 3D Flipping Card Container */}
@@ -384,37 +492,37 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                   <div className="flex items-center justify-between gap-3">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1E222A] border border-[#2E333D] text-xs">
                       <span className="text-sm font-serif text-[#B69A61]">
-                        {featuredCard.tradition_symbol}
+                        {currentCard.tradition_symbol}
                       </span>
                       <span className="font-medium text-[#E7E1D5]">
-                        {featuredCard.tradition_name}
+                        {currentCard.tradition_name}
                       </span>
                       <span className="text-[10px] text-[#9EA3AF]">
-                        Chapter {featuredCard.chapter}, Verse {featuredCard.verse}
+                        Chapter {currentCard.chapter}, Verse {currentCard.verse}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        onClick={(e) => handleToggleSave(featuredCard.id, e)}
-                        title={savedIds.includes(featuredCard.id) ? "Remove from saved" : "Save card"}
+                        onClick={(e) => handleToggleSave(currentCard.id, e)}
+                        title={savedIds.includes(currentCard.id) ? "Remove from saved" : "Save card"}
                         className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-                          savedIds.includes(featuredCard.id)
+                          savedIds.includes(currentCard.id)
                             ? "bg-[#B69A61]/20 border-[#B69A61] text-[#B69A61]"
                             : "bg-[#1E222A] hover:bg-[#2A2F3A] border-[#2E333D] text-[#9EA3AF] hover:text-[#E7E1D5]"
                         }`}
                       >
                         <Bookmark
                           className={`w-4 h-4 ${
-                            savedIds.includes(featuredCard.id) ? "fill-current" : ""
+                            savedIds.includes(currentCard.id) ? "fill-current" : ""
                           }`}
                         />
                       </button>
 
                       <button
                         type="button"
-                        onClick={(e) => handleShare(featuredCard, e)}
+                        onClick={(e) => handleShare(currentCard, e)}
                         title="Copy quotation & citation"
                         className="p-2 rounded-lg bg-[#1E222A] hover:bg-[#2A2F3A] border border-[#2E333D] text-[#9EA3AF] hover:text-[#E7E1D5] transition-colors cursor-pointer"
                       >
@@ -426,16 +534,16 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                   {/* Middle: Authentic Scripture Passage */}
                   <div className="my-auto py-6">
                     <p className="font-serif italic text-xl sm:text-2xl md:text-[26px] text-[#E7E1D5] leading-relaxed drop-shadow-sm">
-                      &ldquo;{featuredCard.passage}&rdquo;
+                      &ldquo;{currentCard.passage}&rdquo;
                     </p>
 
                     {/* Source Citation */}
                     <div className="mt-4 flex flex-col gap-0.5">
                       <span className="text-xs uppercase tracking-wider text-[#B69A61] font-medium">
-                        — {featuredCard.source} (Ch. {featuredCard.chapter}, V. {featuredCard.verse})
+                        — {currentCard.source} (Ch. {currentCard.chapter}, V. {currentCard.verse})
                       </span>
                       <span className="text-[11px] text-[#9EA3AF]">
-                        Translation: {featuredCard.translation_edition}
+                        Translation: {currentCard.translation_edition}
                       </span>
                     </div>
                   </div>
@@ -443,7 +551,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                   {/* Bottom: Topic Tags & Flip Hint */}
                   <div className="pt-4 border-t border-[#2E333D]/60 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap gap-1.5">
-                      {featuredCard.topics.map((t) => (
+                      {currentCard.topics.map((t) => (
                         <span
                           key={t}
                           className="px-2.5 py-0.5 rounded text-[11px] bg-[#1E222A] text-[#9EA3AF] border border-[#2E333D]"
@@ -487,23 +595,23 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        onClick={(e) => handleToggleSave(featuredCard.id, e)}
+                        onClick={(e) => handleToggleSave(currentCard.id, e)}
                         className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-                          savedIds.includes(featuredCard.id)
+                          savedIds.includes(currentCard.id)
                             ? "bg-[#B69A61]/20 border-[#B69A61] text-[#B69A61]"
                             : "bg-[#1E222A] hover:bg-[#2A2F3A] border-[#2E333D] text-[#9EA3AF] hover:text-[#E7E1D5]"
                         }`}
                       >
                         <Bookmark
                           className={`w-4 h-4 ${
-                            savedIds.includes(featuredCard.id) ? "fill-current" : ""
+                            savedIds.includes(currentCard.id) ? "fill-current" : ""
                           }`}
                         />
                       </button>
 
                       <button
                         type="button"
-                        onClick={(e) => handleShare(featuredCard, e)}
+                        onClick={(e) => handleShare(currentCard, e)}
                         className="p-2 rounded-lg bg-[#1E222A] hover:bg-[#2A2F3A] border border-[#2E333D] text-[#9EA3AF] hover:text-[#E7E1D5] transition-colors cursor-pointer"
                       >
                         <Share2 className="w-4 h-4" />
@@ -518,7 +626,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                         Plain-Language Meaning
                       </span>
                       <p className="text-sm sm:text-base text-[#E7E1D5] leading-relaxed">
-                        {featuredCard.meaning}
+                        {currentCard.meaning}
                       </p>
                     </div>
 
@@ -527,12 +635,12 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                         Practical Reflection for Daily Life
                       </span>
                       <p className="text-xs sm:text-sm text-[#E7E1D5]/90 leading-relaxed font-light">
-                        {featuredCard.practical_reflection}
+                        {currentCard.practical_reflection}
                       </p>
                     </div>
 
                     <div className="text-[11px] text-[#6C717D] italic">
-                      * This interpretation is authored for contemporary reflection while the passage is verbatim from {featuredCard.translation_edition}.
+                      * This interpretation is authored for contemporary reflection while the passage is verbatim from {currentCard.translation_edition}.
                     </div>
                   </div>
 
@@ -552,7 +660,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
 
                     <button
                       type="button"
-                      onClick={(e) => handleReflectAction(featuredCard, e)}
+                      onClick={(e) => handleReflectAction(currentCard, e)}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#B69A61] hover:bg-[#c4a96e] text-[#171A1F] text-xs font-semibold transition-colors cursor-pointer shadow-md"
                     >
                       <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -564,8 +672,47 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
               </div>
             </div>
 
+            {/* Interactive Card Deck Controller: Prev, Next, Random, Counter */}
+            <div className="mt-4 flex items-center justify-between gap-3 p-3 rounded-xl bg-[#1E222A] border border-[#2E333D]">
+              <button
+                type="button"
+                onClick={handlePrevCard}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#242830] hover:bg-[#2A2F3A] border border-[#2E333D] text-xs font-medium text-[#E7E1D5] transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4 text-[#B69A61]" />
+                <span className="hidden sm:inline">Previous Card</span>
+                <span className="sm:hidden">Prev</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-[#9EA3AF]">
+                  Card <strong className="text-[#E7E1D5]">{currentCardIndex + 1}</strong> of{" "}
+                  <strong className="text-[#E7E1D5]">{todayDeckCards.length}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleRandomCard}
+                  title="Draw random wisdom card"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#242830] hover:bg-[#2A2F3A] border border-[#2E333D] text-xs text-[#B69A61] hover:text-[#d4af37] transition-colors cursor-pointer"
+                >
+                  <Dices className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Surprise Me</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNextCard}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#242830] hover:bg-[#2A2F3A] border border-[#2E333D] text-xs font-medium text-[#E7E1D5] transition-colors cursor-pointer"
+              >
+                <span className="hidden sm:inline">Next Card</span>
+                <span className="sm:hidden">Next</span>
+                <ChevronRight className="w-4 h-4 text-[#B69A61]" />
+              </button>
+            </div>
+
             {/* Bottom Actions Bar */}
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-[#242830] border border-[#2E333D]">
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-[#242830] border border-[#2E333D]">
               <div className="flex items-center gap-2 text-xs text-[#9EA3AF]">
                 <ShieldCheck className="w-4 h-4 text-[#B69A61]" />
                 <span>Verified Public-Domain Scripture • Zero AI hallucination of citations</span>
@@ -582,7 +729,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
 
                 <button
                   type="button"
-                  onClick={(e) => handleReflectAction(featuredCard, e)}
+                  onClick={(e) => handleReflectAction(currentCard, e)}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#B69A61] hover:bg-[#c4a96e] text-[#171A1F] text-xs font-semibold transition-colors cursor-pointer text-center"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
@@ -752,14 +899,26 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
 
                     {/* Footer Actions */}
                     <div className="pt-4 mt-4 border-t border-[#2E333D]/60 flex items-center justify-between text-xs">
-                      <button
-                        type="button"
-                        onClick={() => toggleArchiveFlip(card.id)}
-                        className="inline-flex items-center gap-1 text-[#9EA3AF] hover:text-[#E7E1D5] cursor-pointer"
-                      >
-                        <RotateCw className="w-3 h-3" />
-                        <span>{flipped ? "Original Verse" : "Explain Meaning"}</span>
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleArchiveFlip(card.id)}
+                          className="inline-flex items-center gap-1 text-[#9EA3AF] hover:text-[#E7E1D5] cursor-pointer"
+                        >
+                          <RotateCw className="w-3 h-3" />
+                          <span>{flipped ? "Original Verse" : "Explain Meaning"}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleInspectCardIn3D(card)}
+                          className="inline-flex items-center gap-1 text-[#9EA3AF] hover:text-[#B69A61] cursor-pointer"
+                          title="Open this card in the interactive 3D Card Stage"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>3D Stage</span>
+                        </button>
+                      </div>
 
                       <button
                         type="button"
@@ -844,9 +1003,20 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                   </div>
 
                   <div className="pt-3 border-t border-[#2E333D]/60 flex items-center justify-between text-xs">
-                    <span className="text-[11px] text-[#9EA3AF]">
-                      {card.translation_edition}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] text-[#9EA3AF] hidden sm:inline">
+                        {card.translation_edition}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleInspectCardIn3D(card)}
+                        className="inline-flex items-center gap-1 text-[#9EA3AF] hover:text-[#B69A61] cursor-pointer"
+                        title="Open this card in the interactive 3D Card Stage"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>3D Stage</span>
+                      </button>
+                    </div>
 
                     <button
                       type="button"
