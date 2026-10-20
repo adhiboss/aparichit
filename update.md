@@ -236,3 +236,11 @@
 
 ---
 
+### Entry #30: Debugging CSS 3D Transforms: Height Collapse Resolution
+- **Category**: `Frontend Engineering`
+- **Milestone**: docs(update): document debugging and fixing CSS height collapse in 3D card stage
+- **Summary & Insights**:
+  Identified and resolved a classic CSS gotcha: when an outer container uses `min-height` without fixed `height`, child elements with `height: 100%` resolve to `auto`. Fixed by assigning explicit height to the 3D stage and rotator.
+
+---
+
