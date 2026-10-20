@@ -292,3 +292,11 @@
 
 ---
 
+### Entry #37: Scripture Data Integrity Testing: 62 Canonical Cards
+- **Category**: `Testing`
+- **Milestone**: docs(update): log validation and data integrity tests for 62 scripture cards
+- **Summary & Insights**:
+  Created automated schema integrity checks verifying that all 62 flashcards possess non-empty passages, verified chapter/verse citations, plain-language commentaries, and practical reflections.
+
+---
+
