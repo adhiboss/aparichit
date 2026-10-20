@@ -63,7 +63,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#171A1F] border-b border-[#242830]/80">
-      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Left: Brand Identity */}
         <Link
           href="/"
@@ -73,7 +73,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               onTabChange("chat");
             }
           }}
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-2.5 sm:gap-3 group shrink-0"
         >
           {/* APARICHIT Emblem */}
           <img
@@ -93,8 +93,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
         </Link>
 
         {/* Center/Right: Simple Editorial Navigation */}
-        <div className="flex items-center gap-8">
-          <nav className="flex items-center gap-6 sm:gap-8">
+        <div className="flex items-center gap-2 sm:gap-6 md:gap-8">
+          <nav className="hidden md:flex items-center gap-6 sm:gap-8">
             {navLinks.map((item) => {
               const active = activeTab
                 ? activeTab === item.id || (item.id === "chat" && activeTab === "chat")
@@ -131,10 +131,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowAccountMenu(!showAccountMenu)}
-              className="flex items-center gap-2 py-1 px-3 rounded-full bg-[#242830] hover:bg-[#2A303A] border border-[#282D37] text-xs text-[#E7E1D5] transition-colors cursor-pointer"
+              className="flex items-center gap-2 py-1 px-2.5 sm:px-3 rounded-full bg-[#242830] hover:bg-[#2A303A] border border-[#282D37] text-xs text-[#E7E1D5] transition-colors cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#B69A61]" />
-              <span className="font-medium max-w-[110px] truncate">
+              <span className="font-medium max-w-[80px] xs:max-w-[100px] sm:max-w-[110px] truncate">
                 {account?.display_name || "Anonymous"}
               </span>
               <ChevronDown className="w-3 h-3 text-[#9E9CA3]" />
@@ -142,7 +142,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
             {/* Account Menu */}
             {showAccountMenu && (
-              <div className="absolute right-0 mt-2 w-60 rounded-xl bg-[#242830] border border-[#2E333D] shadow-xl p-3 z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute right-0 mt-2 w-60 max-w-[calc(100vw-2rem)] rounded-xl bg-[#242830] border border-[#2E333D] shadow-xl p-3 z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100">
                 <div className="px-2 py-1 border-b border-[#2E333D] pb-2">
                   <div className="text-[10px] uppercase text-[#9E9CA3] tracking-wider font-medium flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-[#B69A61]" />

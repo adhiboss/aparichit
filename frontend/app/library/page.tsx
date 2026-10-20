@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChatHeader } from "@/components/ChatHeader";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ScriptureLibrary } from "@/components/ScriptureLibrary";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function LibraryPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function LibraryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body">
+    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body pb-16 md:pb-0">
       {/* Top Header */}
       <ChatHeader activeTab="library" onTabChange={handleTabChange} />
 
@@ -50,6 +51,9 @@ export default function LibraryPage() {
           </main>
         </div>
       </div>
+
+      {/* Native Mobile Bottom Navigation Bar */}
+      <MobileBottomNav activeTab="library" onTabChange={handleTabChange} />
     </div>
   );
 }

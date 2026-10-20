@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChatHeader } from "@/components/ChatHeader";
 import { AppSidebar } from "@/components/AppSidebar";
 import { UserProfile } from "@/components/UserProfile";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#14120e] text-[#f2ede4] flex flex-col font-body">
+    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body pb-16 md:pb-0">
       {/* Top Header */}
       <ChatHeader activeTab="profile" onTabChange={handleTabChange} />
 
@@ -43,6 +44,9 @@ export default function ProfilePage() {
           </main>
         </div>
       </div>
+
+      {/* Native Mobile Bottom Navigation Bar */}
+      <MobileBottomNav activeTab="profile" onTabChange={handleTabChange} />
     </div>
   );
 }

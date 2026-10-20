@@ -13,6 +13,7 @@ import { ScriptureLibrary } from "@/components/ScriptureLibrary";
 import { UserProfile } from "@/components/UserProfile";
 import { VantaBirds } from "@/components/VantaBirds";
 import { GsapHeroText } from "@/components/GsapHeroText";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ChatMessage, Citation, StreamMetaEvent, TraditionItem } from "@/lib/types";
 import {
   getSessionId,
@@ -244,7 +245,7 @@ export default function HomePage() {
     ];
 
   return (
-    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body">
+    <div className="min-h-screen bg-[#171A1F] text-[#E7E1D5] flex flex-col font-body pb-16 md:pb-0">
       {/* Refined Top Navigation Header */}
       <ChatHeader
         activeTab={activeTab}
@@ -489,6 +490,9 @@ export default function HomePage() {
           <div>All queries are processed anonymously with complete privacy.</div>
         </div>
       </footer>
+
+      {/* Native Mobile Bottom Navigation Bar */}
+      <MobileBottomNav activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab)} />
     </div>
   );
 }

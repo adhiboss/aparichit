@@ -97,7 +97,10 @@ class VectorStore:
         if where:
             kwargs["where"] = where
 
-        results = self.collection.query(**kwargs)
+        try:
+            results = self.collection.query(**kwargs)
+        except Exception:
+            return []
 
         output: List[Dict[str, Any]] = []
         docs = results.get("documents", [[]])[0]

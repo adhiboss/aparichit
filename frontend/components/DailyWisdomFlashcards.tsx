@@ -299,7 +299,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
         </div>
 
         {/* View Switcher Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-[#1E222A] rounded-xl border border-[#2E333D] self-start sm:self-auto">
+        <div className="flex items-center gap-1 p-1 bg-[#1E222A] rounded-xl border border-[#2E333D] overflow-x-auto max-w-full scrollbar-none self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setActiveSubTab("today")}
@@ -365,7 +365,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
             {/* 3D Flipping Card Container */}
             <div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="relative w-full min-h-[380px] sm:min-h-[420px] rounded-2xl cursor-pointer select-none transition-all duration-300 hover:scale-[1.01]"
+              className="relative w-full min-h-[440px] sm:min-h-[420px] rounded-2xl cursor-pointer select-none transition-all duration-300 hover:scale-[1.01]"
               style={{ perspective: "1400px" }}
             >
               <div
@@ -377,7 +377,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
               >
                 {/* CARD FRONT FACE */}
                 <div
-                  className="absolute inset-0 w-full h-full rounded-2xl bg-[#242830] border border-[#2E333D] p-6 sm:p-9 flex flex-col justify-between shadow-2xl backface-hidden"
+                  className="absolute inset-0 w-full h-full rounded-2xl bg-[#242830] border border-[#2E333D] p-5 sm:p-9 flex flex-col justify-between shadow-2xl backface-hidden overflow-y-auto"
                   style={{ backfaceVisibility: "hidden" }}
                 >
                   {/* Top Bar: Tradition Badge & Actions */}
@@ -469,7 +469,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
 
                 {/* CARD BACK FACE */}
                 <div
-                  className="absolute inset-0 w-full h-full rounded-2xl bg-[#242830] border border-[#B69A61]/60 p-6 sm:p-9 flex flex-col justify-between shadow-2xl backface-hidden"
+                  className="absolute inset-0 w-full h-full rounded-2xl bg-[#242830] border border-[#B69A61]/60 p-5 sm:p-9 flex flex-col justify-between shadow-2xl backface-hidden overflow-y-auto"
                   style={{
                     backfaceVisibility: "hidden",
                     transform: "rotateY(180deg)",
@@ -571,11 +571,11 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                 <span>Verified Public-Domain Scripture • Zero AI hallucination of citations</span>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => setIsFlipped(!isFlipped)}
-                  className="px-4 py-2 rounded-lg bg-[#1E222A] hover:bg-[#2A2F3A] border border-[#2E333D] text-xs text-[#E7E1D5] transition-colors cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#1E222A] hover:bg-[#2A2F3A] border border-[#2E333D] text-xs text-[#E7E1D5] transition-colors cursor-pointer text-center"
                 >
                   {isFlipped ? "Show Scripture Verse" : "Flip for Meaning"}
                 </button>
@@ -583,7 +583,7 @@ export const DailyWisdomFlashcards: React.FC<DailyWisdomFlashcardsProps> = ({
                 <button
                   type="button"
                   onClick={(e) => handleReflectAction(featuredCard, e)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#B69A61] hover:bg-[#c4a96e] text-[#171A1F] text-xs font-semibold transition-colors cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#B69A61] hover:bg-[#c4a96e] text-[#171A1F] text-xs font-semibold transition-colors cursor-pointer text-center"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Reflect on this Passage →</span>

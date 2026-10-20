@@ -35,7 +35,11 @@ class SimilarProblemMatcher:
 
         self.client = chromadb.PersistentClient(path=self.db_path)
         self.collection_name = collection_name
-        self.collection: Collection = self.client.get_or_create_collection(
+
+    @property
+    def collection(self) -> Collection:
+        """Dynamically retrieve or create collection to prevent stale collection UUID references."""
+        return self.client.get_or_create_collection(
             name=self.collection_name,
             metadata={"hnsw:space": "cosine"},
         )
@@ -143,11 +147,10 @@ class SimilarProblemMatcher:
 
     def clear(self) -> None:
         """Clear all entries in the collection."""
-        self.client.delete_collection(self.collection_name)
-        self.collection = self.client.get_or_create_collection(
-            name=self.collection_name,
-            metadata={"hnsw:space": "cosine"},
-        )
+        try:
+            self.client.delete_collection(self.collection_name)
+        except Exception:
+            pass
 
 
 _GLOBAL_MATCHER: Optional[SimilarProblemMatcher] = None

@@ -63,7 +63,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           disabled={isLoading || disabled}
           placeholder={placeholder}
           rows={1}
-          className="flex-1 bg-transparent px-2 py-1 text-[15px] sm:text-[16px] text-[#E7E1D5] placeholder-[#6C717D] resize-none focus:outline-none disabled:opacity-50 max-h-40 leading-relaxed"
+          className="flex-1 bg-transparent px-2 py-1 text-base text-[#E7E1D5] placeholder-[#6C717D] resize-none focus:outline-none disabled:opacity-50 max-h-40 leading-relaxed"
         />
 
         {/* Send Action Button */}

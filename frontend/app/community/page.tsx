@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChatHeader } from "@/components/ChatHeader";
 import { CommunityFeed } from "@/components/CommunityFeed";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Loader2 } from "lucide-react";
 
 function CommunityContent() {
@@ -19,8 +20,8 @@ function CommunityContent() {
 
 export default function CommunityPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#171A1F] text-[#E7E1D5]">
-      <ChatHeader />
+    <div className="min-h-screen flex flex-col bg-[#171A1F] text-[#E7E1D5] pb-16 md:pb-0">
+      <ChatHeader activeTab="community" />
       <Suspense
         fallback={
           <div className="flex-1 flex items-center justify-center py-20">
@@ -30,6 +31,8 @@ export default function CommunityPage() {
       >
         <CommunityContent />
       </Suspense>
+      {/* Native Mobile Bottom Navigation Bar */}
+      <MobileBottomNav activeTab="community" />
     </div>
   );
 }

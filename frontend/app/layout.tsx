@@ -1,4 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: "#171A1F",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 import Script from "next/script";
 import { Plus_Jakarta_Sans, Noto_Serif, Outfit } from "next/font/google";
 import "./globals.css";
