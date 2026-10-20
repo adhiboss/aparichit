@@ -428,3 +428,11 @@
 
 ---
 
+### Entry #54: UX Micro-Animations, Gold Accents & Transition Easing
+- **Category**: `UI Polish`
+- **Milestone**: docs(update): log UX micro-animations, gold accents, and transition easing
+- **Summary & Insights**:
+  Refined CSS cubic-bezier transition curves on card rotations (`ease-out 700ms`), pulse indicators for live daily picks, and hover states with golden borders (`#B69A61`).
+
+---
+
