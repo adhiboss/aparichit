@@ -76,3 +76,11 @@
 
 ---
 
+### Entry #10: FastAPI Backend Architecture & Lifespan Management
+- **Category**: `Backend API`
+- **Milestone**: docs(update): log FastAPI backend architecture and lifespan state management
+- **Summary & Insights**:
+  Designed the FastAPI server with modern async lifespan context handlers. Pre-loads scripture vectors, tradition schemas, and daily flashcard caches at startup for deterministic, zero-cold-start performance.
+
+---
+
