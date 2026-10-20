@@ -404,3 +404,11 @@
 
 ---
 
+### Entry #51: Philosophical Deep Dive: Dhammapada & Mindfulness of Habit
+- **Category**: `Philosophy`
+- **Milestone**: docs(update): log philosophical study on Dhammapada and mental discipline
+- **Summary & Insights**:
+  Grounding in Dhammapada Yamaka-Vagga teachings on mental conditioning: how thoughts sculpt character, and how mindfulness dissolves accumulated grief.
+
+---
+
