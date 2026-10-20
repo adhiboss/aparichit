@@ -228,3 +228,11 @@
 
 ---
 
+### Entry #29: Saved Reading List: Personal Contemplation Management
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): document personal saved contemplation reading list filtering
+- **Summary & Insights**:
+  Created a dedicated 'Saved' sub-tab displaying only the user's bookmarked cards with an empty-state illustration encouraging seekers to build their personal philosophical treasury.
+
+---
+
