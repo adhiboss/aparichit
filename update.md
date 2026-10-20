@@ -172,3 +172,11 @@
 
 ---
 
+### Entry #22: Interactive Deck Navigation & Circular Index Math
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): log deck navigation state and circular previous/next math
+- **Summary & Insights**:
+  Added Previous (`<`) and Next (`>`) controls that cycle continuously through the 62-card canon with modulo wrapping, allowing seekers to explore the entire wisdom collection directly within the 3D stage.
+
+---
+
