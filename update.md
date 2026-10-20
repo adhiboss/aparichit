@@ -300,3 +300,11 @@
 
 ---
 
+### Entry #38: Frontend Automated Test Suite with Node Native Test Runner
+- **Category**: `Testing`
+- **Milestone**: docs(update): document frontend automated test suite with native node test runner
+- **Summary & Insights**:
+  Constructed a lightweight, zero-dependency test suite running on Node.js `--experimental-strip-types`, validating API clients, SSE stream parsers, and SSR-safe storage functions in under 1 second.
+
+---
+
