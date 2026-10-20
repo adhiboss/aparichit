@@ -116,3 +116,11 @@
 
 ---
 
+### Entry #15: Editorial Design System: Charcoal, Gold & Warm Ivory
+- **Category**: `Design System`
+- **Milestone**: docs(update): document luxury editorial color palette and design tokens
+- **Summary & Insights**:
+  Established an authentic editorial visual language: deep charcoal background (`#171A1F`), tactile card grey (`#242830`), warm ivory typography (`#E7E1D5`), and sacred muted gold accents (`#B69A61`).
+
+---
+
