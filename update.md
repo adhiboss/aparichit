@@ -132,3 +132,11 @@
 
 ---
 
+### Entry #17: Atmospheric Visuals: Vanta Birds Dynamic Canvas
+- **Category**: `Frontend UX`
+- **Milestone**: docs(update): document ambient Vanta Birds atmospheric background setup
+- **Summary & Insights**:
+  Engineered subtle, non-distracting 3D avian flight dynamics using Three.js and Vanta Birds in the background. Creates depth and an ethereal sense of sanctuary without compromising readability.
+
+---
+
