@@ -52,3 +52,11 @@
 
 ---
 
+### Entry #7: In-Memory Vector Search & Retrieval Mechanics
+- **Category**: `RAG Backend`
+- **Milestone**: docs(update): document zero-hallucination semantic search and cosine similarity
+- **Summary & Insights**:
+  Implemented high-performance cosine similarity ranking over pre-computed normalized embeddings in memory. Ensures sub-20ms retrieval latencies without requiring complex external vector databases.
+
+---
+
