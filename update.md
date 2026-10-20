@@ -188,3 +188,11 @@
 
 ---
 
+### Entry #24: Dynamic Tradition Filter Pills on Card Stage
+- **Category**: `Feature Design`
+- **Milestone**: docs(update): log dynamic tradition filtering within the active 3D card stage
+- **Summary & Insights**:
+  Introduced instant filter pills (All, Bhagavad Gita, Garuda Purana, Dhammapada, Stoicism) directly above the 3D stage, enabling focused contemplation on specific spiritual lineages.
+
+---
+
