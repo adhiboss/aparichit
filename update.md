@@ -364,3 +364,11 @@
 
 ---
 
+### Entry #46: Lesson Learned: Scripture Grounding Eliminates AI Hallucinations
+- **Category**: `Lessons Learned`
+- **Milestone**: docs(update): document lessons learned on scripture grounding to prevent hallucination
+- **Summary & Insights**:
+  Discovered that requiring LLMs to cite exact verse strings and restricting commentary to grounded philosophical extrapolation completely prevents hallucinated quotes and spurious theological attributions.
+
+---
+
