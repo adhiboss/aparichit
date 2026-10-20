@@ -372,3 +372,11 @@
 
 ---
 
+### Entry #47: Lesson Learned: Translating Classical Prose for Modern Seekers
+- **Category**: `Lessons Learned`
+- **Milestone**: docs(update): document lessons learned on translating classical prose for modern seekers
+- **Summary & Insights**:
+  Found that pairing verbatim 19th-century public-domain translations with contemporary plain-language commentaries creates the ideal balance of classical authenticity and accessible emotional resonance.
+
+---
+
