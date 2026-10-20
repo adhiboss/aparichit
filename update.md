@@ -36,3 +36,11 @@
 
 ---
 
+### Entry #5: Scripture Ingestion: Marcus Aurelius' Meditations
+- **Category**: `Data Pipeline`
+- **Milestone**: docs(update): document Stoic Meditations curation from George Long 1862 edition
+- **Summary & Insights**:
+  Curated key aphorisms and philosophical entries from George Long's 1862 translation of Marcus Aurelius' 'Meditations'. Mapped Roman Stoic principles across Books 2 through 12.
+
+---
+
