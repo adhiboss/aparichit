@@ -412,3 +412,11 @@
 
 ---
 
+### Entry #52: Philosophical Deep Dive: Garuda Purana & Moral Responsibility
+- **Category**: `Philosophy`
+- **Milestone**: docs(update): log philosophical study on Garuda Purana and moral agency
+- **Summary & Insights**:
+  Grounded Garuda Purana Saroddhara passages focusing on individual moral agency, the impermanence of physical form, and the enduring power of virtuous deeds.
+
+---
+
