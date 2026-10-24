@@ -466,5 +466,7 @@
 - **Summary & Insights**:
   Completed 58 comprehensive development and research milestones. APARICHIT is fully deployed with verified RAG retrieval, multi-tradition scripture library, interactive 3D flashcards, and mobile-first sanctuary architecture.
 
+  Live Link: https://aparichit-eight.vercel.app/
+
 ---
 
